@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Set the default foreground and background colors */
+:root {
+  --foreground-rgb: 0, 0, 0; /* Black text */
+  --background-start-rgb: 255, 255, 255; /* White background */
+  --background-end-rgb: 255, 255, 255; /* White background */
+  --brand-color: 55, 58, 122;
+}
+
+/* Remove dark mode preferences to maintain white background */
+body {
+  color: rgb(var(--foreground-rgb)); /* Black text */
+  background: rgb(var(--background-start-rgb)); /* White background */
+  font-family: 'Roboto', sans-serif;
+}
+
+
+
+
+
+/* Utility class for balanced text */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
