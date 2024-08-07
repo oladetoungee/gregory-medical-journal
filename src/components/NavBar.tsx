@@ -51,7 +51,7 @@ const DropdownNavItem: React.FC<{ title: string; children: React.ReactNode }> = 
       <button className="hover:text-primary hover:font-bold transition-colors">{title}</button>
       {open && (
         <motion.div
-          className="absolute bg-white rounded shadow-md py-2 z-30"
+       className="absolute bg-white rounded shadow-md rounded-t-none py-2 z-10 border-b-8 border-primary"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
@@ -89,7 +89,7 @@ const UserDropdown: React.FC = () => {
       <ChevronDownIcon className="w-4 h-4" />
       {open && (
         <motion.div
-          className="top-4 right-0 py-2 absolute bg-white rounded shadow-md w-36 z-30"
+          className="top-4 right-0 py-2 absolute bg-white rounded shadow-md w-36 rounded-t-none py-2 z-10 border-b-8 border-primary"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
