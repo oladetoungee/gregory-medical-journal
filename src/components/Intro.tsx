@@ -30,13 +30,13 @@ const slides = [
 const Intro = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-//   useEffect(() => {
-//     const interval = setInterval(() => {
-//       setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
-//     }, 5000); 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
+    }, 5000); 
 
-//     return () => clearInterval(interval);
-//   }, []);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section className="relative h-[80vh] bg-cover bg-center bg-no-repeat mt-16 z-1">
