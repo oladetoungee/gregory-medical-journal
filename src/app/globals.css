@@ -10,14 +10,13 @@
   --brand-color: 55, 58, 122;
 }
 
-/* Remove dark mode preferences to maintain white background */
 body {
-  color: rgb(var(--foreground-rgb)); /* Black text */
   background: rgb(var(--background-start-rgb)); /* White background */
-  font-family: 'Roboto', sans-serif;
 }
 
-
+body {
+  @apply text-slate-600 font-serif text-sm font-normal;
+}
 
 
 

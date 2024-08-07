@@ -1,70 +1,104 @@
-'use client'
-import React from 'react';
-import Link from 'next/link'
+'use client';
+import React, { useState } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { PersonIcon, ChevronDownIcon } from '@radix-ui/react-icons';
 
 const NavBar: React.FC = () => {
   return (
-    <nav className="flex items-center space-x-4">
+    <nav className="flex items-center space-x-6 relative z-20">
       <NavItem title="Home" href="/" />
       <DropdownNavItem title="Journals">
-        <DropdownMenuItem title="Medical Research" href="/journals/medical-research" />
-        <DropdownMenuItem title="Clinical Trials" href="/journals/clinical-trials" />
+        <DropdownMenuItem title="Articles" href="/journals/articles" />
+        <DropdownMenuItem title="Latest Article" href="/journals/latest" />
+        <DropdownMenuItem title="Editor's Pick" href="/journals/editors-pick" isLast />
       </DropdownNavItem>
-      <NavItem title="About" href="/about" />
-      <NavItem title="Submit Manuscript" href="/submit" />
-      <div className="ml-auto flex space-x-4">
-  <Link href="/login" className="text-blue-900 hover:text-blue-600">
-    Login
-  </Link>
-  <Link href="/signup" className="bg-blue-900 text-white px-3 py-1 rounded hover:bg-blue-600">
-    Signup
-  </Link>
-</div>
+      <DropdownNavItem title="About">
+        <DropdownMenuItem title="About This Journal" href="/about/about-this-journal" />
+        <DropdownMenuItem title="Editorial Board" href="/about/editorial-board" />
+        <DropdownMenuItem title="Publication Ethics" href="/about/publication-ethics" />
+        <DropdownMenuItem title="Article Processing Charges" href="/about/processing-charges" isLast />
+      </DropdownNavItem>
+      <DropdownNavItem title="Submit Manuscript">
+        <DropdownMenuItem title="Submission Guidelines" href="/submit/guidelines" />
+        <DropdownMenuItem title="Review Flow" href="/submit/review-flow" isLast />
+      </DropdownNavItem>
 
+      <div className="ml-auto flex items-center space-x-4">
+        <UserDropdown />
+      </div>
     </nav>
-
   );
 };
 
 const NavItem: React.FC<{ title: string; href: string }> = ({ title, href }) => {
   return (
-    <Link href={href} className="text-blue-900 hover:text-blue-600">
+    <Link href={href} className="hover:text-primary hover:font-bold transition-colors">
       {title}
     </Link>
   );
 };
 
 const DropdownNavItem: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => {
+  const [open, setOpen] = useState(false);
+
   return (
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger asChild>
-        <button className="text-blue-900 hover:text-blue-600">{title}</button>
-      </DropdownMenu.Trigger>
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content asChild>
-          <motion.div
-            className="bg-white rounded shadow-md mt-2 py-2"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-          >
-            {children}
-          </motion.div>
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+    <div
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      className="relative"
+    >
+      <button className="hover:text-primary hover:font-bold transition-colors">{title}</button>
+      {open && (
+        <motion.div
+          className="absolute bg-white rounded shadow-md py-2 z-30"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+        >
+          {children}
+        </motion.div>
+      )}
+    </div>
   );
 };
 
-const DropdownMenuItem: React.FC<{ title: string; href: string }> = ({ title, href }) => {
+const DropdownMenuItem: React.FC<{ title: string; href: string; isLast?: boolean }> = ({ title, href, isLast }) => {
   return (
-    <DropdownMenu.Item asChild>
-      <Link href={href}>
-        <a className="block px-4 py-2 text-blue-900 hover:bg-gray-100">{title}</a>
+    <div className="pt-2">
+      <Link
+        href={href}
+        className={`block px-2 py-4 w-36 text-xs ${isLast ? '' : 'border-b border-gray-300'} hover:text-primary hover:font-bold`}
+      >
+        {title}
       </Link>
-    </DropdownMenu.Item>
+    </div>
+  );
+};
+
+const UserDropdown: React.FC = () => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      className="relative flex items-center cursor-pointer"
+    >
+      <PersonIcon className="w-4 h-4" />
+      <ChevronDownIcon className="w-4 h-4" />
+      {open && (
+        <motion.div
+          className="top-4 right-0 py-2 absolute bg-white rounded shadow-md w-36 z-30"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+        >
+          <DropdownMenuItem title="Log In" href="/login" />
+          <DropdownMenuItem title="Sign Up" href="/signup" isLast />
+        </motion.div>
+      )}
+    </div>
   );
 };
 
