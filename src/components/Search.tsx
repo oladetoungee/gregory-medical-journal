@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 
 const Search: React.FC = () => {
@@ -17,12 +18,12 @@ const Search: React.FC = () => {
                     <MagnifyingGlassIcon className="w-6 h-6 text-primary" />
                 </div>
             </div>
-            <a
+            <Link
                 href="/all-publications"
                 className="text-primary text-xs hover:underline"
             >
                 View All Publications
-            </a>
+            </Link>
         </section>
     );
 };

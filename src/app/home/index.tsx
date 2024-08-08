@@ -6,6 +6,7 @@ import  Header  from "@/components/Header";
 import  Intro  from "@/components/Intro";
 import Footer from "@/components/Footer";
 import Search from "@/components/Search";
+import HomeJournal from "@/components/HomeJournal";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,6 +16,7 @@ export const LandingPage: FC = () => {
          <Header />
          <Intro/>
          <Search/>
+         <HomeJournal/>
 <Footer/>
     </>
   );
