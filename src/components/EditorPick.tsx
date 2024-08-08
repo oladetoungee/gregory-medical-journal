@@ -10,7 +10,7 @@ const randomPick = latestArticles[Math.floor(Math.random() * latestArticles.leng
 const EditorPick: React.FC = () => {
     return (
         <div className="border-1 rounded shadow-sm bg-gray-50">
-            <h2 className="text-xl font-bold my-4 text-center flex items-center justify-center">
+            <h2 className="text-xl font-bold py-4 text-center flex bg-white items-center justify-center">
                 <StarIcon className="mr-4  text-primary" /> 
                 Editor's Pick
             </h2>
