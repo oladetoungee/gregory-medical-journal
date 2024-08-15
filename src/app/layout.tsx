@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Head from "next/head";
-import { BrowserRouter } from 'react-router-dom'
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,10 +29,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Head>
-
         <meta name="theme-color" content="#ecf3f9" />
-      </Head>
-      
+      </Head> 
       <body className={inter.className}>
         {children}
 

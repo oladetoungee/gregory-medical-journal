@@ -1,9 +1,12 @@
 import React from "react";
-import ArticlePage from "@/components/Articles";
+import Articles from "@/components/Articles";
 
-
-export const Article: React.FC = () => {
+// Define the component
+const Article = () => {
     return (
-   <ArticlePage/>
+   <Articles />
     );
-}
+};
+
+// Export the component as default
+export default Article;

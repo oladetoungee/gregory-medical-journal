@@ -7,7 +7,7 @@ import { latestArticles } from '../constants/articles';
 
 const Articles: React.FC = () => {
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className=" bg-gray-50">
            
 
             {/* Search Component */}
@@ -35,8 +35,7 @@ const ArticleCard: React.FC<{ article: typeof latestArticles[0] }> = ({ article 
                 <h2 className="text-lg font-semibold text-gray-900 mb-2">{article.title}</h2>
                 <p className="text-sm text-gray-600 mb-4">by {article.author}</p>
                 <p className="text-sm text-gray-700 mb-4">{article.excerpt}</p>
-                <Link href={article.link}>
-                    <a className="text-primary hover:underline text-sm font-medium">Read more</a>
+                <Link href={article.link} className="text-primary hover:underline text-sm font-medium">Read more
                 </Link>
             </div>
         </div>
