@@ -2,30 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import images from '../constants/images';
+import { slides } from '@/constants/introSlides';
 
-const slides = [
-  {
-    image: images.hall1.src,
-    title: "Welcome to Gregory Medical Journal",
-    text: "Discover groundbreaking medical research and innovative insights that push the boundaries of medical science. Join our community of scholars and practitioners committed to advancing healthcare knowledge and practice.",
-  },
-  {
-    image: images.lab1.src,
-    title: "Advancing Medical Knowledge",
-    text: "Our journal provides an extensive collection of medical articles, studies, and reviews. Stay updated with the latest medical research.",
-  },
-  {
-    image: images.hall2.src,
-    title: "Join Our Research Community",
-    text: "Connect with fellow researchers and contribute to the global medical community. Share your findings and collaborate on groundbreaking projects.",
-  },
-  {
-    image: images.lab2.src, 
-    title: "Innovative Healthcare Solutions",
-    text: "Explore new technologies and methodologies in healthcare. Discover innovative solutions that improve patient outcomes and healthcare efficiency.",
-  },
-];
 
 const Intro = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -53,7 +31,7 @@ const Intro = () => {
           <section className="w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
             <section className="bg-black bg-opacity-50 p-8 rounded-lg max-w-xl text-center">
               <motion.h1
-                className="text-4xl font-bold mb-4 text-white font-extrabold mb-8"
+                className="lg:text-4xl text-3xl  font-bold mb-4 text-white font-extrabold mb-8"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 2, y: -10 }}
@@ -62,7 +40,7 @@ const Intro = () => {
                 {slides[currentIndex].title}
               </motion.h1>
               <motion.p
-                className="text-sm text-white font-light"
+                className="md:text-sm text-xs text-white font-light"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 2, y: -10 }}

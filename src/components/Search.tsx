@@ -4,11 +4,11 @@ import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 
 const Search: React.FC = () => {
     return (
-        <section className="flex flex-col items-center my-8">
-            <p className="mb-4 text-lg font-medium text-gray-700">
+        <section className="flex flex-col items-center my-8 px-4">
+            <p className="mb-4 text-base sm:text-lg md:text-xl font-medium text-gray-700 text-center">
                 Explore the Latest Medical Research Articles on Gregory Journal
             </p>
-            <div className="relative w-[70%] mb-4">
+            <div className="relative w-full sm:w-[80%] md:w-[70%] lg:w-[60%] mb-4">
                 <input
                     type="text"
                     placeholder="Search by Keyword, Author, Journal, etc."
@@ -20,7 +20,7 @@ const Search: React.FC = () => {
             </div>
             <Link
                 href="/all-publications"
-                className="text-primary text-xs hover:underline"
+                className="text-primary text-sm sm:text-xs hover:underline"
             >
                 View All Publications
             </Link>

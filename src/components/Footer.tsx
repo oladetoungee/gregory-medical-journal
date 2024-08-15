@@ -38,10 +38,10 @@ const helpLinks = [
 const Footer: React.FC = () => {
     return (
         <footer className="bg-primary text-gray-400 text-sm py-6 px-4">
-            <div className="mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between">
-                    <div className="mb-8 md:mb-0 w-[40%]">
-                        <div className="flex gap-4">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex flex-wrap md:flex-nowrap justify-between space-y-8 md:space-y-0 md:space-x-12">
+                    <div className="flex-1 min-w-[200px]">
+                        <div className="flex items-center gap-4 mb-4">
                             <Image
                                 src={images.hall1}
                                 alt="Gregory Medical Journal Logo"
@@ -49,28 +49,26 @@ const Footer: React.FC = () => {
                                 width={64}
                                 height={64}
                             />
-                            <h3 className="text-lg font-semibold mb-4 text-white">Gregory Medical Journal</h3>
+                            <h3 className="text-lg font-semibold text-white">Gregory Medical Journal</h3>
                         </div>
-                        <p className="mt-4 mb-4">
+                        <p className="mb-4">
                             Gregory Medical Journal provides cutting-edge research and analysis in the field of medicine. 
                         </p>
-                        <div>
-                            <div className="flex space-x-4">
-                                {socialLinks.map(({ href, icon, label }) => (
-                                    <a
-                                        key={label}
-                                        href={href}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="hover:text-white transition-colors"
-                                    >
-                                        {icon}
-                                    </a>
-                                ))}
-                            </div>
+                        <div className="flex space-x-4">
+                            {socialLinks.map(({ href, icon, label }) => (
+                                <a
+                                    key={label}
+                                    href={href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="hover:text-white transition-colors"
+                                >
+                                    {icon}
+                                </a>
+                            ))}
                         </div>
                     </div>
-                    <div className="mb-8 md:mb-0">
+                    <div className="flex-1 min-w-[200px]">
                         <h3 className="text-lg font-semibold mb-4 text-white">Contact Us</h3>
                         <ul className="space-y-2">
                             {contactDetails.map(({ icon, text, link }, index) => (
@@ -87,11 +85,11 @@ const Footer: React.FC = () => {
                             ))}
                         </ul>
                     </div>
-                    <div className="mb-8 md:mb-0">
+                    <div className="flex-1 min-w-[200px]">
                         <h3 className="text-lg font-semibold mb-4 text-white">Help</h3>
                         <ul className="space-y-2">
                             {helpLinks.map(({ icon, text, href }) => (
-                                <li key={text} className="flex gap-2">
+                                <li key={text} className="flex items-center space-x-2">
                                     {icon}
                                     <a href={href} className="hover:text-gray-100 transition-colors">{text}</a>
                                 </li>

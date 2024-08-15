@@ -6,7 +6,7 @@ import { PersonIcon, ChevronDownIcon } from '@radix-ui/react-icons';
 
 const NavBar: React.FC = () => {
   return (
-    <nav className="flex items-center space-x-6 relative z-20">
+    <nav className="hidden md:flex  items-center space-x-6 relative z-20">
       <NavItem title="Home" href="/" />
       <DropdownNavItem title="Journals">
         <DropdownMenuItem title="Articles" href="/journals/articles" />

@@ -13,7 +13,7 @@ const LatestArticles: React.FC = () => {
                 {latestArticles.map(article => (
                     <motion.div
                         key={article.id}
-                        className="flex gap-4 border-b  hover:bg-gray-50 rounded-md cursor-pointer "
+                        className="flex flex-col sm:flex-row gap-4 border-b hover:bg-gray-50 rounded-md cursor-pointer"
                         whileHover={{
                             scale: 1.05,
                             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
@@ -23,23 +23,23 @@ const LatestArticles: React.FC = () => {
                         <Image
                             src={article.image}
                             alt={article.title}
-                            width={200} 
-                            height={150}
-                            className="object-cover rounded"
+                            width={150} 
+                            height={100}
+                            className="object-cover rounded w-full sm:w-auto"
                         />
                         <div className="flex flex-col justify-between px-2">
                             <Link href={article.link} passHref>
-                                <h3 className="text-lg font-semibold text-primary hover:underline cursor-pointer">
+                                <h3 className="text-lg sm:text-base font-semibold text-primary hover:underline cursor-pointer">
                                     {article.title}
                                 </h3>
                             </Link>
-                            <p className="text-sm font-bold  my-1 flex items-center">
+                            <p className="text-sm font-bold my-1 flex items-center">
                                 <PersonIcon className="mr-2" /> {article.author}
                             </p>
-                            <p className="text-xs ">{article.excerpt}</p>
+                            <p className="text-xs sm:text-sm">{article.excerpt}</p>
                             <Link href={article.link} passHref>
-                                <button className="my-2 inline-flex items-center bg-gray-500  text-xs py-1 px-3 rounded border hover:opacity-70 hover:text-white hover:bg-primary bg-transparent text-primary border-primary transition-colors">
-                                    View Full Article <ArrowRightIcon className="ml-2"  />
+                                <button className="my-2 inline-flex items-center bg-gray-500 text-xs py-1 px-3 rounded border hover:opacity-70 hover:text-white hover:bg-primary bg-transparent text-primary border-primary transition-colors">
+                                    View Full Article <ArrowRightIcon className="ml-2" />
                                 </button>
                             </Link>
                         </div>

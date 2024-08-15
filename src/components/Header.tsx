@@ -5,6 +5,7 @@ import NavBar from './NavBar';
 import Image from 'next/image';
 import images from '@/constants/images';
 import { motion } from 'framer-motion';
+import MobileNavBar from './MobileNavBar';
 
 const Header: React.FC = () => {
   const text = "Gregory Medical Journal".split(" ");
@@ -24,7 +25,7 @@ const Header: React.FC = () => {
             <div className="flex space-x-2">
               {text.map((el, i) => (
                 <motion.h1 
-                  className="text-xl font-bold text-blue-900" // Adjust color if needed
+                  className="md:text-xl sm:text-base font-bold text-primary" // Adjust color if needed
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{
@@ -39,6 +40,7 @@ const Header: React.FC = () => {
             </div>
           </div>
           <NavBar />
+          <MobileNavBar />
         </div>
       </div>
     </header>
