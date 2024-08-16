@@ -7,8 +7,8 @@ import { PersonIcon, ArrowRightIcon } from '@radix-ui/react-icons';
 import { Button } from '@/components/';
 
 const LatestArticles: React.FC = () => {
-    // Limit the articles displayed to the top 5
-    const topArticles = articles.slice(0, 5);
+    // Limit the articles displayed to the top 4
+    const topArticles = articles.slice(0, 4);
 
     return (
         <div>
