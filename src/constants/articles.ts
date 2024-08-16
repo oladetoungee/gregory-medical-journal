@@ -47,6 +47,7 @@ export const articles = [
         author: 'Dr. Ibrahim Yusuf',
         excerpt: 'We discuss contemporary mental health issues exacerbated by the fast-paced digital world and social media. The paper proposes innovative solutions, including digital mental health interventions and community-based support models, to address these emerging challenges.',
         image: images.research5,
-        link: '/articles/mental-health-challenges'
+        link: '/articles/mental-health-challenges',
+        isEditorPick: true
     }
 ];

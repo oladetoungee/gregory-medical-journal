@@ -10,7 +10,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <Header />
 
          
-            <main className="flex-grow">
+            <main className="flex-grow mt-12">
                 {children}
             </main>
           <Footer />
