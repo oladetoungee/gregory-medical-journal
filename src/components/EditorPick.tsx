@@ -1,11 +1,12 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { latestArticles } from '@/constants/articles';
+import { articles } from '@/constants/articles';
+import { Button } from '@/components/';
 import { PersonIcon, ArrowRightIcon, StarIcon } from '@radix-ui/react-icons';
 
 // Select a random article for the editor's pick
-const randomPick = latestArticles[Math.floor(Math.random() * latestArticles.length)];
+const randomPick = articles[Math.floor(Math.random() * articles.length)];
 
 const EditorPick: React.FC = () => {
     return (
@@ -33,9 +34,11 @@ const EditorPick: React.FC = () => {
                     <p className="text-xs text-gray-700 mb-4 text-center">{randomPick.excerpt}</p>
                     <div className="flex justify-center">
                     <Link href={randomPick.link} passHref>
-                                <button className="my-2 inline-flex items-center bg-gray-500  text-xs py-1 px-3 rounded border hover:opacity-70 hover:text-white hover:bg-primary bg-transparent text-primary border-primary transition-colors">
-                                    View Full Article <ArrowRightIcon className="ml-2"  />
-                                </button>
+                    <Button
+                                    icon={<ArrowRightIcon />}
+                                >
+                                    View Full Article
+                                </Button>
                             </Link>
                     </div>
                 </div>

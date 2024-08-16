@@ -1,16 +1,20 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { latestArticles } from '@/constants/articles';
+import { articles } from '@/constants/articles';
 import { motion } from 'framer-motion';
 import { PersonIcon, ArrowRightIcon } from '@radix-ui/react-icons';
+import { Button } from '@/components/';
 
 const LatestArticles: React.FC = () => {
+    // Limit the articles displayed to the top 5
+    const topArticles = articles.slice(0, 5);
+
     return (
         <div>
             <h2 className="text-2xl font-bold mb-6 underline text-primary text-center">Latest Articles</h2>
             <div className="space-y-6">
-                {latestArticles.map(article => (
+                {topArticles.map(article => (
                     <motion.div
                         key={article.id}
                         className="flex flex-col sm:flex-row gap-4 border-b hover:bg-gray-50 rounded-md cursor-pointer"
@@ -23,7 +27,7 @@ const LatestArticles: React.FC = () => {
                         <Image
                             src={article.image}
                             alt={article.title}
-                            width={150} 
+                            width={150}
                             height={100}
                             className="object-cover rounded w-full sm:w-auto"
                         />
@@ -38,9 +42,12 @@ const LatestArticles: React.FC = () => {
                             </p>
                             <p className="text-xs sm:text-sm">{article.excerpt}</p>
                             <Link href={article.link} passHref>
-                                <button className="my-2 inline-flex items-center bg-gray-500 text-xs py-1 px-3 rounded border hover:opacity-70 hover:text-white hover:bg-primary bg-transparent text-primary border-primary transition-colors">
-                                    View Full Article <ArrowRightIcon className="ml-2" />
-                                </button>
+                             
+                                <Button
+                                    icon={<ArrowRightIcon />}
+                                >
+                                    View Full Article
+                                </Button>
                             </Link>
                         </div>
                     </motion.div>

@@ -1,6 +1,6 @@
 import images from './images';
 
-export const latestArticles = [
+export const articles = [
     {
         id: 1,
         title: 'The Future of Cardiology: Innovations and Challenges',

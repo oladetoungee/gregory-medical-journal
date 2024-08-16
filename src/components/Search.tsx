@@ -2,7 +2,11 @@ import React from 'react';
 import Link from 'next/link';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 
-const Search: React.FC = () => {
+interface SearchProps {
+    showAllPublicationsLink?: boolean;
+}
+
+const Search: React.FC<SearchProps> = ({ showAllPublicationsLink = true }) => {
     return (
         <section className="flex flex-col items-center my-8 px-4">
             <p className="mb-4 text-base sm:text-lg md:text-xl font-medium text-gray-700 text-center">
@@ -18,12 +22,14 @@ const Search: React.FC = () => {
                     <MagnifyingGlassIcon className="w-6 h-6 text-primary" />
                 </div>
             </div>
-            <Link
-                href="/all-publications"
-                className="text-primary text-sm sm:text-xs hover:underline"
-            >
-                View All Publications
-            </Link>
+            {showAllPublicationsLink && (
+                <Link
+                    href="/all-publications"
+                    className="text-primary text-sm sm:text-xs hover:underline"
+                >
+                    View All Publications
+                </Link>
+            )}
         </section>
     );
 };

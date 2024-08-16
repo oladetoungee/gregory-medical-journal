@@ -10,3 +10,5 @@ export { default as EditorPick } from './EditorPick';
 export { default as NavBar } from './NavBar';
 export { default as MobileNavBar } from './MobileNavBar';
 export { default as NoticeBoard } from './NoticeBoard';
+export { default as Pagination } from './Pagination';
+export { default as Button } from './ui/Button';
