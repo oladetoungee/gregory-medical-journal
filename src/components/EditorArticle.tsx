@@ -6,14 +6,14 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { articles } from '@/constants/articles';
 import { editor } from '@/constants/editor';
-import { ArticlesList } from '@/components';
+import { ArticlesList, NoEditorArticle } from '@/components';
 
 const EditorArticle: React.FC = () => {
-    const editorPickArticle = articles.find(article => article.isEditorPick); // Assuming the article has this property
+    const editorPickArticle = articles.find(article => article?.isEditorPick); // Assuming the article has this property
     const relatedArticles = articles.filter(article => article.id !== editorPickArticle?.id).slice(0, 3);
 
     if (!editorPickArticle) {
-        return <p>No editor's pick available at this time.</p>;
+        return <NoEditorArticle />;
     }
 
     return (
