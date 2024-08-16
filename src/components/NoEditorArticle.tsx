@@ -11,7 +11,7 @@ const NoEditorArticle = () => {
             Our editorial team is always on the lookout for exceptional research and impactful studies. Stay tuned for updates on our latest selections and recommendations.
         </p>
         <div className="flex items-center justify-center mt-6">
-            <Link href="/articles" className="inline-block bg-primary text-white px-6 py-2 rounded-md hover:bg-primary-dark transition-colors">
+            <Link href="/journals/articles" className="inline-block bg-primary text-white px-6 py-2 rounded-md hover:bg-primary-dark transition-colors">
                 Explore Articles
             </Link>
         </div>
