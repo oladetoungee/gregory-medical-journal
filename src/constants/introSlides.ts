@@ -1,6 +1,6 @@
 import images from '../constants/images';
 
-export const slides = [
+ const slides = [
     {
       image: images.hall1.src,
       title: "Welcome to Gregory Medical Journal",
@@ -22,4 +22,4 @@ export const slides = [
       text: "Explore new technologies and methodologies in healthcare. Discover innovative solutions that improve patient outcomes and healthcare efficiency.",
     },
   ];
-  
+  export default slides;

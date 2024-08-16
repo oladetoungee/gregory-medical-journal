@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { articles } from '@/constants/articles';
+import { articles } from '@/constants';
 import { Button } from '@/components/';
 import { PersonIcon, ArrowRightIcon, StarIcon } from '@radix-ui/react-icons';
 

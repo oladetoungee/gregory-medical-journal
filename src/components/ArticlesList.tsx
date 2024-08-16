@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Pagination, Button } from '@/components/';
-import { articles as allArticles } from '@/constants/articles';
+import { articles as allArticles } from '@/constants/';
 
 interface ArticlesListProps {
     articles: typeof allArticles;

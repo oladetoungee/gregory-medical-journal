@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search } from '@/components/';
-import ArticlesList from '@/components/ArticlesList'; // Import the reusable component
-import { articles } from '@/constants/articles';
+import { Search, ArticlesList } from '@/components/';
+import { articles } from '@/constants/';
 
 const ArticlesPage: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);

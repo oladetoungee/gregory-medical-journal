@@ -1,5 +1,5 @@
 import React from 'react';
-import { journalNotices } from '@/constants/notices';
+import { notices } from '@/constants';
 import {
  Speech
 } from 'lucide-react';
@@ -12,7 +12,7 @@ const NoticeBoard: React.FC = () => {
                 Journal Notice Board
             </h2>
             <ul className="space-y-4">
-                {journalNotices.map(notice => (
+                {notices.map(notice => (
                     <li key={notice.id} className="text-sm text-gray-700 border-b pb-2">
                         {notice.text}
                     </li>

@@ -1,6 +1,6 @@
 import React from 'react';
 import ArticlesList from '@/components/ArticlesList'; 
-import { articles } from '@/constants/articles';
+import { articles } from '@/constants';
 
 const TopArticles: React.FC = () => {
     // Get the top 5 articles

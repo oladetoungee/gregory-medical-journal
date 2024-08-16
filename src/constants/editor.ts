@@ -1,6 +1,6 @@
 import images from './images';
 
-export const editor = {
+ const editor = {
     name: 'Dr. Chukwuma Okeke',
     title: 'Editor-in-Chief, Gregory Medical Journal',
     bio: 'Dr. Chukwuma Okeke is a renowned medical researcher with over 20 years of experience in the field. He has published numerous papers and is committed to advancing medical knowledge through rigorous research and analysis.',
@@ -17,3 +17,4 @@ export const editor = {
     inquiry. This article does just that, and I hope you find it as enlightening as I did.
 `,
 };
+export default editor;

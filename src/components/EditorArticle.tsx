@@ -4,8 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { articles } from '@/constants/articles';
-import { editor } from '@/constants/editor';
+import { articles, editor } from '@/constants/';
 import { ArticlesList, NoEditorArticle } from '@/components';
 
 const EditorArticle: React.FC = () => {

@@ -1,6 +1,6 @@
 import images from './images';
 
-export const articles = [
+ const articles = [
     {
         id: 1,
         title: 'The Future of Cardiology: Innovations and Challenges',
@@ -56,3 +56,4 @@ export const articles = [
    isEditorPick: true
     }
 ];
+export default articles;

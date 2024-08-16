@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { editorialBoard } from '@/constants/editorialBoard';
+import { editorialBoard } from '@/constants';
 import {
  UsersIcon
 } from 'lucide-react';

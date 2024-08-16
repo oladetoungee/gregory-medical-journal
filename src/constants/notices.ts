@@ -1,4 +1,4 @@
-export const journalNotices = [
+ const notices = [
     {
         id: 1,
         text: 'Submission deadlines extended for the next issue.'
@@ -16,3 +16,5 @@ export const journalNotices = [
         text: 'Call for papers: Special issue on telemedicine.'
     },
 ];
+
+export default notices;
