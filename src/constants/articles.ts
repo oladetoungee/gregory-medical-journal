@@ -33,14 +33,14 @@ export const articles = [
         image: images.research4,
         link: '/articles/rise-of-telemedicine'
     },
-    // {
-    //     id: 5,
-    //     title: 'Genomics and Personalized Medicine: The Next Frontier',
-    //     author: 'Dr. Chiamaka Uche',
-    //     excerpt: 'The paper explores how advancements in genomic sequencing technologies are leading to the development of personalized medicine strategies. By analyzing patient-specific genetic information, we can tailor treatment plans and predict disease risk with greater accuracy.',
-    //     image: images.research1,
-    //     link: '/articles/genomics-personalized-medicine'
-    // },
+    {
+        id: 5,
+        title: 'Genomics and Personalized Medicine: The Next Frontier',
+        author: 'Dr. Chiamaka Uche',
+        excerpt: 'The paper explores how advancements in genomic sequencing technologies are leading to the development of personalized medicine strategies. By analyzing patient-specific genetic information, we can tailor treatment plans and predict disease risk with greater accuracy.',
+        image: images.research1,
+        link: '/articles/genomics-personalized-medicine'
+    },
     {
         id: 6,
         title: 'Mental Health in the Modern Age: Challenges and Solutions',

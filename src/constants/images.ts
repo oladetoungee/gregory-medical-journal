@@ -9,6 +9,7 @@ import research2 from '../../public/images/research2.png';
 import research3 from '../../public/images/research3.png';
 import research4 from '../../public/images/research4.png';
 import research5 from '../../public/images/research5.png';
+import editor from '../../public/images/editor.png';
 
 
 export default {
@@ -22,5 +23,6 @@ export default {
     research2,
     research3,
     research4,
-    research5
+    research5, 
+    editor
     };
