@@ -1,10 +1,11 @@
+'use client'
 import React from "react";
-import Articles from "@/components/Articles";
-
+import { EditorialBoard } from "@/components";
 
 const Article = () => {
     return (
-   <Articles />
+   <EditorialBoard />
     );
 };
+
 export default Article;

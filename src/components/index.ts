@@ -16,4 +16,14 @@ export { default as ArticlesList } from './ArticlesList';
 export { default as TopArticles } from './TopArticles';
 export { default as EditorArticle } from './EditorArticle';
 export { default as NoEditorArticle } from './NoEditorArticle';
+export { default as AboutThisJournal } from './AboutThisJournal';
+// export { default as NoEditorArticle } from './NoEditorArticle';
+// export { default as NoEditorArticle } from './NoEditorArticle';
+// export { default as NoEditorArticle } from './NoEditorArticle';
+// export { default as NoEditorArticle } from './NoEditorArticle';
+// export { default as NoEditorArticle } from './NoEditorArticle';
+// export { default as NoEditorArticle } from './NoEditorArticle';
+// export { default as NoEditorArticle } from './NoEditorArticle';
+// export { default as NoEditorArticle } from './NoEditorArticle';
+
 
