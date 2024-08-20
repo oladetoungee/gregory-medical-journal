@@ -4,7 +4,8 @@ import { EditorialBoard } from "@/components";
 
 const Article = () => {
     return (
-   <EditorialBoard />
+        <EditorialBoard showMembers={true} />
+
     );
 };
 

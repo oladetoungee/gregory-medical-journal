@@ -13,7 +13,7 @@ const HomeJournal: React.FC = () => {
             <div className="w-full md:w-1/3 flex flex-col space-y-8">
                 <EditorPick />
                 <NoticeBoard />
-                <EditorialBoard />
+                <EditorialBoard showMembers={false} />
             </div> 
         </section>
     );
