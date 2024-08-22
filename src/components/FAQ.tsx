@@ -5,7 +5,7 @@ import faq from '@/constants/faq';
 
 const FAQ = () => {
     return (
-        <div className="py-12 px-6 sm:px-12 lg:px-12 bg-white">
+        <div className="mt-12 py-12 px-6 sm:px-12 lg:px-12 bg-white">
             <div className="container mx-auto space-y-8">
                 <h1 className="text-3xl sm:text-4xl font-bold text-center text-primary mb-8">
                     Frequently Asked Questions
