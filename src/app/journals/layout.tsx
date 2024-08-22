@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Header, Footer } from '@/components';
+import { Header, Footer, ScrollToTop } from '@/components';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     return (
@@ -14,6 +14,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 {children}
             </main>
           <Footer />
+          <ScrollToTop />
         </div>
     );
 };

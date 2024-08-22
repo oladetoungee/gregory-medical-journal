@@ -1,16 +1,10 @@
 'use client'
 
 import { Inter } from "next/font/google";
-import { FC } from "react";
-import  Header  from "@/components/Header";
-import  Intro  from "@/components/Intro";
-import Footer from "@/components/Footer";
-import Search from "@/components/Search";
-import HomeJournal from "@/components/HomeJournal";
-
+import { ScrollToTop, Header, Intro, Search, HomeJournal, Footer } from "@/components";
 const inter = Inter({ subsets: ["latin"] });
 
-export const LandingPage: FC = () => {
+export const LandingPage = () => {
   return (
     <>
          <Header />
@@ -18,6 +12,7 @@ export const LandingPage: FC = () => {
          <Search/>
          <HomeJournal/>
 <Footer/>
+<ScrollToTop/>
     </>
   );
 };
