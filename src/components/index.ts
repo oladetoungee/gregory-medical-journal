@@ -21,7 +21,7 @@ export { default as ArticleProcessingCharge } from './ArticleProcessingCharge';
 export { default as PublicationEthics } from './PublicationEthics';
 export { default as ScrollToTop } from './ui/ScrollToTop';
 export { default as Intro } from './Intro';
-// export { default as NoEditorArticle } from './NoEditorArticle';
+export { default as FAQ } from './FAQ';
 // export { default as NoEditorArticle } from './NoEditorArticle';
 // export { default as NoEditorArticle } from './NoEditorArticle';
 // export { default as NoEditorArticle } from './NoEditorArticle';
