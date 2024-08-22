@@ -1,18 +1,17 @@
 'use client';
 import Image from 'next/image';
-import aboutThisJournal from '@/constants/aboutThisJournal';
-import images from '@/constants/images';
+import {images, aboutThisJournal} from '@/constants';
 import {
     EnvelopeClosedIcon,
 } from '@radix-ui/react-icons';
 import {
     MapIcon,
 } from 'lucide-react';
+import { Typewriter } from '@/components';
 
 // Common style classes
 const styles = {
-    heading1: 'text-3xl sm:text-4xl font-bold text-center text-primary mb-4',
-    heading: 'text-2xl sm:text-3xl font-bold text-primary mb-4',
+    heading: 'text-xl sm:text-2xl font-bold text-primary mb-4',
     paragraph: 'text-sm sm:text-base text-gray-500 leading-7',
     image: 'rounded-lg w-full max-h-64 object-cover',
     hr: 'border-t border-gray-300 my-8',
@@ -25,9 +24,9 @@ const AboutThisJournal = () => {
         <div className='py-12 px-6 sm:px-12 lg:px-12 bg-white'>
             <div className='container mx-auto space-y-8'>
                 <div className="space-y-4">
-                    <h1 className={styles.heading1}>
-                        {aboutThisJournal.title}
-                    </h1>
+                <Typewriter className="page-header"
+                   text= {aboutThisJournal.title}></Typewriter>
+             
                     <p className={styles.paragraph}>
                         {aboutThisJournal.description}
                     </p>

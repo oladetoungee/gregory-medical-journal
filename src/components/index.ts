@@ -25,7 +25,7 @@ export { default as FAQ } from './FAQ';
 export { default as PrivacyPolicy } from './PrivacyPolicy';
 export { default as TermsOfUse } from './TermsOfUse';
 export { default as SubmissionGuidelines } from './SubmissionGuidelines';
-// export { default as NoEditorArticle } from './NoEditorArticle';
+export { default as Typewriter } from './ui/Typewriter';
 // export { default as NoEditorArticle } from './NoEditorArticle';
 // export { default as NoEditorArticle } from './NoEditorArticle';
 

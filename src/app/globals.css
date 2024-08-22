@@ -18,6 +18,9 @@ body {
   @apply text-slate-600 font-serif text-sm font-normal;
 }
 
+.page-header {
+  @apply text-2xl font-bold mb-6 underline text-primary text-center;
+}
 
 
 /* Utility class for balanced text */

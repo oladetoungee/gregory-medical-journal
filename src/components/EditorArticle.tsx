@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { articles, editor } from '@/constants/';
-import { ArticlesList, NoEditorArticle } from '@/components';
+import { ArticlesList, NoEditorArticle, Typewriter } from '@/components';
 
 const EditorArticle: React.FC = () => {
     const editorPickArticle = articles.find(article => article?.isEditorPick); // Assuming the article has this property
@@ -51,7 +51,9 @@ const EditorArticle: React.FC = () => {
                     </div>
                 </section>
                 <section className="bg-gray-100 rounded-lg p-6 shadow-lg">
-                    <h2 className="text-2xl sm:text-3xl font-bold mb-4">Editor's Commentary</h2>
+                <Typewriter className="page-header"
+                   text= "Editor's Commentary"></Typewriter>
+             
                     <p className="text-sm sm:text-base mb-4">
                         {editor.commentary}
                     </p>

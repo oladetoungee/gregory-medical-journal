@@ -1,40 +1,46 @@
-
-'use client';
-
-import submissionGuidelines from '@/constants/submissionGuidelines';
-import { useRouter } from 'next/router';
+import { submissionGuidelines } from '@/constants';
+import Link from 'next/link';
+import { Typewriter, Button } from '@/components';
+import { LightningBoltIcon } from '@radix-ui/react-icons';
 
 const SubmissionGuidelines = () => {
-    const router = useRouter();
-
     return (
         <div className="mt-12 py-12 px-6 sm:px-12 lg:px-12 bg-white">
             <div className="container mx-auto space-y-12">
-                <h1 className="text-4xl sm:text-5xl font-bold text-center text-primary mb-12">
-                    {submissionGuidelines.title}
-                </h1>
-                <p className="text-xl text-gray-700 leading-relaxed">{submissionGuidelines.introduction}</p>
+                <Typewriter
+                    text={submissionGuidelines.title}
+                    className="page-header"
+                />
+                <p className="text-sm sm:text-base text-gray-500 leading-7">
+                    {submissionGuidelines.introduction}
+                </p>
 
                 {submissionGuidelines.sections.map((section, index) => (
                     <div key={index} className="space-y-6">
-                        <h2 className="text-3xl font-semibold text-primary mt-8">
+                        <h2 className="text-xl sm:text-2xl font-semibold text-primary mt-8">
                             {section.heading}
                         </h2>
-                        <p className="text-lg text-gray-600 leading-relaxed">{section.text}</p>
+                        <p className="text-sm sm:text-base text-gray-500 leading-7">
+                            {section.paragraph}
+                        </p>
+                        <ul className="list-disc list-inside text-sm sm:text-base text-gray-500 leading-7">
+                            {section.list.map((item, idx) => (
+                                <li key={idx}>{item}</li>
+                            ))}
+                        </ul>
                         <hr className="border-t border-gray-300 my-6" />
                     </div>
                 ))}
 
                 <div className="text-center mt-12">
-                    <p className="text-2xl font-medium text-gray-800 mb-6">
+                    <p className="text-xl font-medium text-primary mb-2">
                         {submissionGuidelines.cta.text}
                     </p>
-                    <button
-                        onClick={() => router.push(submissionGuidelines.cta.link)}
-                        className="px-8 py-4 text-xl font-semibold bg-primary text-white rounded-lg hover:bg-primary-dark transition duration-300"
-                    >
-                        {submissionGuidelines.cta.buttonLabel}
-                    </button>
+                    <Link href={submissionGuidelines.cta.link}>
+                        <Button icon={<LightningBoltIcon />}>
+                            {submissionGuidelines.cta.buttonLabel}
+                        </Button>
+                    </Link>
                 </div>
             </div>
         </div>

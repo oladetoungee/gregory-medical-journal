@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, ArticlesList } from '@/components/';
+import { Search, ArticlesList, Typewriter } from '@/components/';
 import { articles } from '@/constants/';
 
 const ArticlesPage: React.FC = () => {
@@ -22,7 +22,9 @@ const ArticlesPage: React.FC = () => {
         <div className="min-h-screen flex flex-col py-4">
             <main className="flex-grow">
                 <div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <h1 className="text-3xl text-center font-bold text-primary mb-4">Find All Articles Here</h1>
+                <Typewriter className="page-header"
+                   text='Find All Articles Here' ></Typewriter>
+                  
                     <Search showAllPublicationsLink={false} />
                     <ArticlesList
                         articles={currentArticles}
