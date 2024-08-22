@@ -18,9 +18,6 @@ const aboutThisJournal = {
       clinicians, researchers, and students worldwide. We aspire to influence the future of medicine by 
       promoting innovative research that addresses both current and emerging health challenges.
     `,
-    scopeHeading: `Gregory Medical Journal publishes original research articles, reviews, 
-    case studies, and editorials covering all aspects of medicine and healthcare.
-     We particularly welcome submissions that focus on`,
     scopeList: [
       "Clinical Trials and Innovations",
       "Public Health and Epidemiology",

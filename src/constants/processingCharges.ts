@@ -1,29 +1,31 @@
 const processingCharges = {
-    title: "Article Processing Charges",
-    description: `
-      Gregory Medical Journal charges a processing fee for each article submitted for publication.
-      This fee covers the cost of editorial processes, peer review, and hosting the article on our
-      platform.
-    `,
-    charges: [
+  title: "Article Processing Charge (APC)",
+  description:
+      "Gregory Medical Journal requires an Article Processing Charge (APC) for accepted manuscripts. This fee is essential to cover the costs of publishing, including the peer review process, typesetting, and hosting.",
+  charges: [
       {
-        type: "Standard Article",
-        amount: "$300",
+          type: "Local Authors",
+          amount: "₦50,000",
+          details: "This rate applies to authors based in Nigeria. The APC covers all aspects of the publication process."
       },
       {
-        type: "Review Article",
-        amount: "$400",
+          type: "International Authors",
+          amount: "$300",
+          details: "This rate applies to authors outside Nigeria. The APC covers the full publication process and ensures international distribution."
       },
       {
-        type: "Case Report",
-        amount: "$200",
+          type: "Waivers",
+          details: "We offer a limited number of waivers for authors from low-income countries or for research that demonstrates significant societal impact. Waiver applications should be submitted at the time of manuscript submission."
       },
-      // Add more charge types as needed
-    ],
-    note: `
-      Please note that the article processing charge is non-refundable. Discounts and waivers may be 
-      available for authors from low-income countries or for exceptional cases.
-    `,
-  };
+      {
+          type: "Payment Process",
+          details: "The APC must be paid before the publication of the manuscript. Payment instructions will be provided upon acceptance of the manuscript."
+      }
+  ],
+  refundPolicy: {
+      title: "Refund Policy",
+      details: "Once the article has been accepted and the APC paid, refunds will not be provided. Exceptions may be considered in cases of extraordinary circumstances."
+  }
+};
 
-  export default processingCharges
+export default processingCharges;

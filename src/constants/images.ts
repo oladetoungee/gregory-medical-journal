@@ -10,7 +10,11 @@ import research3 from '../../public/images/research3.png';
 import research4 from '../../public/images/research4.png';
 import research5 from '../../public/images/research5.png';
 import editor from '../../public/images/editor.png';
-
+import mission from '../../public/images/mission.png';
+import vision from '../../public/images/vision.png';
+import contact from '../../public/images/contact.png';
+import identifier from '../../public/images/identifier.png';
+import scope from '../../public/images/scope.png';
 
 export default {
     lab1,
@@ -24,5 +28,10 @@ export default {
     research3,
     research4,
     research5, 
-    editor
-    };
+    editor,
+    mission,
+    vision,
+    contact,
+    scope,
+    identifier
+};

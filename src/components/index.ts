@@ -10,7 +10,7 @@ export { default as EditorPick } from './EditorPick';
 export { default as NavBar } from './NavBar';
 export { default as MobileNavBar } from './MobileNavBar';
 export { default as NoticeBoard } from './NoticeBoard';
-export { default as Pagination } from './Pagination';
+export { default as Pagination } from './ui/Pagination';
 export { default as Button } from './ui/Button';
 export { default as ArticlesList } from './ArticlesList';
 export { default as TopArticles } from './TopArticles';
