@@ -10,5 +10,10 @@ export { default as ethics } from './ethics'
 export { default as faq } from './faq'
 export { default as privacyPolicy } from './privacyPolicy'
 export { default as termsOfUse } from './termsOfUse'
+export { default as submissionGuidelines } from './submissionGuidelines'
+// export { default as termsOfUse } from './termsOfUse'
+// export { default as privacyPolicy } from './privacyPolicy'
+// export { default as termsOfUse } from './termsOfUse'
+
 
 

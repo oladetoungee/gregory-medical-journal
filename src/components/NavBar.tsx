@@ -19,10 +19,11 @@ const NavBar: React.FC = () => {
         <DropdownMenuItem title="Publication Ethics" href="/about/publication-ethics" />
         <DropdownMenuItem title="Article Processing Charges" href="/about/processing-charges" isLast />
       </DropdownNavItem>
-      <DropdownNavItem title="Submit Manuscript">
+      {/* <DropdownNavItem title="Submit Manuscript">
         <DropdownMenuItem title="Submission Guidelines" href="/submit/guidelines" />
         <DropdownMenuItem title="Review Flow" href="/submit/review-flow" isLast />
-      </DropdownNavItem>
+      </DropdownNavItem> */}
+           <NavItem title="Submit Manuscript"  href="/manuscript-guidelines" />
 
       <div className="ml-auto flex items-center space-x-4">
         <UserDropdown />
