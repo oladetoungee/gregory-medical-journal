@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 const Loader: React.FC = () => {
-
     return (
         <section className="flex flex-col items-center my-8 px-4">
                  <div className="container mx-auto">
