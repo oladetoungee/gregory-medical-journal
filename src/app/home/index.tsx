@@ -9,7 +9,9 @@ export const LandingPage = () => {
     <>
          <Header />
          <Intro/>
-         <Search/>
+         <Search onSearch={function (query: string): void {
+        throw new Error("Function not implemented.");
+      } }/>
          <HomeJournal/>
 <Footer/>
 <ScrollToTop/>
