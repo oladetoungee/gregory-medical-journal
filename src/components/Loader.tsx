@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 
 const Loader: React.FC = () => {
-    return (
-        <section className="flex flex-col items-center my-8 px-4">
-                 <div className="container mx-auto">
+  return (
+    <section className="flex flex-col items-center my-8 px-4">
+      <div className="container mx-auto">
         <div className="flex justify-center items-center my-20">
           <div role="status w-fit">
             <svg
@@ -26,8 +26,8 @@ const Loader: React.FC = () => {
           </div>
         </div>
       </div>
-        </section>
-    );
+    </section>
+  );
 };
 
 export default Loader;
