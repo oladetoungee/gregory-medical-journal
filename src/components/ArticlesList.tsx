@@ -6,6 +6,7 @@ import { Pagination, Button, Search } from "@/components/";
 import { format } from "date-fns";
 import NoResultsPage from "@/components/NoResult";
 import Loader from "@/components/Loader";
+import { fetchArticles } from '@/constants/fetchArticles';
 
 interface ArticlesListProps {
   articles: Article[];
@@ -52,52 +53,24 @@ const ArticlesList: React.FC<ArticlesListProps> = ({
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const fetchArticles = async () => {
+    const loadArticles = async () => {
       setLoading(true);
-      try {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_STRAPI_URL}/articles`,
-          {
-            params: {
-              populate: "*",
-              sort: "publishedAt:desc",
-              "pagination[page]": currentPage,
-              "pagination[pageSize]": articlesPerPage,
-              ...(searchQuery && {
-                "filters[$or][0][title][$containsi]": searchQuery,
-                "filters[$or][1][author][$containsi]": searchQuery,
-                "filters[$or][2][excerpt][$containsi]": searchQuery,
-              }),
-            },
-          }
-        );
-        const data = response.data.data.map((item: any) => ({
-          id: item.id,
-          title: item.attributes.title,
-          author: item.attributes.author,
-          excerpt: item.attributes.excerpt,
-          image: item.attributes.image.data.attributes.url,
-          link: item.attributes.link,
-          isEditorPick: item.attributes.isEditorPick,
-          publishedAt: item.attributes.publishedAt,
-        }));
-
-        setArticles(data);
-        const pagination = response.data.meta.pagination;
-        setTotalArticles(pagination.total);
-        setTotalPages(Math.ceil(pagination.total / articlesPerPage));
-      } catch (error) {
-        console.error("Error fetching articles:", error);
-      } finally {
-        setLoading(false);
-      }
+      const { articles, totalPages } = await fetchArticles({
+        page: currentPage,
+        pageSize: articlesPerPage,
+        searchQuery,
+      });
+      setArticles(articles);
+      setTotalPages(totalPages);
+      setLoading(false);
     };
 
-    fetchArticles();
+    loadArticles();
   }, [currentPage, searchQuery]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
+    onPageChange(1);
   };
 
   return (
@@ -175,7 +148,8 @@ const ArticleCard: React.FC<{ article: Article }> = ({ article }) => {
             {format(new Date(article.publishedAt), "MMMM d, yyyy, h:mm a")}
           </span>
         </p>
-        {truncatedExcerpt.map(
+        <p>
+          {truncatedExcerpt.map(
           (
             paragraph: { children: any[] },
             index: React.Key | null | undefined
@@ -186,7 +160,8 @@ const ArticleCard: React.FC<{ article: Article }> = ({ article }) => {
               )}
             </p>
           )
-        )}
+        )}{"....."}
+        </p>
         <Link href={article.link}>
           <Button>Read more</Button>
         </Link>
