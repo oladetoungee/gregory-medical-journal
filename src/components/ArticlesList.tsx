@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { Pagination, Button, Search } from "@/components/";
@@ -7,6 +6,7 @@ import { format } from "date-fns";
 import NoResultsPage from "@/components/NoResult";
 import Loader from "@/components/Loader";
 import { fetchArticles } from '@/constants/fetchArticles';
+import { truncateExcerpt } from "@/constants/truncatedText";
 
 interface ArticlesListProps {
   articles: Article[];
@@ -36,7 +36,7 @@ interface Article {
   excerpt: any[];
   image: ImageData;
   link: string;
-  isEditorPick: boolean;
+  editorPick: boolean;
   publishedAt: string;
 }
 
@@ -99,32 +99,6 @@ const ArticlesList: React.FC<ArticlesListProps> = ({
 };
 
 const ArticleCard: React.FC<{ article: Article }> = ({ article }) => {
-  const truncateExcerpt = (excerpt: any[], charLimit: number) => {
-    let charCount = 0;
-    let truncatedExcerpt: any[] = [];
-
-    for (const paragraph of excerpt) {
-      const paragraphText = paragraph.children
-        .map((child: any) => child.text)
-        .join(" ");
-      const remainingChars = charLimit - charCount;
-
-      if (charCount + paragraphText.length <= charLimit) {
-        truncatedExcerpt.push(paragraph);
-        charCount += paragraphText.length;
-      } else {
-        const truncatedText = paragraphText.slice(0, remainingChars);
-        truncatedExcerpt.push({
-          ...paragraph,
-          children: [{ type: "text", text: truncatedText }],
-        });
-        break;
-      }
-    }
-
-    return truncatedExcerpt;
-  };
-
   const truncatedExcerpt = truncateExcerpt(article.excerpt, 500);
 
   return (
@@ -150,17 +124,17 @@ const ArticleCard: React.FC<{ article: Article }> = ({ article }) => {
         </p>
         <p>
           {truncatedExcerpt.map(
-          (
-            paragraph: { children: any[] },
-            index: React.Key | null | undefined
-          ) => (
-            <p key={index} className="text-sm text-gray-700 mb-4">
-              {paragraph.children.map(
-                (child: any, childIndex: number) => child.text
-              )}
-            </p>
-          )
-        )}{"....."}
+            (
+              paragraph: { children: any[] },
+              index: React.Key | null | undefined
+            ) => (
+              <p key={index} className="text-sm text-gray-700 mb-4">
+                {paragraph.children.map(
+                  (child: any, childIndex: number) => child.text
+                )}
+              </p>
+            )
+          )}{"....."}
         </p>
         <Link href={article.link}>
           <Button>Read more</Button>

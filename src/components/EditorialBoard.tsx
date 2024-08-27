@@ -1,10 +1,10 @@
-'use client';
-import Image from 'next/image';
-import { useState } from 'react';
-import { editorialBoard } from '@/constants';
-import Link from 'next/link';
-import { Button, Typewriter } from '@/components/';
-import {  ArrowRightIcon} from '@radix-ui/react-icons';
+"use client";
+import Image from "next/image";
+import { useState } from "react";
+import { editorialBoard } from "@/constants";
+import Link from "next/link";
+import { Button, Typewriter } from "@/components/";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
 
 interface EditorialBoardProps {
   showMembers: boolean;
@@ -14,16 +14,21 @@ const EditorialBoard = ({ showMembers }: EditorialBoardProps) => {
   return (
     <div className="py-12 px-4 sm:px-6 lg:px-8 bg-gray-100">
       <div className="container mx-auto">
-          <Typewriter className="page-header"
-                    text={editorialBoard.title} ></Typewriter>
-       
+        <Typewriter
+          className="page-header"
+          text={editorialBoard.title}
+        ></Typewriter>
+
         <p className="text-xs sm:text-sm lg:text-base text-gray-700 leading-5 mb-6">
           {editorialBoard.description}
         </p>
         {showMembers && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {editorialBoard.members.map((member, index) => (
-              <div key={index} className="bg-white shadow-lg rounded-lg overflow-hidden">
+              <div
+                key={index}
+                className="bg-white shadow-lg rounded-lg overflow-hidden"
+              >
                 <div className="relative">
                   <MemberImage name={member.name} imageSrc={member.image} />
                 </div>
@@ -43,12 +48,8 @@ const EditorialBoard = ({ showMembers }: EditorialBoardProps) => {
           </div>
         )}
         {!showMembers && (
-          <Link href='/about/editorial-board'>
-        <Button
-                                    icon={<ArrowRightIcon />}
-                                >
-              Board Members
-            </Button>
+          <Link href="/about/editorial-board">
+            <Button icon={<ArrowRightIcon />}>Board Members</Button>
           </Link>
         )}
       </div>
@@ -65,8 +66,8 @@ const MemberImage = ({ name, imageSrc }: MemberImageProps) => {
   const [imageError, setImageError] = useState(false);
 
   const getInitials = (name: string) => {
-    const nameParts = name.split(' ');
-    const initials = nameParts.map(part => part.charAt(0)).join('');
+    const nameParts = name.split(" ");
+    const initials = nameParts.map((part) => part.charAt(0)).join("");
     return initials;
   };
 

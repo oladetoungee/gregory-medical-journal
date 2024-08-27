@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { editor } from "@/constants/";
 import { ArticlesList, NoEditorArticle, Typewriter } from "@/components";
 import { fetchArticles } from "@/constants/fetchArticles";
+import { truncateExcerpt } from "@/constants/truncatedText";
 
 const EditorArticle: React.FC = () => {
   const [editorPickArticle, setEditorPickArticle] = useState<any>(null);
@@ -22,32 +23,6 @@ const EditorArticle: React.FC = () => {
 
     loadEditorPickArticle();
   }, []);
-
-  const truncateExcerpt = (excerpt: any[], charLimit: number) => {
-    let charCount = 0;
-    let truncatedExcerpt: any[] = [];
-
-    for (const paragraph of excerpt) {
-      const paragraphText = paragraph.children
-        .map((child: any) => child.text)
-        .join(" ");
-      const remainingChars = charLimit - charCount;
-
-      if (charCount + paragraphText.length <= charLimit) {
-        truncatedExcerpt.push(paragraph);
-        charCount += paragraphText.length;
-      } else {
-        const truncatedText = paragraphText.slice(0, remainingChars);
-        truncatedExcerpt.push({
-          ...paragraph,
-          children: [{ type: "text", text: truncatedText }],
-        });
-        break;
-      }
-    }
-
-    return truncatedExcerpt;
-  };
 
   const truncatedExcerpt = editorPickArticle
     ? truncateExcerpt(editorPickArticle.excerpt, 500)
@@ -99,7 +74,8 @@ const EditorArticle: React.FC = () => {
                   <p key={index} className="text-sm mb-4">
                     {paragraph.children.map(
                       (child: any, childIndex: number) => child.text
-                    )}{"..."}
+                    )}
+                    {"..."}
                   </p>
                 )
               )}
