@@ -15,6 +15,7 @@ const config: Config = {
       },
       colors: {
         'primary': '#373A7A',
+        'sec': 'rgb(107 114 128)',
       }
     },
   },

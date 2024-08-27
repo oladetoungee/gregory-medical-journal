@@ -15,7 +15,7 @@ body {
 }
 
 body {
-  @apply text-slate-600 font-serif text-sm font-normal;
+  @apply text-sec font-serif text-sm font-normal;
 }
 
 .page-header {

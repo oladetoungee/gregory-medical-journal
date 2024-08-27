@@ -1,8 +1,9 @@
-// src/components/FAQ.tsx
+
 'use client';
 
 import { useState } from 'react';
-import { PlusIcon, MinusIcon } from '@radix-ui/react-icons'; // Assume Radix UI or any other icons library is being used
+import { PlusIcon, MinusIcon } from '@radix-ui/react-icons'; 
+import { Typewriter } from '@/components';
 import faq from '@/constants/faq';
 
 const FAQ = () => {
@@ -15,9 +16,11 @@ const FAQ = () => {
     return (
         <div className="mt-12 py-12 px-6 sm:px-12 lg:px-12 bg-white">
             <div className="container mx-auto space-y-8">
-                <h1 className="text-2xl sm:text-3xl font-bold text-center text-primary mb-8">
-                    Frequently Asked Questions
-                </h1>
+            <Typewriter
+                    text='Frequently Asked Questions'
+                    className="page-header"
+                />
+               
                 {faq.map((item, index) => (
                     <div key={index} className="space-y-4">
                         <div 
