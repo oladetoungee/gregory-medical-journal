@@ -35,13 +35,11 @@ type Description = {
 
 interface ImageData {
   id: number;
-  attributes: {
     name: string;
     alternativeText: string;
     width: number;
     height: number;
     url: string;
-  };
 }
 
 interface Abouts {
@@ -64,8 +62,12 @@ const AboutThisJournal = () => {
           id: data.id,
           title: data.attributes.title,
           description: data.attributes.description,
-          image: data.attributes.image.data.attributes.url,
-          altText: data.attributes.image.data.attributes.altText
+          image: {
+            url: data.attributes.image.data.attributes.url,
+            alternativeText: data.attributes.image.data.attributes.alternativeText,
+            width: data.attributes.image.data.attributes.width,
+            height: data.attributes.image.data.attributes.height,
+          },
         }));
         setAbouts(aboutUs);
       } catch (error) {
@@ -80,13 +82,13 @@ const AboutThisJournal = () => {
       switch (desc.type) {
         case "paragraph":
           return (
-            <p key={index} className={styles.paragraph}>
+            <span key={index} className={styles.paragraph}>
               {desc.children.map((child, i) => (
                 <span key={i} className={child.bold ? "font-bold" : ""}>
                   {child.text}
                 </span>
               ))}
-            </p>
+            </span>
           );
         case "list":
           return (
@@ -94,12 +96,9 @@ const AboutThisJournal = () => {
               {desc.children.map((child, i) => (
                 <li key={i} className="mt-1">
                   {child.children?.map((grandChild, j) => (
-                    <p
-                      key={j}
-                      className={grandChild.bold ? "font-bold" : ""}
-                    >
+                    <span key={j} className={grandChild.bold ? "font-bold" : ""}>
                       {grandChild.text}
-                    </p>
+                    </span>
                   ))}
                 </li>
               ))}
@@ -136,25 +135,23 @@ const AboutThisJournal = () => {
         <div className="container mx-auto space-y-8">
           {abouts.map((about) => (
             <>
-            <div key={about.id} className={styles.gridContainer}>
+              <div key={about.id} className={styles.gridContainer}>
                 <Image
-                  src={`${process.env.NEXT_PUBLIC_STRAPI}${about.image}`}
-                //   alt={about.altText}
-                alt={"Image"}
+                  src={`${process.env.NEXT_PUBLIC_STRAPI}${about.image.url}`}
+                  alt={about.image.alternativeText}
                   className={`${styles.image} order-2 lg:order-1`}
-                  width={"400"}
-                  height={"100"}
+                  width={about.image.width}
+                  height={about.image.height}
                 />
 
-              <div className="order-1 lg:order-2">
-                <h2 className={styles.heading}>{about.title}</h2>
-                
-                {renderContent(about.description)}
+                <div className={about.id === 2 || about.id === 4 ? "" : "order-1 lg:order-2"}>
+                  <h2 className={styles.heading}>{about.title}</h2>
+
+                  {renderContent(about.description)}
+                </div>
               </div>
-            </div>
-            <hr className={styles.hr} />
+              <hr className={styles.hr} />
             </>
-            
           ))}
 
           {/* Example of hardcoded data (like Contact info) */}
