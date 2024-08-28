@@ -69,7 +69,7 @@ const EditorialBoard = ({ showMembers }: EditorialBoardProps) => {
     const fetchMembers = async () => {
       try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_STRAPI_URL}/members?populate=*`);
-        console.log(response.data);
+        
         const member = response.data.data.map((data: any) => ({
           id: data.id,
           name: data.attributes.name,
