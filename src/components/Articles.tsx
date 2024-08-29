@@ -1,18 +1,24 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Search, ArticlesList, Typewriter } from '@/components';
-import { articles } from '@/constants/';
+import React, { useState, useEffect } from 'react';
+import { ArticlesList, Typewriter } from '@/components/';
+import { fetchArticles } from '@/constants/fetchArticles';
 
 const ArticlesPage: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
+    const [articles, setArticles] = useState([]);
+    const [totalPages, setTotalPages] = useState(1);
     const articlesPerPage = 3;
-    const totalPages = Math.ceil(articles.length / articlesPerPage);
+    
+    useEffect(() => {
+        const loadArticles = async () => {
+            const { articles, totalPages } = await fetchArticles({ page: currentPage, pageSize: articlesPerPage });
+            setArticles(articles);
+            setTotalPages(totalPages);
+        };
 
-    // Pagination Logic
-    const indexOfLastArticle = currentPage * articlesPerPage;
-    const indexOfFirstArticle = indexOfLastArticle - articlesPerPage;
-    const currentArticles = articles.slice(indexOfFirstArticle, indexOfLastArticle);
+        loadArticles();
+    }, [currentPage]);
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -24,10 +30,8 @@ const ArticlesPage: React.FC = () => {
                 <div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8">
                 <Typewriter className="page-header"
                    text='Find All Articles Here' ></Typewriter>
-                  
-                    {/* <Search showAllPublicationsLink={false} /> */}
                     <ArticlesList
-                        articles={currentArticles}
+                        articles={articles}
                         currentPage={currentPage}
                         totalPages={totalPages}
                         onPageChange={handlePageChange}

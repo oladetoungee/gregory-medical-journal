@@ -1,11 +1,7 @@
 import React from 'react';
 import { ArticlesList, Typewriter } from '@/components';
-import { articles } from '@/constants';
-
 
 const TopArticles: React.FC = () => {
-    // Get the top 5 articles
-    const topArticles = articles.slice(0, 5);
 
     return (
         <div className="min-h-screen flex flex-col py-4">
@@ -14,9 +10,7 @@ const TopArticles: React.FC = () => {
                     <Typewriter className="page-header"
                    text='Latest Articles' ></Typewriter>
                     <ArticlesList
-                        articles={topArticles}
-                        showPagination={false}
-                    />
+                        showPagination={false} articles={[]} />
                 </div>
             </main>
         </div>
