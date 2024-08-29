@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, ArticlesList, Typewriter } from '@/components/';
+import { Search, ArticlesList, Typewriter } from '@/components';
 import { articles } from '@/constants/';
 
 const ArticlesPage: React.FC = () => {
@@ -25,7 +25,7 @@ const ArticlesPage: React.FC = () => {
                 <Typewriter className="page-header"
                    text='Find All Articles Here' ></Typewriter>
                   
-                    <Search showAllPublicationsLink={false} />
+                    {/* <Search showAllPublicationsLink={false} /> */}
                     <ArticlesList
                         articles={currentArticles}
                         currentPage={currentPage}
