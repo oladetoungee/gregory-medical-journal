@@ -1,5 +1,4 @@
 "use client";
-import ethics from "@/constants/ethics";
 import { Typewriter } from "@/components";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -35,11 +34,13 @@ const PublicationEthics = () => {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_STRAPI_URL}/ethics?populate=*`
         );
+        
         const ethics = response.data.data.map((data: any) => ({
           id: data.id,
           heading: data.attributes.heading,
           content: data.attributes.content,
         }));
+
         setEthics(ethics);
       } catch (error) {
         console.log("error fetching ethics");
