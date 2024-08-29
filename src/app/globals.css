@@ -15,7 +15,7 @@ body {
 }
 
 body {
-  @apply text-sec font-serif text-sm font-normal;
+  @apply text-slate-600 font-serif text-sm font-normal;
 }
 
 .page-header {
@@ -28,4 +28,22 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+*::-webkit-scrollbar {
+  width: 8.5px;
+  border-radius: 15px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgb(255, 255, 255);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(55, 58, 122);
+  border-radius: 14px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(39, 41, 87);
 }
