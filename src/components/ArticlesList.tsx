@@ -9,7 +9,7 @@ import { fetchArticles } from '@/constants/fetchArticles';
 import { truncateExcerpt } from "@/constants/truncatedText";
 
 interface ArticlesListProps {
-  articles: Article[];
+  articles: Articles[];
   currentPage?: number;
   onPageChange?: (page: number) => void;
   showPagination?: boolean;
@@ -29,7 +29,7 @@ interface ImageData {
   };
 }
 
-interface Article {
+interface Articles {
   id: number;
   title: string;
   author: string;
@@ -45,7 +45,7 @@ const ArticlesList: React.FC<ArticlesListProps> = ({
   onPageChange = () => {},
   showPagination = true,
 }) => {
-  const [articles, setArticles] = useState<Article[]>([]);
+  const [articles, setArticles] = useState<Articles[]>([]);
   const [totalArticles, setTotalArticles] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(1);
   const articlesPerPage = 3;
@@ -98,7 +98,7 @@ const ArticlesList: React.FC<ArticlesListProps> = ({
   );
 };
 
-const ArticleCard: React.FC<{ article: Article }> = ({ article }) => {
+const ArticleCard: React.FC<{ article: Articles }> = ({ article }) => {
   const truncatedExcerpt = truncateExcerpt(article.excerpt, 500);
 
   return (
@@ -136,9 +136,13 @@ const ArticleCard: React.FC<{ article: Article }> = ({ article }) => {
             )
           )}{"....."}
         </p>
-        <Link href={article.link}>
+        <Link href={`/journals/articles/article?id=${article.id}`}>
           <Button>Read more</Button>
         </Link>
+        
+        {/* <Link href={article.link}>
+          <Button>Read more</Button>
+        </Link> */}
       </div>
     </div>
   );
