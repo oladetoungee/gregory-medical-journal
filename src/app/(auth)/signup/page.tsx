@@ -1,3 +1,8 @@
-export default function SingUpRoute() {
-    return <div>Sing Up Route</div>;
+'use client'
+
+import { SignupForm } from "@/components"
+
+export default function SignInRoute() {
+    return <SignupForm />;
+
   }

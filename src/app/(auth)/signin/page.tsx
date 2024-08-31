@@ -1,3 +1,8 @@
+'use client'
+
+import { SigninForm } from "@/components"
+
 export default function SignInRoute() {
-    return <div>Sing In Route</div>;
+    return <SigninForm />;
+
   }

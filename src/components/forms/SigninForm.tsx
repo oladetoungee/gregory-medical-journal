@@ -14,7 +14,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
-export function SigninForm() {
+export default function SigninForm() {
   return (
     <div className="w-full max-w-md">
       <form>
