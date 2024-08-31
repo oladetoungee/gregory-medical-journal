@@ -95,7 +95,7 @@ const UserDropdown: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
         >
-          <DropdownMenuItem title="Log In" href="/login" />
+          <DropdownMenuItem title="Log In" href="/signin" />
           <DropdownMenuItem title="Sign Up" href="/signup" isLast />
         </motion.div>
       )}
