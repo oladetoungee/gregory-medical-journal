@@ -13,16 +13,17 @@ import {
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import TermsAndPolicy from "./TermsAndPolicy";
 
 export default function SignupForm() {
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full max-w-md text-gray-400 ">
       <form>
         <Card>
           <CardHeader className="space-y-1">
-            <CardTitle className="text-3xl font-bold">Sign Up</CardTitle>
+          <CardTitle className="text-2xl text-white mb-2">Create your Account</CardTitle>
             <CardDescription>
-              Enter your details to create a new account
+              Enter your details to create a new Gregory Journal account
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -62,8 +63,11 @@ export default function SignupForm() {
         <div className="mt-4 text-center text-sm">
           Have an account?
           <Link className="underline ml-2" href="signin">
-            Sing In
+            Sign In
           </Link>
+        </div>
+        <div>
+            <TermsAndPolicy />
         </div>
       </form>
     </div>
