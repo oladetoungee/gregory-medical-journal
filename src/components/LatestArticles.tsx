@@ -88,8 +88,8 @@ const LatestArticles: React.FC = () => {
                   )}
                   {"....."}
                 </p>
-                <Link href={article.link} passHref>
-                  <Button icon={<ArrowRightIcon />}>View Full Article</Button>
+                <Link href={`/journals/articles/article?id=${article.id}`} passHref>
+                  <Button icon={<ArrowRightIcon />}>Read More</Button>
                 </Link>
               </div>
             </motion.div>
