@@ -16,22 +16,24 @@ import { Input } from "@/components/ui/input";
 import TermsAndPolicy from "./TermsAndPolicy";
 import { registerUserAction } from "@/data/actions/auth-actions";
 import { ZodErrors } from "./ZodErrors";
+import { StrapiErrors } from "./StrapiErrors";
+import { SubmitButton } from "@/components/ui/SubmitButton";
 
 const INITIAL_STATE = {
-  data: null, 
+  data: null,
   zodErrors: null,
   message: null,
 }
 export default function SignupForm() {
   const [formState, formAction] = useFormState(registerUserAction, INITIAL_STATE);
   console.log("SignupForm", formState);
-  
+
   return (
     <div className="w-full max-w-md text-gray-400 ">
       <form action={formAction}>
         <Card>
           <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl text-white mb-2">Create your Account</CardTitle>
+            <CardTitle className="text-2xl text-white mb-2">Create your Account</CardTitle>
             <CardDescription>
               Enter your details to create a new Gregory Journal account
             </CardDescription>
@@ -68,9 +70,13 @@ export default function SignupForm() {
               <ZodErrors error={formState.zodErrors?.password} />
             </div>
           </CardContent>
-          <CardFooter className="flex flex-col">
-            <button type="submit" className="w-full">Sign Up</button>
+
+          <CardFooter className="flex flex-col items-center">
+            <SubmitButton className="w-full flex justify-center items-center text-white" text="Sign Up" loadingText="Loading" />
+            <StrapiErrors error={formState?.strapiErrors} />
           </CardFooter>
+
+
         </Card>
         <div className="mt-4 text-center text-sm">
           Have an account?
@@ -79,7 +85,7 @@ export default function SignupForm() {
           </Link>
         </div>
         <div>
-            <TermsAndPolicy />
+          <TermsAndPolicy />
         </div>
       </form>
     </div>
