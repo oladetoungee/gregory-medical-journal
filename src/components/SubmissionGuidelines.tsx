@@ -1,3 +1,5 @@
+'use client'
+
 import Link from "next/link";
 import { Typewriter, Button } from "@/components";
 import { LightningBoltIcon } from "@radix-ui/react-icons";
