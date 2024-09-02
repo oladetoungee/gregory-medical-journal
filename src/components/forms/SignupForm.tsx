@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-
+import { useFormState } from "react-dom";
 import {
   CardTitle,
   CardDescription,
@@ -14,11 +14,21 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import TermsAndPolicy from "./TermsAndPolicy";
+import { registerUserAction } from "@/data/actions/auth-actions";
+import { ZodErrors } from "./ZodErrors";
 
+const INITIAL_STATE = {
+  data: null, 
+  zodErrors: null,
+  message: null,
+}
 export default function SignupForm() {
+  const [formState, formAction] = useFormState(registerUserAction, INITIAL_STATE);
+  console.log("SignupForm", formState);
+  
   return (
     <div className="w-full max-w-md text-gray-400 ">
-      <form>
+      <form action={formAction}>
         <Card>
           <CardHeader className="space-y-1">
           <CardTitle className="text-2xl text-white mb-2">Create your Account</CardTitle>
@@ -35,6 +45,7 @@ export default function SignupForm() {
                 type="text"
                 placeholder="username"
               />
+              <ZodErrors error={formState.zodErrors?.username} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -45,7 +56,7 @@ export default function SignupForm() {
                 placeholder="name@example.com"
               />
             </div>
-
+            <ZodErrors error={formState.zodErrors?.email} />
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <Input
@@ -54,10 +65,11 @@ export default function SignupForm() {
                 type="password"
                 placeholder="password"
               />
+              <ZodErrors error={formState.zodErrors?.password} />
             </div>
           </CardContent>
           <CardFooter className="flex flex-col">
-            <button className="w-full">Sign Up</button>
+            <button type="submit" className="w-full">Sign Up</button>
           </CardFooter>
         </Card>
         <div className="mt-4 text-center text-sm">
