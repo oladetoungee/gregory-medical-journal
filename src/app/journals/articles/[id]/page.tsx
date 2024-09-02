@@ -55,6 +55,7 @@ const Page: React.FC = () => {
             publishedAt: articleData.publishedAt,
           });
         }
+        console.log(articleData.image);
       } catch (error) {
         console.error("Error fetching article:", error);
         setError("Failed to fetch article data. Please try again later.");
@@ -82,7 +83,7 @@ const Page: React.FC = () => {
         <div className="relative w-full h-48">
           <Image
             src={`${process.env.NEXT_PUBLIC_STRAPI}${article.image.attributes.url}`}
-            alt={`${process.env.NEXT_PUBLIC_STRAPI}${article.image.attributes.alternativeText}`}
+            alt={article.image.attributes.alternativeText}
             layout="fill"
             objectFit="cover"
           />
@@ -112,7 +113,7 @@ const Page: React.FC = () => {
         </div>
 
         <Link href={article.link} target="_blank">
-          <Button>Read more</Button>
+          <Button>View full article</Button>
         </Link>
       </div>
     </div>
