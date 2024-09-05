@@ -8,7 +8,7 @@ const HomeJournal: React.FC = () => {
     return (
         <section className="flex flex-col md:flex-row gap-12 px-12 py-4 bg-white">
            <div className="w-full md:w-2/3">
-                <LatestArticles />
+                <LatestArticles articles={[]} />
             </div>
             <div className="w-full md:w-1/3 flex flex-col space-y-8">
                 <EditorPick />
