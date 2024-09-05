@@ -15,7 +15,7 @@ export const LandingPage = () => {
             throw new Error("Function not implemented.");
           }}
         />
-         <HomeJournal/>
+         <HomeJournal />
 <Footer/>
 <ScrollToTop/>
     </>

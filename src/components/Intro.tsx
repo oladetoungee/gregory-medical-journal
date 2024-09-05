@@ -31,7 +31,7 @@ const Intro = () => {
           <section className="w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
             <section className="bg-black bg-opacity-50 p-8 rounded-lg max-w-xl text-center">
               <motion.h1
-                className="lg:text-4xl text-3xl  font-bold mb-4 text-white font-extrabold mb-8"
+                className="lg:text-4xl text-3xl  font-bold mb-4 text-white"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 2, y: -10 }}

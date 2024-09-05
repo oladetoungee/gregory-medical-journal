@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,18 +20,8 @@ interface Article {
   publishedAt: string;
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const { articles, totalPages } = await fetchArticles({ pageSize: 3 });
-
-  return {
-    props: {
-      articles,
-      totalPages,
-    },
-  };
-};
-
 const LatestArticles = ({ articles }: { articles: Article[] }) => {
+  // if(articles.length === 0) return (<div>No articles</div>);
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6 underline text-primary text-center">
