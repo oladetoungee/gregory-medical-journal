@@ -16,7 +16,7 @@ export const fetchArticles = async ({ page = 1, pageSize = 3, searchQuery = '', 
         'fields[2]': 'link',
         'fields[3]': 'editorPick',
         'fields[4]': 'publishedAt',
-        'fields[5]': 'excerpt', // Add excerpt as part of the fields query
+        'fields[5]': 'excerpt', 
         'populate[image][fields][0]': 'name',
         'populate[image][fields][1]': 'alternativeText',
         'populate[image][fields][2]': 'width',
