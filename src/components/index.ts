@@ -26,7 +26,10 @@ export { default as PrivacyPolicy } from './PrivacyPolicy';
 export { default as TermsOfUse } from './TermsOfUse';
 export { default as SubmissionGuidelines } from './SubmissionGuidelines';
 export { default as Typewriter } from './ui/Typewriter';
+export { default as SigninForm } from './forms/SigninForm';
+export { default as SignupForm } from './forms/SignupForm';
 // export { default as NoEditorArticle } from './NoEditorArticle';
 // export { default as NoEditorArticle } from './NoEditorArticle';
-
+// export { default as NoEditorArticle } from './NoEditorArticle';
+// export { default as NoEditorArticle } from './NoEditorArticle';
 
