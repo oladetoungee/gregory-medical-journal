@@ -11,7 +11,17 @@ export const fetchArticles = async ({ page = 1, pageSize = 3, searchQuery = '', 
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_STRAPI_URL}/articles`, {
       params: {
-        populate: '*',
+        'fields[0]': 'title',
+        'fields[1]': 'author',
+        'fields[2]': 'link',
+        'fields[3]': 'editorPick',
+        'fields[4]': 'publishedAt',
+        'fields[5]': 'excerpt', // Add excerpt as part of the fields query
+        'populate[image][fields][0]': 'name',
+        'populate[image][fields][1]': 'alternativeText',
+        'populate[image][fields][2]': 'width',
+        'populate[image][fields][3]': 'height',
+        'populate[image][fields][4]': 'url',
         sort: 'publishedAt:desc',
         'pagination[page]': page,
         'pagination[pageSize]': pageSize,

@@ -113,7 +113,7 @@ const Page: React.FC = () => {
         </div>
 
         <Link href={article.link} target="_blank">
-          <Button>View full article</Button>
+          <Button>Download full article</Button>
         </Link>
       </div>
     </div>
