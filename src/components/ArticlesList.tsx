@@ -18,25 +18,12 @@ interface ArticlesListProps {
   totalPages?: number;
 }
 
-interface ImageData {
-  data: {
-    id: number;
-    attributes: {
-      name: string;
-      alternativeText: string;
-      width: number;
-      height: number;
-      url: string;
-    };
-  };
-}
-
 interface Articles {
   id: number;
   title: string;
   author: string;
   excerpt: any[];
-  image: ImageData;
+  image: string;
   link: string;
   editorPick: boolean;
   publishedAt: string;
@@ -107,7 +94,7 @@ const ArticleCard: React.FC<{ article: Articles }> = ({ article }) => {
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
       <div className="relative w-full h-48">
         <Image
-          src={`${process.env.NEXT_PUBLIC_STRAPI}${article.image}`}
+          src={article.image}
           alt={article.title}
           layout="fill"
           objectFit="cover"

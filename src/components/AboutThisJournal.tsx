@@ -33,20 +33,11 @@ type Description = {
   children: Children[];
 };
 
-interface ImageData {
-  id: number;
-    name: string;
-    alternativeText: string;
-    width: number;
-    height: number;
-    url: string;
-}
-
 interface Abouts {
   id: number;
   title: string;
   description: Description[];
-  image: ImageData;
+  image: string;
 }
 
 const AboutThisJournal = () => {
@@ -56,20 +47,17 @@ const AboutThisJournal = () => {
     const fetchAbouts = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_STRAPI_URL}/abouts?populate=*`
+          `${process.env.NEXT_PUBLIC_STRAPI_URL}/abouts`
         );
+        console.log("response:", response.data.data)
         const aboutUs = response.data.data.map((data: any) => ({
           id: data.id,
           title: data.attributes.title,
           description: data.attributes.description,
-          image: {
-            url: data.attributes.image.data.attributes.url,
-            alternativeText: data.attributes.image.data.attributes.alternativeText,
-            width: data.attributes.image.data.attributes.width,
-            height: data.attributes.image.data.attributes.height,
-          },
+          image: data.attributes.image
         }));
         setAbouts(aboutUs);
+        console.log("about-us:", aboutUs);
       } catch (error) {
         console.log("Error fetching about:", error);
       }
@@ -137,11 +125,11 @@ const AboutThisJournal = () => {
             <>
               <div key={about.id} className={styles.gridContainer}>
                 <Image
-                  src={`${process.env.NEXT_PUBLIC_STRAPI}${about.image.url}`}
-                  alt={about.image.alternativeText}
+                  src={about.image}
+                  alt={about.title}
                   className={`${styles.image} order-2 lg:order-1`}
-                  width={about.image.width}
-                  height={about.image.height}
+                  width={300}
+                  height={200}
                 />
 
                 <div className={about.id === 2 || about.id === 4 ? "" : "order-1 lg:order-2"}>
