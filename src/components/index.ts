@@ -29,7 +29,7 @@ export { default as Typewriter } from './ui/Typewriter';
 export { default as SigninForm } from './forms/SigninForm';
 export { default as SignupForm } from './forms/SignupForm';
 export { default as ResetPasswordForm } from './forms/ResetPasswordForm';
-export { default as DashboardHeader } from './DashboardHeader';
+export { default as DashboardContent } from './DashboardContent';
 // export { default as NoEditorArticle } from './NoEditorArticle';
 // export { default as NoEditorArticle } from './NoEditorArticle';
 // export { default as NoEditorArticle } from './NoEditorArticle';
