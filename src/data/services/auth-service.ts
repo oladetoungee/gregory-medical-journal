@@ -51,3 +51,15 @@ export async function loginUserService(userData: LoginUserProps) {
     throw error;
   }
 }
+
+///Reset Password Logic
+
+export async function sendResetPasswordEmailService(email: string) {
+  // Logic to send reset password email
+  return { error: null }; // or return { error: "Error message" }
+}
+
+export async function resetPasswordService({ password, token }: { password: string; token: string }) {
+  // Logic to reset password using the token
+  return { error: null }; // or return { error: "Error message" }
+}
