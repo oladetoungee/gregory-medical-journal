@@ -18,11 +18,6 @@ export const fetchArticles = async ({ page = 1, pageSize = 3, searchQuery = '', 
         'fields[4]': 'publishedAt',
         'fields[5]': 'excerpt',
         'fields[6]': 'image',
-        // 'populate[image][fields][0]': 'name',
-        // 'populate[image][fields][1]': 'alternativeText',
-        // 'populate[image][fields][2]': 'width',
-        // 'populate[image][fields][3]': 'height',
-        // 'populate[image][fields][4]': 'url',
         sort: 'publishedAt:desc',
         'pagination[page]': page,
         'pagination[pageSize]': pageSize,
@@ -43,7 +38,6 @@ export const fetchArticles = async ({ page = 1, pageSize = 3, searchQuery = '', 
       author: item.attributes.author,
       excerpt: item.attributes.excerpt,
       image:item.attributes.image,
-      // image: item.attributes.image.data.attributes.url,
       link: item.attributes.link,
       editorPick: item.attributes.editorPick,
       publishedAt: item.attributes.publishedAt,
@@ -51,7 +45,7 @@ export const fetchArticles = async ({ page = 1, pageSize = 3, searchQuery = '', 
 
     const pagination = response.data.meta.pagination;
     const totalPages = Math.ceil(pagination.total / pageSize);
-
+    console.log("articles:", articles)
     return { articles, totalPages, totalArticles: pagination.total };
   } catch (error) {
     console.error('Error fetching articles:', error);
