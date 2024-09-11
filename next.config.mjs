@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['localhost', 'gregory-medical-journal-backend.onrender.com'],
+    domains: ['res.cloudinary.com', 'gregory-medical-journal-backend.onrender.com'],
   },
 };
 

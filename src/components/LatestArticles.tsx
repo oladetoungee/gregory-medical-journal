@@ -14,14 +14,13 @@ interface Article {
   title: string;
   author: string;
   excerpt: any[];
-  image: ImageData;
+  image: string;
   link: string;
   isEditorPick: boolean;
   publishedAt: string;
 }
 
 const LatestArticles = ({ articles }: { articles: Article[] }) => {
-  // if(articles.length === 0) return (<div>No articles</div>);
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6 underline text-primary text-center">
@@ -42,11 +41,12 @@ const LatestArticles = ({ articles }: { articles: Article[] }) => {
               }}
             >
               <Image
-                src={`${process.env.NEXT_PUBLIC_STRAPI}${article.image}`}
+                src={article.image}
                 alt={article.title}
                 width={150}
                 height={100}
                 className="object-cover rounded w-full sm:w-auto"
+                priority={true}
               />
               <div className="flex flex-col justify-between px-2">
                 <Link href={article.link} passHref>

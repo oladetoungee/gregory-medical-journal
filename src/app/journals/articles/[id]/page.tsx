@@ -9,23 +9,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/";
 
-interface ImageData {
-  id: number;
-  attributes: {
-    name: string;
-    alternativeText: string;
-    width: number;
-    height: number;
-    url: string;
-  };
-}
-
 interface Article {
   id: number;
   title: string;
   author: string;
   excerpt: any[];
-  image: ImageData;
+  image: string;
   link: string;
   editorPick: boolean;
   publishedAt: string;
@@ -40,7 +29,7 @@ const Page: React.FC = () => {
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_STRAPI_URL}/articles/${id}?populate=image`);
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_STRAPI_URL}/articles/${id}`);
         const articleData = res.data.data?.attributes;
 
         if (articleData) {
@@ -49,7 +38,7 @@ const Page: React.FC = () => {
             title: articleData.title,
             author: articleData.author,
             excerpt: articleData.excerpt,
-            image: articleData.image.data,
+            image: articleData.image,
             link: articleData.link,
             editorPick: articleData.editorPick,
             publishedAt: articleData.publishedAt,
@@ -82,8 +71,8 @@ const Page: React.FC = () => {
       {article.image && (
         <div className="relative w-full h-48">
           <Image
-            src={`${process.env.NEXT_PUBLIC_STRAPI}${article.image.attributes.url}`}
-            alt={article.image.attributes.alternativeText}
+            src={article.image}
+            alt={article.title}
             layout="fill"
             objectFit="cover"
           />
