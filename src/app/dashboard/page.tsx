@@ -1,11 +1,12 @@
-import { LogoutButton } from "@/components/forms/LogoutButton";
+import Link from "next/link";
+import { getUserMeLoader } from "@/data/services/get-user-me-loader";
 
-export default function DashboardRoute() {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-        <h1>Dashboard</h1>
-        <LogoutButton />
 
-      </div>
-    );
-  }
+export default async function Header() {
+  const user = await getUserMeLoader();
+  console.log(user);
+
+  return (
+    <h3>Dashboard Content</h3>
+  );
+}

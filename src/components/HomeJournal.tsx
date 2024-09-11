@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from 'react';
 import LatestArticles from './LatestArticles';
 import EditorPick from './EditorPick';

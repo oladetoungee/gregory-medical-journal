@@ -68,6 +68,9 @@ export default function SigninForm() {
               loadingText="Loading"
             />
             <StrapiErrors error={formState?.strapiErrors} />
+            <Link className="underline text-xs" href="reset-password">
+           Forgot Password?
+          </Link>
           </CardFooter>
         </Card>
         <div className="mt-4 text-center text-sm">
