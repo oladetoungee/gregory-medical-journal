@@ -45,7 +45,7 @@ const EditorPick: React.FC = () => {
       </h2>
       <div className="flex flex-col">
         <Image
-          src={`${process.env.NEXT_PUBLIC_STRAPI}${editorPickArticle.image}`}
+          src={editorPickArticle.image}
           alt={editorPickArticle?.title}
           width={200}
           height={150}

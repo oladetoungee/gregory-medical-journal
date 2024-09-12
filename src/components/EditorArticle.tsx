@@ -47,7 +47,7 @@ const EditorArticle: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-center justify-between mb-6">
             <div className="sm:w-1/3 mb-4 sm:mb-0">
               <Image
-                src={`${process.env.NEXT_PUBLIC_STRAPI}${editorPickArticle.image}`}
+                src={editorPickArticle.image}
                 alt={editorPickArticle.title}
                 width={400}
                 height={300}
