@@ -63,7 +63,7 @@ export default function SigninForm() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col items-center">
-          <SubmitButton className="w-full flex justify-center items-center text-white" 
+          <SubmitButton className="w-full flex justify-center items-center text-primary hover:bg-primary" 
               text="Sign In"
               loadingText="Loading"
             />

@@ -25,7 +25,6 @@ export default function DashboardContent({
   return (
     <div className="h-screen">
     
-
       {/* Mobile Navigation */}
       {isNavOpen && (
         <nav className="bg-primary absolute top-[60px] left-0 w-full z-10 md:hidden">
@@ -98,7 +97,7 @@ export default function DashboardContent({
         {/* Main Content */}
         <main className="flex flex-col m-0 p-0 text-gray-400">
             {/* Header */}
-      <header className="flex items-center justify-between lg:justify-end px-6 py-3 bg-primary h-[60px] border-b w-full">
+      <header className="flex items-center justify-between md:justify-end px-6 py-3 bg-primary h-[60px] border-b w-full">
       
         <div className="flex items-center gap-4">
           <BellIcon className="h-6 w-6 text-gray-400 hover:text-gray-50" />

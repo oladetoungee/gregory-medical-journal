@@ -29,7 +29,7 @@ export default function SignupForm() {
   console.log("SignupForm", formState);
 
   return (
-    <div className="w-full max-w-md text-gray-400 ">
+    <div className="w-full max-w-md text-gray-400 bg-none">
       <form action={formAction}>
         <Card>
           <CardHeader className="space-y-1">
@@ -72,7 +72,7 @@ export default function SignupForm() {
           </CardContent>
 
           <CardFooter className="flex flex-col items-center">
-            <SubmitButton className="w-full flex justify-center items-center text-white" text="Sign Up" loadingText="Loading" />
+            <SubmitButton className="w-full flex justify-center items-center text-primary hover:bg-primary" text="Sign Up" loadingText="Loading" />
             <StrapiErrors error={formState?.strapiErrors} />
           </CardFooter>
 
