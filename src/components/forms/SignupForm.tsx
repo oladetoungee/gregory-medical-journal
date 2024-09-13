@@ -17,7 +17,7 @@ import TermsAndPolicy from "./TermsAndPolicy";
 import { registerUserAction } from "@/data/actions/auth-actions";
 import { ZodErrors } from "./ZodErrors";
 import { StrapiErrors } from "./StrapiErrors";
-import { SubmitButton } from "@/components/ui/SubmitButton";
+import { SubmitButton } from "@/components";
 
 const INITIAL_STATE = {
   data: null,

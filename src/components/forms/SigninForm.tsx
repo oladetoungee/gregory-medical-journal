@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import TermsAndPolicy from "./TermsAndPolicy";
 import { StrapiErrors } from "@/components/forms/StrapiErrors";
-import { SubmitButton } from "@/components/ui/SubmitButton";
+import { SubmitButton } from "@/components/";
 import { ZodErrors } from "./ZodErrors";
 
 const INITIAL_STATE = {

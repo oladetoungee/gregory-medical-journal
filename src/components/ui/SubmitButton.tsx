@@ -20,7 +20,7 @@ interface SubmitButtonProps {
   loading?: boolean;
 }
 
-export function SubmitButton({
+export default function SubmitButton({
   text,
   loadingText,
   loading,

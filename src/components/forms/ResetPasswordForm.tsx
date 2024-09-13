@@ -14,7 +14,7 @@ import {
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { SubmitButton } from "@/components/ui/SubmitButton";
+import { SubmitButton } from "@/components";
 import { ZodErrors } from "./ZodErrors"; // Error handling
 import { StrapiErrors } from "@/components/forms/StrapiErrors";
 import TermsAndPolicy from "./TermsAndPolicy";

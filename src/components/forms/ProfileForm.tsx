@@ -1,10 +1,12 @@
 "use client";
 import React from "react";
 import { cn } from "@/lib/utils";
-
-import { SubmitButton } from "@/components/ui/SubmitButton"
+import { useFormState } from "react-dom";
+import { updateProfileAction } from "@/data/actions/profile-actions";
+import { SubmitButton } from "@/components"
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { StrapiErrors } from "./StrapiErrors";
 
 interface ProfileFormProps {
   id: string;
@@ -21,7 +23,7 @@ function CountBox({ text }: { readonly text: number }) {
   const color = text > 0 ? "text-primary" : "text-red-500";
   return (
     <div className="flex items-center justify-center h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none">
-      You have<span className={cn(style, color)}>{text}</span>credit(s)
+<span className={cn(style, color)}>{text}</span>Articles(s)
     </div>
   );
 }
@@ -33,12 +35,16 @@ export function ProfileForm({
   readonly data: ProfileFormProps;
   readonly className?: string;
 }) {
+  const updateUserWithId = updateProfileAction.bind(null, data.id);
+
+  const [formState, formAction] = useFormState(updateUserWithId, data);
 
   return (
-    <form
+    <form action={formAction}
       className={cn("space-y-4", className)}>
       <div className="space-y-4 grid ">
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-2">
+  
           <Input
             id="username"
             name="username"
@@ -82,6 +88,7 @@ export function ProfileForm({
       <div className="flex justify-end">
         <SubmitButton text="Update Profile" loadingText="Saving Profile" />
       </div>
+      <StrapiErrors error={formState.strapiErrors} />
     </form>
   );
 }
