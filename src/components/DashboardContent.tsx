@@ -13,41 +13,30 @@ import {
 import { LogoutButton } from "@/components/forms/LogoutButton";
 import images from "@/constants/images";
 
+// Reusable navigation items array
+const navItems = [
+  { href: "/dashboard/summaries", icon: <ViewGridIcon />, label: "Papers" },
+  { href: "/dashboard/account", icon: <BookmarkFilledIcon />, label: "Analytics" },
+  { href: "/dashboard/account", icon: <PersonIcon />, label: "Account" },
+  { href: "/dashboard/help-center", icon: <PersonIcon />, label: "Help Center" },
+  { href: "/logout", icon: <PersonIcon />, label: "Log Out" },
+];
+
 export default function DashboardContent({
   children,
   user,
 }: {
-  children: any;
-  user: any;
+  children: React.ReactNode;
+  user: { ok: boolean; data: { username: string } };
 }) {
   const [isNavOpen, setIsNavOpen] = useState(false);
 
   return (
     <div className="h-screen">
-    
       {/* Mobile Navigation */}
       {isNavOpen && (
         <nav className="bg-primary absolute top-[60px] left-0 w-full z-10 md:hidden">
-          <div className="flex flex-col items-start gap-4 p-4 text-sm font-medium">
-            <NavItem href="/dashboard/summaries" icon={<ViewGridIcon />}>
-              Papers
-            </NavItem>
-            <NavItem href="/dashboard/account" icon={<BookmarkFilledIcon />}>
-              Analytics
-            </NavItem>
-            <NavItem href="/dashboard/account" icon={<PersonIcon />}>
-              Account
-            </NavItem>
-            <NavItem href="/dashboard/notifications" icon={<BellIcon />}>
-              Notifications
-            </NavItem>
-            <NavItem href="/dashboard/help-center" icon={<PersonIcon />}>
-              Help Center
-            </NavItem>
-            <NavItem href="/logout" icon={<PersonIcon />}>
-              Log Out
-            </NavItem>
-          </div>
+          <NavList navItems={navItems} />
         </nav>
       )}
 
@@ -55,7 +44,7 @@ export default function DashboardContent({
         {/* Sidebar Navigation for Desktop */}
         <nav className="bg-primary hidden md:block">
           <div className="flex h-full max-h-screen flex-col gap-2">
-            <div className="flex h-[60px] items-center border-b pl-2">
+            <div className="flex h-[60px] items-center pl-2">
               <div className="flex items-center gap-4">
                 <Image
                   src={images.hall1}
@@ -71,24 +60,7 @@ export default function DashboardContent({
             </div>
             <div className="flex-1 overflow-auto py-2">
               <nav className="grid items-start px-4 text-sm font-medium">
-                <NavItem href="/dashboard/summaries" icon={<ViewGridIcon />}>
-                  Papers
-                </NavItem>
-                <NavItem href="/dashboard/account" icon={<BookmarkFilledIcon />}>
-                  Analytics
-                </NavItem>
-                <NavItem href="/dashboard/account" icon={<PersonIcon />}>
-                  Account
-                </NavItem>
-                <NavItem href="/dashboard/notifications" icon={<BellIcon />}>
-                  Notifications
-                </NavItem>
-                <NavItem href="/dashboard/help-center" icon={<PersonIcon />}>
-                  Help Center
-                </NavItem>
-                <NavItem href="/logout" icon={<PersonIcon />}>
-                  Log Out
-                </NavItem>
+                <NavList navItems={navItems.filter(item => item.label !== "Log Out")} />
               </nav>
             </div>
           </div>
@@ -96,29 +68,28 @@ export default function DashboardContent({
 
         {/* Main Content */}
         <main className="flex flex-col m-0 p-0 text-gray-400">
-            {/* Header */}
-      <header className="flex items-center justify-between md:justify-end px-6 py-3 bg-primary h-[60px] border-b w-full">
-      
-        <div className="flex items-center gap-4">
-          <BellIcon className="h-6 w-6 text-gray-400 hover:text-gray-50" />
-          {user.ok ? (
-            <div className="flex gap-2 items-center">
-              <p className="font-semibold hover:text-white">
-                {user.data.username}
-              </p>
-              <LogoutButton />
+          {/* Header */}
+          <header className="flex items-center justify-between md:justify-end px-6 py-3 bg-primary h-[60px] w-full">
+            <div className="flex items-center gap-4">
+              <BellIcon className="h-6 w-6 text-gray-400 hover:text-gray-50" />
+              {user.ok ? (
+                <div className="flex gap-2 items-center">
+                  <p className="font-semibold hover:text-white">
+                    {user.data.username}
+                  </p>
+                  <LogoutButton />
+                </div>
+              ) : (
+                <p>Login</p>
+              )}
             </div>
-          ) : (
-            <p>Login</p>
-          )}
-        </div>
-        <button
-          onClick={() => setIsNavOpen(!isNavOpen)}
-          className="block md:hidden"
-        >
-          <HamburgerMenuIcon className="h-6 w-6 text-gray-400 hover:text-gray-50" />
-        </button>
-      </header>
+            <button
+              onClick={() => setIsNavOpen(prev => !prev)}
+              className="block md:hidden"
+            >
+              <HamburgerMenuIcon className="h-6 w-6 text-gray-400 hover:text-gray-50" />
+            </button>
+          </header>
           <section>{children}</section>
         </main>
       </div>
@@ -126,6 +97,20 @@ export default function DashboardContent({
   );
 }
 
+// Extracted NavList component for rendering nav items
+function NavList({ navItems }: { navItems: { href: string; icon: React.ReactNode; label: string }[] }) {
+  return (
+    <div className="flex flex-col items-start gap-4 p-4 text-sm font-medium">
+      {navItems.map(({ href, icon, label }) => (
+        <NavItem key={href} href={href} icon={icon}>
+          {label}
+        </NavItem>
+      ))}
+    </div>
+  );
+}
+
+// Reusable NavItem component
 function NavItem({
   href,
   icon,
@@ -138,7 +123,7 @@ function NavItem({
   return (
     <Link
       href={href}
-      className="flex items-center gap-4 rounded-lg px-3 py-2 text-gray-400 hover:text-gray-50"
+      className="flex md:text-base text-sm items-center gap-8 rounded-lg px-3 py-2 text-gray-400 hover:text-gray-50"
     >
       {icon}
       {children}

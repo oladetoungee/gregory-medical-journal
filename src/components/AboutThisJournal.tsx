@@ -142,28 +142,7 @@ const AboutThisJournal = () => {
             </>
           ))}
 
-          {/* Example of hardcoded data (like Contact info) */}
-          {/* <div className={styles.gridContainer}>
-            <Image
-              src="/path/to/contact-image.jpg"
-              alt="Contact"
-              width={"300"}
-              height={"200"}
-              className={`${styles.image} order-2 lg:order-1`}
-            />
-            <div className="order-1 lg:order-2">
-              <h2 className={styles.heading}>Contact</h2>
-              <p className={styles.paragraph}>
-                For editorial and submission inquiries, please contact us at:
-                <br />
-                <EnvelopeClosedIcon className={styles.icon} />{" "}
-                contact@gregorymedicaljournal.org
-                <br />
-                <MapIcon className={styles.icon} /> Gregory Medical Journal
-                Editorial Office Amaoke Achara, Uturu, Abia State, Nigeria
-              </p>
-            </div>
-          </div> */}
+   
         </div>
       </div>
     </div>
