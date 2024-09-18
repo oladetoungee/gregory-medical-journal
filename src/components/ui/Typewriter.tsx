@@ -39,6 +39,7 @@ const Typewriter = ({ text, speed = 50, delay = 1000, className }: TypewriterPro
   }, [text, speed, delay]);
 
   return (
+    <div className='md:h-12  h-24'>
     <motion.div
       className={className}
       initial={{ opacity: 0 }}
@@ -47,6 +48,7 @@ const Typewriter = ({ text, speed = 50, delay = 1000, className }: TypewriterPro
     >
       {displayedText}
     </motion.div>
+    </div>
   );
 };
 

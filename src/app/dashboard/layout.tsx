@@ -6,6 +6,7 @@ export default async function DashboardLayout({
 }: {
   readonly children: any;
 }) {
+  
   const user: any = await getUserMeLoader();
 
   return <DashboardContent user={user}>{children}</DashboardContent>;

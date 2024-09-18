@@ -1,12 +1,11 @@
-import Link from "next/link";
+import { DashboardOverview } from "@/components";
 import { getUserMeLoader } from "@/data/services/get-user-me-loader";
 
-
-export default async function Header() {
+// The Page component fetching user data and passing it to the DashboardOverview
+export default async function Page() {
+  // Fetch user data
   const user = await getUserMeLoader();
-  console.log(user);
 
-  return (
-    <h3>Dashboard Content</h3>
-  );
+  // Pass the user as a prop to DashboardOverview
+  return <DashboardOverview user={user} />;
 }

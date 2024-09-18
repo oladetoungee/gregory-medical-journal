@@ -4,22 +4,22 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  PersonIcon,
   BellIcon,
-  ViewGridIcon,
   HamburgerMenuIcon,
-  BookmarkFilledIcon,
 } from "@radix-ui/react-icons";
+import {  ChartBarIcon, UserIcon, GripHorizontal, HelpCircle, LibraryIcon } from 'lucide-react';
 import { LogoutButton } from "@/components/forms/LogoutButton";
 import images from "@/constants/images";
+import { usePathname } from 'next/navigation';
 
 // Reusable navigation items array
 const navItems = [
-  { href: "/dashboard/summaries", icon: <ViewGridIcon />, label: "Papers" },
-  { href: "/dashboard/account", icon: <BookmarkFilledIcon />, label: "Analytics" },
-  { href: "/dashboard/account", icon: <PersonIcon />, label: "Account" },
-  { href: "/dashboard/help-center", icon: <PersonIcon />, label: "Help Center" },
-  { href: "/logout", icon: <PersonIcon />, label: "Log Out" },
+  { href: "/dashboard", icon: <GripHorizontal />, label: "Overview" },
+  { href: "/dashboard/papers", icon: <LibraryIcon />, label: "Papers" },
+  { href: "/dashboard/analytics", icon: <ChartBarIcon />, label: "Analytics" },
+  { href: "/dashboard/account", icon: <UserIcon />, label: "Account" },
+  { href: "/dashboard/help-center", icon: <HelpCircle />, label: "Help Center" },
+
 ];
 
 export default function DashboardContent({
@@ -120,13 +120,19 @@ function NavItem({
   icon: React.ReactNode;
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isActive = pathname === href;
+
   return (
     <Link
       href={href}
-      className="flex md:text-base text-sm items-center gap-8 rounded-lg px-3 py-2 text-gray-400 hover:text-gray-50"
+      className={`flex md:text-base text-sm items-center gap-8 rounded-lg px-3 py-2 
+        ${isActive ? 'text-primary bg-secondary w-full' : 'text-gray-400 hover:text-gray-50'}
+      `}
     >
       {icon}
       {children}
     </Link>
   );
 }
+

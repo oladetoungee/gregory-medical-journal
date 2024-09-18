@@ -32,5 +32,7 @@ export { default as ResetPasswordForm } from './forms/ResetPasswordForm';
 export { default as DashboardContent } from './DashboardContent';
 export { default as SubmitButton } from './ui/SubmitButton';
 export { default as ImagePicker } from './ImagePicker';
+export { default as DashboardOverview } from './DashboardOverview';
+// export { default as NoEditorArticle } from './NoEditorArticle';
 // export { default as NoEditorArticle } from './NoEditorArticle';
 
