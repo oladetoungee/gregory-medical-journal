@@ -12,7 +12,7 @@ export default async function AccountRoute() {
     <div className="flex flex-col items-center p-4">
 
 <Typewriter text={`👋 Welcome to your account page, ${userData?.username || 'Guest'}!`} className="page-header text-2xl font-bold mb-18" />
-    <div className="w-full max-w-lg space-y-4">
+    <div className="w-full max-w-lg space-y-4 mt-8">
       <ProfileForm data={userData} />
       <ProfileImageForm data={userImage} />
     </div>

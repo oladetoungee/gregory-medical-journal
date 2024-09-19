@@ -79,7 +79,7 @@ export default function DashboardOverview({ user }: { user: User }) {
       </div>
 
       {/* Stylish Table */}
-      <div className="mt-8">
+      <div className="mt-12">
         <h2 className="text-xl font-semibold mb-4">Latest Papers</h2>
         {papers.length === 0 ? (
           <p className="text-gray-500">No papers available.</p>
@@ -87,7 +87,7 @@ export default function DashboardOverview({ user }: { user: User }) {
           <Table>
             <TableCaption>A list of recent papers submitted for review.</TableCaption>
             <TableHeader>
-              <TableRow>
+              <TableRow className='font-bold'>
                 <TableHead>Date Submitted</TableHead>
                 <TableHead>Name of Paper</TableHead>
                 <TableHead>Review Status</TableHead>
