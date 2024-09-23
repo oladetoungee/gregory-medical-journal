@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Input, Textarea } from "@/components/ui";
+import { Input, AutosizeTextarea } from "@/components/ui";
 import { Button, Typewriter } from "@/components";
 import { motion } from "framer-motion";
 import { UploadIcon, FileIcon, InfoIcon, X } from "lucide-react";
@@ -52,9 +52,10 @@ export default function ManuscriptSubmission() {
   };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
+    <div className="m-12">
+            <div className="mb-8">
       <Typewriter text="Submit Your Manuscript, Get Your Research Published" className="page-header text-2xl font-bold mb-6" />
-
+      </div>
       <p className="text-primary text-sm mt-1 text-center">
         Join the community of researchers sharing groundbreaking work.
       </p>
@@ -97,7 +98,7 @@ export default function ManuscriptSubmission() {
 
               <div className="space-y-2">
                 <label htmlFor="abstract" className="text-sm font-medium">Abstract</label>
-                <Textarea
+                <AutosizeTextarea
                   id="abstract"
                   placeholder="Write a short abstract..."
                   {...register("abstract", { required: true })}

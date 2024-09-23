@@ -1,9 +1,10 @@
 'use client';
 
 import { useForm } from "react-hook-form";
-import { Input, Textarea, AutosizeTextarea } from "@/components/ui";
+import { Input,  AutosizeTextarea } from "@/components/ui";
 import { Button } from "@/components/";
 import { toast } from 'react-toastify';
+import { Typewriter } from "@/components";
 
 interface FormData {
   name: string;
@@ -36,9 +37,11 @@ export default function Support() {
   };
 
   return (
-    <div className="p-8 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Support</h1>
-      <p className="text-sm mb-6">If you have any questions or need assistance, please fill out the form below.</p>
+    <div className="m-12">
+    <div className="mb-8">
+<Typewriter text="Need Help? Reach out to the Gregory Journal Team" className="page-header text-2xl font-bold mb-6" />
+</div>
+      <p className="text-sm mb-6 text-primary">If you have any questions or need assistance, please fill out the form below.</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>

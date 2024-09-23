@@ -10,7 +10,7 @@ import {
   CardFooter,
   Card,
 } from "@/components/ui/card";
-
+import {EyeIcon, EyeOffIcon} from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import TermsAndPolicy from "./TermsAndPolicy";
@@ -18,6 +18,7 @@ import { registerUserAction } from "@/data/actions/auth-actions";
 import { ZodErrors } from "./ZodErrors";
 import { StrapiErrors } from "./StrapiErrors";
 import { SubmitButton } from "@/components";
+import { useState } from "react";
 
 const INITIAL_STATE = {
   data: null,
@@ -26,6 +27,11 @@ const INITIAL_STATE = {
 }
 export default function SignupForm() {
   const [formState, formAction] = useFormState(registerUserAction, INITIAL_STATE);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible((prev) => !prev);
+  };
   console.log("SignupForm", formState);
 
   return (
@@ -59,15 +65,28 @@ export default function SignupForm() {
               />
             </div>
             <ZodErrors error={formState.zodErrors?.email} />
-            <div className="space-y-2">
+            <div className="space-y-2 relative">
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 name="password"
-                type="password"
+                type={passwordVisible ? "text" : "password"}
                 placeholder="password"
               />
               <ZodErrors error={formState.zodErrors?.password} />
+
+           
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute top-9 right-4 text-gray-500"
+              >
+                {passwordVisible ? (
+                  <EyeOffIcon className="h-5 w-5" aria-hidden="true" />
+                ) : (
+                  <EyeIcon className="h-5 w-5" aria-hidden="true" />
+                )}
+              </button>
             </div>
           </CardContent>
 

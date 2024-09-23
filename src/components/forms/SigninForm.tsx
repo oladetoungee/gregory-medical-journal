@@ -18,6 +18,8 @@ import TermsAndPolicy from "./TermsAndPolicy";
 import { StrapiErrors } from "@/components/forms/StrapiErrors";
 import { SubmitButton } from "@/components/";
 import { ZodErrors } from "./ZodErrors";
+import { useState } from "react";
+import {EyeIcon, EyeOffIcon} from "lucide-react";
 
 const INITIAL_STATE = {
   zodErrors: null,
@@ -28,6 +30,11 @@ const INITIAL_STATE = {
 
 export default function SigninForm() {
   const [formState, formAction] = useFormState(loginUserAction, INITIAL_STATE);
+  const [passwordVisible, setPasswordVisible] = useState(false); // Toggle for password visibility
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible((prev) => !prev); // Toggle function
+  };
 
 
   return (
@@ -51,15 +58,28 @@ export default function SigninForm() {
               />
               <ZodErrors error={formState?.zodErrors?.identifier} />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 relative">
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 name="password"
-                type="password"
+                type={passwordVisible ? "text" : "password"} // Toggles between text and password
                 placeholder="password"
               />
-               <ZodErrors error={formState.zodErrors?.password} />
+              <ZodErrors error={formState.zodErrors?.password} />
+
+              {/* Eye icon to toggle password visibility */}
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute top-9 right-4 text-gray-500"
+              >
+                {passwordVisible ? (
+                  <EyeOffIcon className="h-5 w-5" aria-hidden="true" />
+                ) : (
+                  <EyeIcon className="h-5 w-5" aria-hidden="true" />
+                )}
+              </button>
             </div>
           </CardContent>
           <CardFooter className="flex flex-col items-center">

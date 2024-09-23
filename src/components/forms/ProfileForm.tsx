@@ -5,7 +5,7 @@ import { useFormState } from "react-dom";
 import { updateProfileAction } from "@/data/actions/profile-actions";
 import { SubmitButton } from "@/components"
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { AutosizeTextarea } from "@/components/ui";
 import { StrapiErrors } from "./StrapiErrors";
 
 interface ProfileFormProps {
@@ -76,7 +76,7 @@ export function ProfileForm({
             defaultValue={data.lastName || ""}
           />
         </div>
-        <Textarea
+        <AutosizeTextarea
           id="bio"
           name="bio"
           placeholder="Write your bio here..."

@@ -7,7 +7,7 @@ import {
   BellIcon,
   HamburgerMenuIcon,
 } from "@radix-ui/react-icons";
-import {  ChartBarIcon, UserIcon, GripHorizontal, HelpCircle, LibraryIcon } from 'lucide-react';
+import {  ChartBarIcon, UserIcon, GripHorizontal, HelpCircle, LibraryIcon, WalletMinimal } from 'lucide-react';
 import { LogoutButton } from "@/components/forms/LogoutButton";
 import images from "@/constants/images";
 import { usePathname } from 'next/navigation';
@@ -18,6 +18,7 @@ const navItems = [
   { href: "/dashboard/papers", icon: <LibraryIcon />, label: "Papers" },
   { href: "/dashboard/analytics", icon: <ChartBarIcon />, label: "Analytics" },
   { href: "/dashboard/account", icon: <UserIcon />, label: "Account" },
+  { href: "/dashboard/payment", icon: <WalletMinimal />, label: "Payment" },
   { href: "/dashboard/support", icon: <HelpCircle />, label: "Help Center" },
 
 ];
@@ -27,7 +28,7 @@ export default function DashboardContent({
   user,
 }: {
   children: React.ReactNode;
-  user: { ok: boolean; data: { username: string } };
+  user: { ok: boolean; data: { username: string, image: string } };
 }) {
   const [isNavOpen, setIsNavOpen] = useState(false);
 
@@ -66,32 +67,42 @@ export default function DashboardContent({
           </div>
         </nav>
 
-        {/* Main Content */}
-        <main className="flex flex-col m-0 p-0 text-gray-400">
-          {/* Header */}
-          <header className="flex items-center justify-between md:justify-end px-6 py-3 bg-primary h-[60px] w-full">
-            <div className="flex items-center gap-4">
-              <BellIcon className="h-6 w-6 text-gray-400 hover:text-gray-50" />
-              {user.ok ? (
-                <div className="flex gap-2 items-center">
-                  <p className="font-semibold hover:text-white">
-                    {user.data.username}
-                  </p>
-                  <LogoutButton />
-                </div>
-              ) : (
-                <p>Login</p>
-              )}
+   {/* Main Content */}
+<main className="flex flex-col m-0 p-0 text-gray-400">
+  {/* Header */}
+  <header className="flex items-center justify-between md:justify-end px-6 py-3 bg-primary h-[60px] w-full">
+    <div className="flex items-center gap-2">
+      <BellIcon className="h-6 w-6 text-gray-400 hover:text-gray-50" />
+      {user.ok ? (
+        <div className="flex gap-2 items-center">
+          {user.data.image ? (
+            <img
+              src={user.data.image}
+              alt={user.data.username}
+              className="w-10 h-10 rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-gray-300 text-white flex items-center justify-center text-base font-semibold">
+              {user.data.username[0].toUpperCase()}
             </div>
-            <button
-              onClick={() => setIsNavOpen(prev => !prev)}
-              className="block md:hidden"
-            >
-              <HamburgerMenuIcon className="h-6 w-6 text-gray-400 hover:text-gray-50" />
-            </button>
-          </header>
-          <section>{children}</section>
-        </main>
+          )}
+         
+          <LogoutButton />
+        </div>
+      ) : (
+        <p>Login</p>
+      )}
+    </div>
+    <button
+      onClick={() => setIsNavOpen((prev) => !prev)}
+      className="block md:hidden"
+    >
+      <HamburgerMenuIcon className="h-6 w-6 text-gray-400 hover:text-gray-50" />
+    </button>
+  </header>
+  <section>{children}</section>
+</main>
+
       </div>
     </div>
   );
