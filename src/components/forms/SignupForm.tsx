@@ -72,7 +72,7 @@ export default function SignupForm() {
           </CardContent>
 
           <CardFooter className="flex flex-col items-center">
-            <SubmitButton className="w-full flex justify-center items-center text-primary hover:bg-primary" text="Sign Up" loadingText="Loading" />
+            <SubmitButton className="w-full flex justify-center items-center text-primary hover:bg-primary" text="Sign Up" loadingText="" />
             <StrapiErrors error={formState?.strapiErrors} />
           </CardFooter>
 

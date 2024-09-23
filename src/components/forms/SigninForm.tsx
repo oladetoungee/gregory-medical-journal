@@ -65,7 +65,7 @@ export default function SigninForm() {
           <CardFooter className="flex flex-col items-center">
           <SubmitButton className="w-full flex justify-center items-center text-primary hover:bg-primary" 
               text="Sign In"
-              loadingText="Loading"
+              loadingText=""
             />
             <StrapiErrors error={formState?.strapiErrors} />
             <Link className="underline text-xs" href="reset-password">
