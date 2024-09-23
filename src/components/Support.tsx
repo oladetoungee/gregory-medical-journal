@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Input, Textarea } from "@/components/ui";
+import { Input, Textarea, AutosizeTextarea } from "@/components/ui";
 import { Button } from "@/components/";
 import { toast } from 'react-toastify';
 
@@ -52,7 +51,7 @@ export default function Support() {
         </div>
         <div>
           <label htmlFor="message" className="block text-sm font-medium">Message</label>
-          <Textarea id="message" {...register("message", { required: true })} placeholder="Your Message" />
+          <AutosizeTextarea id="message" {...register("message", { required: true })} placeholder="Your Message" />
         </div>
         <Button type="submit">Send Message</Button>
       </form>
