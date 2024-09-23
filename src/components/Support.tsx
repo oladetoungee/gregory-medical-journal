@@ -1,0 +1,61 @@
+'use client';
+
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Input, Textarea } from "@/components/ui";
+import { Button } from "@/components/";
+import { toast } from 'react-toastify';
+
+interface FormData {
+  name: string;
+  email: string;
+  message: string;
+}
+
+export default function Support() {
+  const { register, handleSubmit, reset } = useForm<FormData>();
+
+  const onSubmit = async (data: FormData) => {
+    try {
+      const response = await fetch("/api/sendEmail", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        toast.success("Your message has been sent!");
+        reset();
+      } else {
+        toast.error("There was an error sending your message. Please try again.");
+      }
+    } catch (error) {
+      toast.error("There was an error sending your message. Please try again.");
+    }
+  };
+
+  return (
+    <div className="p-8 max-w-2xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Support</h1>
+      <p className="text-sm mb-6">If you have any questions or need assistance, please fill out the form below.</p>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium">Name</label>
+          <Input id="name" {...register("name", { required: true })} placeholder="Your Name" />
+        </div>
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium">Email</label>
+          <Input id="email" type="email" {...register("email", { required: true })} placeholder="Your Email" />
+        </div>
+        <div>
+          <label htmlFor="message" className="block text-sm font-medium">Message</label>
+          <Textarea id="message" {...register("message", { required: true })} placeholder="Your Message" />
+        </div>
+        <Button type="submit">Send Message</Button>
+      </form>
+    </div>
+  );
+}

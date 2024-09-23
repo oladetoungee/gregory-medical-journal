@@ -18,7 +18,7 @@ const navItems = [
   { href: "/dashboard/papers", icon: <LibraryIcon />, label: "Papers" },
   { href: "/dashboard/analytics", icon: <ChartBarIcon />, label: "Analytics" },
   { href: "/dashboard/account", icon: <UserIcon />, label: "Account" },
-  { href: "/dashboard/help-center", icon: <HelpCircle />, label: "Help Center" },
+  { href: "/dashboard/support", icon: <HelpCircle />, label: "Help Center" },
 
 ];
 
