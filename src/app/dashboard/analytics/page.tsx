@@ -1,5 +1,5 @@
-import { Support } from '@/components';
+import { Analytics } from '@/components';
 
 export default async function AnalyticsPage () {
-  return <Support />;
+  return <Analytics />;
 }

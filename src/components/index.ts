@@ -35,6 +35,8 @@ export { default as ImagePicker } from './ImagePicker';
 export { default as DashboardOverview } from './DashboardOverview';
  export { default as ManuscriptSubmission } from './ManuscriptSubmission';
  export { default as Support } from './Support';
+ export { default as Analytics } from './Analytics';
+ 
 // export { default as NoEditorArticle } from './NoEditorArticle';
 // export { default as NoEditorArticle } from './NoEditorArticle';
 // export { default as NoEditorArticle } from './NoEditorArticle';
