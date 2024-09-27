@@ -7,23 +7,24 @@ export interface FetchArticlesOptions {
   editorPick?: boolean;
 }
 
-export const fetchArticles = async ({ page = 1, pageSize = 3, searchQuery = '', editorPick = false }: FetchArticlesOptions) => {
+export const fetchArticles = async ({
+  page = 1,
+  pageSize = 3,
+  searchQuery = '',
+  editorPick = false,
+}: FetchArticlesOptions) => {
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_STRAPI_URL}/articles`, {
       params: {
-        'fields[0]': 'title',
-        'fields[1]': 'author',
-        'fields[2]': 'link',
-        'fields[3]': 'editorPick',
-        'fields[4]': 'publishedAt',
-        'fields[5]': 'excerpt',
-        'fields[6]': 'image',
-        sort: 'publishedAt:desc',
+        // Include non-media fields in the 'fields' parameter
+        'fields': ['title', 'Authors', 'excerpt', 'submissionDate', 'submittedByName', 'submittedByEmail', 'status', 'editorPick'],
+        populate: ['image', 'document'], // Populate both 'image' and 'document' fields as they are media fields
+        sort: 'submissionDate:desc',
         'pagination[page]': page,
         'pagination[pageSize]': pageSize,
         ...(searchQuery && {
           'filters[$or][0][title][$containsi]': searchQuery,
-          'filters[$or][1][author][$containsi]': searchQuery,
+          'filters[$or][1][Authors][$containsi]': searchQuery, 
           'filters[$or][2][excerpt][$containsi]': searchQuery,
         }),
         ...(editorPick && {
@@ -35,17 +36,20 @@ export const fetchArticles = async ({ page = 1, pageSize = 3, searchQuery = '', 
     const articles = response.data.data.map((item: any) => ({
       id: item.id,
       title: item.attributes.title,
-      author: item.attributes.author,
-      excerpt: item.attributes.excerpt,
+      authors: item.attributes.Authors, // Authors array
+      excerpt: item.attributes.excerpt, // Excerpt field
       image:item.attributes.image,
-      link: item.attributes.link,
-      editorPick: item.attributes.editorPick,
-      publishedAt: item.attributes.publishedAt,
+      document: item.attributes.document?.data?.attributes?.url || '', // Correct way to access document file URL
+      submissionDate: item.attributes.submissionDate, // Date submitted
+      submittedByName: item.attributes.submittedByName, // Person that submitted
+      submittedByEmail: item.attributes.submittedByEmail, // Email of the person
+      status: item.attributes.status, // Article status
+      editorPick: item.attributes.editorPick, // Editor's pick boolean
     }));
 
     const pagination = response.data.meta.pagination;
     const totalPages = Math.ceil(pagination.total / pageSize);
-    console.log("articles:", articles)
+// console.log(articles, 'articles');
     return { articles, totalPages, totalArticles: pagination.total };
   } catch (error) {
     console.error('Error fetching articles:', error);
