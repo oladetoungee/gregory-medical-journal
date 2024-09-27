@@ -1,7 +1,7 @@
 // src/constants/faq.ts
 const faq = [
   {
-      question: 'What is the submission process for articles?',
+      question: 'sddsdsWhat is the submission process for articles?',
       answer: `Submitting an article to our journal involves a straightforward process. First, authors must create an account on our platform, which grants access to our submission portal. Once logged in, authors can prepare their manuscripts according to our specific guidelines, ensuring all formatting, citations, figures, and tables are correctly organized. After preparing the manuscript, authors upload it through the portal, where they fill out essential details like the title, abstract, and keywords. The manuscript then undergoes a rigorous peer-review process, where experts evaluate its quality, originality, and relevance. Authors may be asked to make revisions based on reviewer feedback. Once all criteria are met, the manuscript is accepted for publication, and the author is notified via email.`,
   },
   {
