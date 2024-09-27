@@ -14,7 +14,7 @@ const ethics = {
           ]
       },
       {
-          heading: "Reviewers' Responsibilities",
+          heading: "Reviewerss' Responsibilities",
           content: [
               "Reviewers should provide unbiased, constructive feedback in a timely manner.",
               "Reviewers must maintain the confidentiality of the review process.",
