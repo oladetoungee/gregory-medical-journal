@@ -12,7 +12,7 @@ export const latestArticles = [
     {
         id: 2,
         title: 'Advancements in Neurology: Understanding the Brain',
-        author: 'Dr. Emeka Nwosu',
+        author: 'Dr. Emekasdhds  Nwosu',
         excerpt: 'This study presents recent advancements in neuroimaging and electrophysiology, which have provided unprecedented insights into brain function and connectivity. The paper highlights how these advancements contribute to our understanding of neurodegenerative diseases and potential therapeutic approaches.',
         image: images.research2,
         link: '/articles/advancements-in-neurology'
