@@ -1,6 +1,5 @@
-
 export function getEmailTemplate(name: string, message: string) {
-    return `
+  return `
     <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,15 +34,6 @@ export function getEmailTemplate(name: string, message: string) {
     .content {
       padding: 20px;
     }
-    .button {
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: #373A7A;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      margin-top: 20px;
-    }
     .footer {
       background-color: #f4f4f4;
       text-align: center;
@@ -56,21 +46,21 @@ export function getEmailTemplate(name: string, message: string) {
 <body>
   <div class="container">
     <div class="header">
-      <img src="@/public/images/hall1.png" alt="Gregory Medical Journal" />
       <h1>Gregory Medical Journal</h1>
     </div>
     <div class="content">
       <h5>${message}</h5>
-      <a href="https://gregory-medical-journal.vercel.app/" class="button">Visit Our Website</a>
+      <a href="https://gregory-medical-journal.vercel.app/" 
+         style="display: inline-block; padding: 10px 20px; background-color: #373A7A; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px;">
+         Visit Our Website
+      </a>
     </div>
     <div class="footer">
       <p>© 2024 Gregory Medical Journal. All rights reserved.</p>
-      <p>Contact us at <a href="mailto:info@gregorymedicaljournal.com">demilad1998@gmail.com</a></p>
+      <p>Contact us at <a href="mailto:gregorymedicaljournal@gmail.com">gregorymedicaljournal@gmail.com</a></p>
     </div>
   </div>
 </body>
 </html>
-
-    `;
-  }
-  
+  `;
+}

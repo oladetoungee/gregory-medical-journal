@@ -13,9 +13,10 @@ export async function POST(req: Request) {
     },
   });
 
+
   const mailOptions = {
     from: email,
-    to: "demilad1998@gmail.com",
+    to: process.env.EMAIL_USER,
     subject: `Support Request from ${name} on the Gregory Journal Website`,
     html: getEmailTemplate(name, message),
     replyTo: email,
