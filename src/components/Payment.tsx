@@ -1,41 +1,87 @@
 'use client';
 
-import { papersData } from '@/constants';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Typewriter } from "@/components";
 import { PaystackButton } from 'react-paystack';
+import { fetchArticles } from "@/constants/fetchArticles";
+import axios from 'axios';
 
 // Define the Paper type to help with TypeScript inference
 type Paper = {
-  dateSubmitted: string;
-  name: string;
-  reviewStatus: string;
+  id: string;
+  submissionDate: string;
+  title: string;
+  status: string;
 };
 
 export default function Payment() {
-  // Define paymentStatuses as an object where the keys are paper names (strings) and the values are booleans
+  const [papers, setPapers] = useState<Paper[]>([]);
+  const [loading, setLoading] = useState(true);
   const [paymentStatuses, setPaymentStatuses] = useState<Record<string, boolean>>({});
   const [email, setEmail] = useState(''); 
+  const [emailError, setEmailError] = useState('');
 
-  // Paystack public key and amount (20,000 NGN)
-  const paystackPublicKey = 'pk_test_9460ace54ee217be24ee1a05a36435debd300b54'; 
+  const paystackPublicKey = 'pk_test_6f46178eeba7cb1e186fadac089d6f7a6524bc37'; 
   const amount = 20000 * 100;
 
-  // Handles payment success for each individual paper
-  const handlePaymentSuccess = (paperName: string) => {
-    setPaymentStatuses(prev => ({ ...prev, [paperName]: true }));
-    toast.success(`${paperName} payment successful!`);
+  // Fetch articles from the Strapi backend when the component mounts
+  useEffect(() => {
+    const loadArticles = async () => {
+      setLoading(true);
+      try {
+        const { articles } = await fetchArticles({});
+        // Filter accepted papers and set them in the state
+        const acceptedArticles = articles.filter((article: any) => article.status === 'accepted');
+        setPapers(acceptedArticles);
+      } catch (error) {
+        console.error('Error fetching accepted papers:', error);
+        toast.error('Failed to load articles. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadArticles();
+  }, []);
+
+  const validateEmail = (email: string) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
   };
 
-  // Handles payment failure for each individual paper
+  const handlePaymentSuccess = async (paper: Paper) => {
+    setPaymentStatuses(prev => ({ ...prev, [paper.title]: true }));
+    toast.success(`${paper.title} payment successful!`);
+
+    // Update article status to 'approved' in Strapi
+    try {
+      await axios.put(`${process.env.NEXT_PUBLIC_STRAPI_URL}/articles/${paper.id}`, {
+        data: {
+          status: 'approved',
+        },
+      });
+      toast.success(`${paper.title} has been approved!`);
+    } catch (error) {
+      console.error('Error updating article status:', error);
+      toast.error('Failed to update article status. Please try again.');
+    }
+  };
+
   const handlePaymentFailure = (paperName: string) => {
     setPaymentStatuses(prev => ({ ...prev, [paperName]: false }));
     toast.error(`${paperName} payment failed!`);
   };
 
-  // Filter for accepted papers
-  const acceptedPapers = papersData.filter((paper: Paper) => paper.reviewStatus === 'Accepted');
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newEmail = e.target.value;
+    setEmail(newEmail);
+    if (newEmail && !validateEmail(newEmail)) {
+      setEmailError('Please enter a valid email address.');
+    } else {
+      setEmailError('');
+    }
+  };
 
   return (
     <div className="m-12">
@@ -51,20 +97,21 @@ export default function Payment() {
           type="email"
           id="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={handleEmailChange}
           placeholder="Enter your email"
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className={`mt-1 block w-full px-3 py-2 border ${emailError ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
         />
+        {emailError && <p className="text-red-500 text-sm mt-2">{emailError}</p>}
       </div>
 
-      {/* Accepted Papers Section */}
-      {acceptedPapers.length > 0 ? (
+      {/* Loading State */}
+      {loading ? (
+        <p>Loading accepted papers...</p>
+      ) : papers.length > 0 ? (
         <div className="space-y-6">
-          {acceptedPapers.map((paper: Paper, index: number) => {
-            // Check if payment for this specific paper is completed
-            const isPaid = paymentStatuses[paper.name];
+          {papers.map((paper: Paper, index: number) => {
+            const isPaid = paymentStatuses[paper.title];
 
-            // Component props specific to each paper
             const componentProps = {
               email,
               amount,
@@ -73,30 +120,33 @@ export default function Payment() {
                   {
                     display_name: "Paper Name",
                     variable_name: "paper_name",
-                    value: paper.name,  // Link payment to the specific paper name
+                    value: paper.title,
                   },
                 ],
               },
               publicKey: paystackPublicKey,
               text: 'Make Payment',
-              onSuccess: () => handlePaymentSuccess(paper.name),
-              onClose: () => handlePaymentFailure(paper.name),
+              onSuccess: () => handlePaymentSuccess(paper),
+              onClose: () => handlePaymentFailure(paper.title),
             };
 
             return (
               <div key={index} className="p-6 bg-gray-50 rounded-lg shadow-lg">
-                <p className="mb-2">Paper: {paper.name}</p>
+                <p className="mb-2">Paper: {paper.title}</p>
                 <p className="mb-2">
-                  Submission Date: {new Date(paper.dateSubmitted).toLocaleDateString()}
+                  Submission Date: {new Date(paper.submissionDate).toLocaleDateString()}
                 </p>
                 <p className="mb-2">Payment Fee: NGN20,000</p>
-                <p className="mb-6 text-green-600 font-bold">Status: {paper.reviewStatus}</p>
+                <p className="mb-6 text-green-600 font-bold">Status: {paper.status}</p>
 
-                {/* Display payment completed message or show Paystack button */}
                 {isPaid ? (
                   <p className="text-green-500 font-semibold">Payment Completed</p>
                 ) : (
-                  <PaystackButton {...componentProps} disabled={!email} />
+                  <PaystackButton 
+                    {...componentProps} 
+                    disabled={!email || !!emailError} 
+                    className={`py-2 px-4 text-white font-bold rounded ${(!email || !!emailError) ? 'bg-gray-400' : 'bg-primary hover:opacity-90'}`}
+                  />
                 )}
               </div>
             );
