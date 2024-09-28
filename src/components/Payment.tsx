@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { papersData } from '@/constants';
 import { useState } from 'react';
@@ -6,44 +6,36 @@ import { toast } from 'react-toastify';
 import { Typewriter } from "@/components";
 import { PaystackButton } from 'react-paystack';
 
+// Define the Paper type to help with TypeScript inference
+type Paper = {
+  dateSubmitted: string;
+  name: string;
+  reviewStatus: string;
+};
+
 export default function Payment() {
-  const [paymentStatus, setPaymentStatus] = useState(false);
+  // Define paymentStatuses as an object where the keys are paper names (strings) and the values are booleans
+  const [paymentStatuses, setPaymentStatuses] = useState<Record<string, boolean>>({});
   const [email, setEmail] = useState(''); 
 
   // Paystack public key and amount (20,000 NGN)
   const paystackPublicKey = 'pk_test_9460ace54ee217be24ee1a05a36435debd300b54'; 
   const amount = 20000 * 100;
 
-  const handlePaymentSuccess = () => {
-    setPaymentStatus(true);
-    toast.success('Payment successful!');
+  // Handles payment success for each individual paper
+  const handlePaymentSuccess = (paperName: string) => {
+    setPaymentStatuses(prev => ({ ...prev, [paperName]: true }));
+    toast.success(`${paperName} payment successful!`);
   };
 
-  const handlePaymentFailure = () => {
-    setPaymentStatus(false);
-    toast.error('Payment failed!');
-  };
-
-  const componentProps = {
-    email,
-    amount,
-    metadata: {
-      custom_fields: [
-        {
-          display_name: "Paper Name",
-          variable_name: "paper_name",
-          value: 'Gregory Journal Paper Payment',
-        },
-      ],
-    },
-    publicKey: paystackPublicKey,
-    text: 'Make Payment',
-    onSuccess: handlePaymentSuccess,
-    onClose: handlePaymentFailure,
+  // Handles payment failure for each individual paper
+  const handlePaymentFailure = (paperName: string) => {
+    setPaymentStatuses(prev => ({ ...prev, [paperName]: false }));
+    toast.error(`${paperName} payment failed!`);
   };
 
   // Filter for accepted papers
-  const acceptedPapers = papersData.filter(paper => paper.reviewStatus === 'Accepted');
+  const acceptedPapers = papersData.filter((paper: Paper) => paper.reviewStatus === 'Accepted');
 
   return (
     <div className="m-12">
@@ -68,19 +60,47 @@ export default function Payment() {
       {/* Accepted Papers Section */}
       {acceptedPapers.length > 0 ? (
         <div className="space-y-6">
-          {acceptedPapers.map((paper, index) => (
-            <div key={index} className="p-6 bg-gray-50 rounded-lg shadow-lg">
-              <p className="mb-2">Paper: {paper.name}</p>
-              <p className="mb-2">
-                Submission Date: {new Date(paper.dateSubmitted).toLocaleDateString()}
-              </p>
-              <p className="mb-2">Payment Fee: NGN20,000</p>
-              <p className="mb-6 text-green-600 font-bold">Status: {paper.reviewStatus}</p>
+          {acceptedPapers.map((paper: Paper, index: number) => {
+            // Check if payment for this specific paper is completed
+            const isPaid = paymentStatuses[paper.name];
 
-              {/* Paystack Payment Button */}
-              <PaystackButton {...componentProps} />
-            </div>
-          ))}
+            // Component props specific to each paper
+            const componentProps = {
+              email,
+              amount,
+              metadata: {
+                custom_fields: [
+                  {
+                    display_name: "Paper Name",
+                    variable_name: "paper_name",
+                    value: paper.name,  // Link payment to the specific paper name
+                  },
+                ],
+              },
+              publicKey: paystackPublicKey,
+              text: 'Make Payment',
+              onSuccess: () => handlePaymentSuccess(paper.name),
+              onClose: () => handlePaymentFailure(paper.name),
+            };
+
+            return (
+              <div key={index} className="p-6 bg-gray-50 rounded-lg shadow-lg">
+                <p className="mb-2">Paper: {paper.name}</p>
+                <p className="mb-2">
+                  Submission Date: {new Date(paper.dateSubmitted).toLocaleDateString()}
+                </p>
+                <p className="mb-2">Payment Fee: NGN20,000</p>
+                <p className="mb-6 text-green-600 font-bold">Status: {paper.reviewStatus}</p>
+
+                {/* Display payment completed message or show Paystack button */}
+                {isPaid ? (
+                  <p className="text-green-500 font-semibold">Payment Completed</p>
+                ) : (
+                  <PaystackButton {...componentProps} disabled={!email} />
+                )}
+              </div>
+            );
+          })}
         </div>
       ) : (
         <p className="text-gray-700">No accepted papers available for payment at the moment.</p>
