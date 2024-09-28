@@ -32,7 +32,9 @@ export default function Payment() {
       try {
         const { articles } = await fetchArticles({});
         // Filter accepted papers and set them in the state
+        console.log(articles, 'articles');
         const acceptedArticles = articles.filter((article: any) => article.status === 'accepted');
+        console.log(acceptedArticles, 'acceptedArticles');
         setPapers(acceptedArticles);
       } catch (error) {
         console.error('Error fetching accepted papers:', error);
