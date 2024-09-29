@@ -1,6 +1,10 @@
-import { Support } from '@/components';
+
 import Payment from '@/components/Payment';
+import { getUserMeLoader } from "@/data/services/get-user-me-loader";
 
 export default async function AnalyticsPage () {
-  return <Payment />;
+  const user = await getUserMeLoader();
+  const userEmail = user.data?.email;
+
+  return <Payment userEmail={userEmail} />;
 }
