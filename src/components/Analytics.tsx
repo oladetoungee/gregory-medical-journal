@@ -11,10 +11,10 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointE
 
 // Status colors as background
 const statusColors: { [key: string]: string } = {
-    'Under Review': '#FEF3C7', // Yellow faded
-    'Rejected': '#FECACA', // Red faded
-    'Accepted': '#D1FAE5', // Green faded
-    'Published': '#DBEAFE', // Blue faded
+    'under review': '#FEF3C7', // Yellow faded
+    'rejected': '#FECACA', // Red faded
+    'accepted': '#D1FAE5', // Green faded
+    'approved': '#DBEAFE', // Blue faded
   };
   
   export default function Analytics() {
