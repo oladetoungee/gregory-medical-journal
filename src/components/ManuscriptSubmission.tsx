@@ -47,6 +47,7 @@ export default function ManuscriptSubmission(user: any) {
       formData.append("files", data.coverImage[0]);
       formData.append("files", data.manuscriptFile[0]);
 
+      // Upload files to Strapi
       const fileUploadResponse = await axios.post(`${process.env.NEXT_PUBLIC_STRAPI_URL}/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -90,13 +91,22 @@ export default function ManuscriptSubmission(user: any) {
         },
       };
 
+      // Submit article to Strapi
       await axios.post(`${process.env.NEXT_PUBLIC_STRAPI_URL}/articles`, articleData, {
         headers: {
           Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_TOKEN}`,
         },
       });
 
-      toast.success('Manuscript submitted successfully!');
+      // Send confirmation emails to both user and admin
+      await axios.post('/api/paperEmails', {
+        name: user.user.username,
+        email: user.user.email,
+        articleTitle: data.title,
+        message: "Your manuscript has been successfully submitted and is under review.",
+      });
+
+      toast.success('Manuscript submitted successfully! Confirmation email sent.');
       reset();
       setAuthors([]);
       setOpen(false);
@@ -107,6 +117,7 @@ export default function ManuscriptSubmission(user: any) {
       setIsSubmitting(false); // Hide loader
     }
   };
+
 
   const addAuthor = () => {
     if (authorInput.name && authorInput.affiliation && authorInput.email) {
