@@ -158,7 +158,7 @@ export default function DashboardOverview({ user }: { user: User }) {
                   <TableCell>{formatDate(paper.submissionDate)}</TableCell>
                   <TableCell>{paper.title}</TableCell>
                   <TableCell>
-                    <span className={`inline-block px-3 py-1 rounded-full text-sm ${getStatusStyles(paper.status)}`}>
+                    <span className={`inline-block px-3 py-1 rounded-full text-[8px] ${getStatusStyles(paper.status)}`}>
                       {paper.status}
                     </span>
                   </TableCell>

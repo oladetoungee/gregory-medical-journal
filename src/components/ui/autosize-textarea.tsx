@@ -52,7 +52,10 @@ type AutosizeTextAreaProps = {
   minHeight?: number;
 } & React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
-export const AutosizeTextarea = React.forwardRef<AutosizeTextAreaRef, AutosizeTextAreaProps>(
+export const AutosizeTextarea = React.forwardRef<
+  HTMLTextAreaElement,
+  AutosizeTextAreaProps
+>(
   (
     {
       maxHeight = Number.MAX_SAFE_INTEGER,
@@ -62,10 +65,10 @@ export const AutosizeTextarea = React.forwardRef<AutosizeTextAreaRef, AutosizeTe
       value,
       ...props
     }: AutosizeTextAreaProps,
-    ref: React.Ref<AutosizeTextAreaRef>,
+    ref
   ) => {
     const textAreaRef = React.useRef<HTMLTextAreaElement | null>(null);
-    const [triggerAutoSize, setTriggerAutoSize] = React.useState('');
+    const [triggerAutoSize, setTriggerAutoSize] = React.useState("");
 
     useAutosizeTextArea({
       textAreaRef: textAreaRef.current,
@@ -74,33 +77,36 @@ export const AutosizeTextarea = React.forwardRef<AutosizeTextAreaRef, AutosizeTe
       minHeight,
     });
 
-    useImperativeHandle(ref, () => ({
-      textArea: textAreaRef.current as HTMLTextAreaElement,
-      focus: () => textAreaRef?.current?.focus(),
-      maxHeight,
-      minHeight,
-    }));
+    useImperativeHandle(ref, () => textAreaRef.current as HTMLTextAreaElement);
 
     React.useEffect(() => {
       setTriggerAutoSize(value as string);
-    }, [props?.defaultValue, value]);
+    }, [value]);
 
     return (
       <textarea
         {...props}
         value={value}
-        ref={textAreaRef}
+        ref={(instance) => {
+          textAreaRef.current = instance;
+          if (typeof ref === "function") {
+            ref(instance);
+          } else if (ref) {
+            ref.current = instance;
+          }
+        }}
         className={cn(
-          'flex w-full placeholder:italic placeholder:text-xs placeholder:text-gray-300 text-primary rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-          className,
+          "flex w-full placeholder:italic placeholder:text-xs placeholder:text-gray-300 text-primary rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          className
         )}
-          placeholder="Type your message here..."
+        placeholder="Type your message here..."
         onChange={(e) => {
           setTriggerAutoSize(e.target.value);
           onChange?.(e);
         }}
       />
     );
-  },
+  }
 );
+
 AutosizeTextarea.displayName = 'AutosizeTextarea';
