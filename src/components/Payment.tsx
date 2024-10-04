@@ -16,7 +16,7 @@ type Paper = {
   submittedByEmail: string;
 };
 
-export default function Payment({ userEmail }: { userEmail: string }) {
+export default function Payment({ userEmail, userName }: { userEmail: string; userName: string }) {
   const [papers, setPapers] = useState<Paper[]>([]);
   const [loading, setLoading] = useState(true);
   const [paymentStatuses, setPaymentStatuses] = useState<Record<string, boolean>>({});
@@ -56,19 +56,30 @@ export default function Payment({ userEmail }: { userEmail: string }) {
   const handlePaymentSuccess = async (paper: Paper) => {
     setPaymentStatuses(prev => ({ ...prev, [paper.title]: true }));
     toast.success(`${paper.title} payment successful!`);
-
+  
     try {
+      // Update the article status to 'approved'
       await axios.put(`${process.env.NEXT_PUBLIC_STRAPI_URL}/articles/${paper.id}`, {
         data: {
           status: 'approved',
         },
       });
-      toast.success(`${paper.title} has been approved!`);
+  
+      // Send email confirmation to both user and admin
+      await axios.post('/api/paymentEmail', {
+        name: userName,
+        email: email,
+        articleTitle: paper.title,
+        message: `Your paper "${paper.title}" has been successfully paid for and is now published on the Gregory Medical Journal website.`,
+      });
+  
+      toast.success(`${paper.title} has been approved and an email confirmation has been sent!`);
     } catch (error) {
       console.error('Error updating article status:', error);
       toast.error('Failed to update article status. Please try again.');
     }
   };
+  
 
   const handlePaymentFailure = (paperName: string) => {
     setPaymentStatuses(prev => ({ ...prev, [paperName]: false }));
