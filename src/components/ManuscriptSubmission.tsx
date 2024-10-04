@@ -1,11 +1,11 @@
 "use client";
 import { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, FieldValues } from "react-hook-form";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input, AutosizeTextarea } from "@/components/ui";
 import { Button, Typewriter } from "@/components";
 import { motion } from "framer-motion";
-import { UploadIcon, FileIcon, InfoIcon, X } from "lucide-react";
+import { UploadIcon, FileIcon, InfoIcon, X, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { toast } from 'react-toastify';
 import axios from 'axios';
@@ -16,104 +16,98 @@ interface Author {
   email: string;
 }
 
-interface FormData {
+interface FormData extends FieldValues {
   title: string;
   abstract: string;
   coverImage: FileList;
   manuscriptFile: FileList;
 }
 
-export default function ManuscriptSubmission(user :any) {
-
-  const { register, handleSubmit, reset } = useForm<FormData>();
+export default function ManuscriptSubmission(user: any) {
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>();
   const [open, setOpen] = useState(false);
   const [authors, setAuthors] = useState<Author[]>([]);
   const [authorInput, setAuthorInput] = useState({ name: "", affiliation: "", email: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Form submission handler
-    const onSubmit: SubmitHandler<FormData> = async (data: any) => {
-      try {
-        console.log('API Token:', process.env.NEXT_PUBLIC_STRAPI_API_TOKEN);
-    
-        const formData = new FormData();
-        formData.append("files", data.coverImage[0]);
-        formData.append("files", data.manuscriptFile[0]);
-    
-        // Upload files
-        const fileUploadResponse = await axios.post(`${process.env.NEXT_PUBLIC_STRAPI_URL}/upload`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_TOKEN}`,
-          },
-        });
-    
-        const uploadedFiles = fileUploadResponse.data;
-        const coverImageId = uploadedFiles.find((file: any) => file.name === data.coverImage[0].name).id;
-        const manuscriptFileId = uploadedFiles.find((file: any) => file.name === data.manuscriptFile[0].name).id;
-    
-        // Split abstract into valid rich text structure
-        const excerpt = data.abstract.split('\n').map((para: string) => ({
-          type: 'paragraph',
-          children: [{ type: 'text', text: para }], // Ensure text nodes are marked as type 'text'
-        }));
-        
-        // Ensure authors are properly structured
-        const formattedAuthors = authors.map((author) => ({
-          name: author.name,
-          affiliation: author.affiliation,
-          email: author.email,
-        }));
-        
-    
-        // Validation: Ensure there are authors
-        if (formattedAuthors.length === 0) {
-          toast.error("Please add at least one author.");
-          return;
-        }
-    
-        // Prepare the article data
-        const articleData = {
-          data: {
-            title: data.title,
-            excerpt: excerpt, // Rich text blocks
-            editorPick: false,
-            submissionDate: new Date().toISOString(),
-            Authors: formattedAuthors, // Structured authors array
-            image: coverImageId,
-            document: manuscriptFileId,
-            submittedByName: user.user.username,
-            submittedByEmail: user.user.email,
-            status: 'under review'
-          },
-        };
-        
-    
-        // Log the article data before submitting
-        console.log(articleData, 'article data');
-    
-        // Submit the article data
-        const articleResponse = await axios.post(`${process.env.NEXT_PUBLIC_STRAPI_URL}/articles`, articleData, {
-          headers: {
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_TOKEN}`,
-          },
-        });
-    
-        toast.success('Manuscript submitted successfully!');
-        reset();
-        setAuthors([]);
-        setOpen(false);
-      } catch (error: any) {
-        console.error('Error submitting manuscript:', error);
-        console.error('Full Error Response:', error.response?.data);
-        toast.error('There was an error submitting your manuscript. Please try again.');
+  const onSubmit: SubmitHandler<FormData> = async (data: any) => {
+    // Validate if media files are provided
+    if (!data.coverImage || !data.coverImage[0]) {
+      toast.error("Please upload a cover image.");
+      return;
+    }
+    if (!data.manuscriptFile || !data.manuscriptFile[0]) {
+      toast.error("Please upload the manuscript file.");
+      return;
+    }
+
+    setIsSubmitting(true); // Show loader
+    try {
+      const formData = new FormData();
+      formData.append("files", data.coverImage[0]);
+      formData.append("files", data.manuscriptFile[0]);
+
+      const fileUploadResponse = await axios.post(`${process.env.NEXT_PUBLIC_STRAPI_URL}/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_TOKEN}`,
+        },
+      });
+
+      const uploadedFiles = fileUploadResponse.data;
+      const coverImageId = uploadedFiles.find((file: any) => file.name === data.coverImage[0].name)?.id;
+      const manuscriptFileId = uploadedFiles.find((file: any) => file.name === data.manuscriptFile[0].name)?.id;
+
+      const excerpt = data.abstract.split('\n').map((para: string) => ({
+        type: 'paragraph',
+        children: [{ type: 'text', text: para }],
+      }));
+
+      const formattedAuthors = authors.map((author) => ({
+        name: author.name,
+        affiliation: author.affiliation,
+        email: author.email,
+      }));
+
+      if (formattedAuthors.length === 0) {
+        toast.error("Please add at least one author.");
+        setIsSubmitting(false); // Hide loader
+        return;
       }
-    };
-    
-    
-  
-  
 
-  // Add author to the list when all fields are filled
+      const articleData = {
+        data: {
+          title: data.title,
+          excerpt: excerpt,
+          editorPick: false,
+          submissionDate: new Date().toISOString(),
+          Authors: formattedAuthors,
+          image: coverImageId,
+          document: manuscriptFileId,
+          submittedByName: user.user.username,
+          submittedByEmail: user.user.email,
+          status: 'under review',
+        },
+      };
+
+      await axios.post(`${process.env.NEXT_PUBLIC_STRAPI_URL}/articles`, articleData, {
+        headers: {
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_TOKEN}`,
+        },
+      });
+
+      toast.success('Manuscript submitted successfully!');
+      reset();
+      setAuthors([]);
+      setOpen(false);
+    } catch (error: any) {
+      console.error('Error submitting manuscript:', error);
+      toast.error('There was an error submitting your manuscript. Please try again.');
+    } finally {
+      setIsSubmitting(false); // Hide loader
+    }
+  };
+
   const addAuthor = () => {
     if (authorInput.name && authorInput.affiliation && authorInput.email) {
       setAuthors((prev) => [...prev, authorInput]);
@@ -123,15 +117,14 @@ export default function ManuscriptSubmission(user :any) {
     }
   };
 
-  // Remove author
   const handleRemoveAuthor = (index: number) => {
     setAuthors((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (
     <div className="m-12">
-            <div className="mb-8">
-      <Typewriter text="Submit Your Manuscript, Get Your Research Published" className="page-header text-2xl font-bold mb-6" />
+      <div className="mb-8">
+        <Typewriter text="Submit Your Manuscript, Get Your Research Published" className="page-header text-2xl font-bold mb-6" />
       </div>
       <p className="text-primary text-sm mt-1 text-center">
         Join the community of researchers sharing groundbreaking work.
@@ -159,7 +152,7 @@ export default function ManuscriptSubmission(user :any) {
           <Button onClick={() => setOpen(true)}>Submit Your Manuscript</Button>
         </DialogTrigger>
 
-        <DialogContent>
+        <DialogContent className="max-h-[80vh] overflow-y-auto">
           <DialogTitle>Submit Your Manuscript</DialogTitle>    
           <DialogDescription>
             Fill out the details and attach your manuscript for submission.
@@ -170,19 +163,16 @@ export default function ManuscriptSubmission(user :any) {
             <div className="space-y-4">
               <div className="space-y-2">
                 <label htmlFor="title" className="text-sm font-medium">Title</label>
-                <Input id="title" placeholder="Enter manuscript title" {...register("title", { required: true })} />
+                <Input id="title" placeholder="Enter manuscript title" {...register("title", { required: "Title is required" })} />
+                {errors.title && <p className="text-red-500">{errors.title.message}</p>}
               </div>
 
               <div className="space-y-2">
-  <label htmlFor="abstract" className="text-sm font-medium">Abstract</label>
-  <AutosizeTextarea
-    id="abstract"
-    placeholder="Write a short abstract..."
-    {...register("abstract", { required: "Abstract is required" })}
-  />
-</div>
+                <label htmlFor="abstract" className="text-sm font-medium">Abstract</label>
+                <AutosizeTextarea id="abstract" placeholder="Write a short abstract..." {...register("abstract", { required: "Abstract is required" })} />
+                {errors.abstract && <p className="text-red-500">{errors.abstract.message}</p>}
+              </div>
 
-              {/* Author Section */}
               <div className="space-y-2">
                 <label className="text-sm font-medium">Authors</label>
                 <div className="flex flex-wrap gap-2 mt-2">
@@ -207,7 +197,6 @@ export default function ManuscriptSubmission(user :any) {
                   <Button onClick={addAuthor}>Add Author</Button>
                 </div>
 
-                {/* Displaying Added Authors */}
                 <div className="flex flex-wrap gap-2 mt-2">
                   {authors.map((author, index) => (
                     <div key={index} className="flex items-center bg-white p-2 rounded-md shadow-md">
@@ -222,19 +211,22 @@ export default function ManuscriptSubmission(user :any) {
                 <label className="text-sm font-medium mb-4">Cover Image</label>
                 <div className="flex items-center gap-4 mt-1">
                   <UploadIcon className="w-6 h-6" />
-                  <Input id="coverImage" type="file" accept="image/*" {...register("coverImage", { required: true })} />
+                  <Input id="coverImage" type="file" accept="image/*" {...register("coverImage")} />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium">Manuscript (PDF)</label>
-                <Input id="manuscriptFile" type="file" accept=".pdf" {...register("manuscriptFile", { required: true })} />
+                <Input id="manuscriptFile" type="file" accept=".pdf" {...register("manuscriptFile")} />
               </div>
             </div>
 
             <DialogFooter className="mt-4">
               <Button onClick={() => setOpen(false)}>Cancel</Button>
-              <Button type="submit">Submit</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? <Loader2 className="animate-spin w-4 h-4 mr-2" /> : null}
+                {isSubmitting ? 'Submitting...' : 'Submit'}
+              </Button>
             </DialogFooter>
           </motion.form>
         </DialogContent>
