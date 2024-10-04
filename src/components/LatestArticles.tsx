@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { PersonIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/";
-import { fetchArticles } from "@/constants/fetchArticles";
+import { fetchApprovedArticles } from "@/constants/fetchApprovedArticles";
 import { getImageUrl } from "@/utils/getImageUrl";
 
 interface Article {
@@ -26,7 +26,7 @@ const LatestArticles: React.FC = () => {
   useEffect(() => {
     const loadArticles = async () => {
       try {
-        const { articles } = await fetchArticles({ pageSize: 4 });
+        const { articles } = await fetchApprovedArticles({ pageSize: 4 });
         setArticles(articles || []);
       } catch (error) {
         console.error("Error fetching articles:", error);

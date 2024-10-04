@@ -169,7 +169,7 @@ export default function ManuscriptSubmission(user: any) {
 
               <div className="space-y-2">
                 <label htmlFor="abstract" className="text-sm font-medium">Abstract</label>
-                <AutosizeTextarea id="abstract" placeholder="Write a short abstract..." {...register("abstract", { required: "Abstract is required" })} />
+                <AutosizeTextarea id="abstract" placeholder="Kindly input at least 2 paragraphs..." {...register("abstract", { required: "Abstract is required" })} />
                 {errors.abstract && <p className="text-red-500">{errors.abstract.message}</p>}
               </div>
 

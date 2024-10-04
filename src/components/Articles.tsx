@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ArticlesList, Typewriter } from '@/components/';
-import { fetchArticles } from '@/constants/fetchArticles';
+import { fetchApprovedArticles } from '@/constants/fetchApprovedArticles';
 import Loader from '@/components/Loader'; // Assuming you have a Loader component
 
 const ArticlesPage: React.FC = () => {
@@ -15,7 +15,7 @@ const ArticlesPage: React.FC = () => {
   useEffect(() => {
     const loadArticles = async () => {
       setLoading(true); // Set loading to true when fetching starts
-      const { articles, totalPages } = await fetchArticles({ page: currentPage, pageSize: articlesPerPage });
+      const { articles, totalPages } = await fetchApprovedArticles({ page: currentPage, pageSize: articlesPerPage });
       setArticles(articles);
       setTotalPages(totalPages);
       setLoading(false); // Set loading to false after data is fetched

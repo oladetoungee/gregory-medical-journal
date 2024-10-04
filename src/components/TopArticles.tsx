@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { ArticlesList, Typewriter } from '@/components';
-import { fetchArticles } from '@/constants/fetchArticles';
+import { fetchApprovedArticles } from '@/constants/fetchApprovedArticles';
 
 const TopArticles: React.FC = () => {
   const [articles, setArticles] = useState([]);
@@ -10,7 +10,7 @@ const TopArticles: React.FC = () => {
   useEffect(() => {
     const loadArticles = async () => {
       setLoading(true); // Show loader (optional)
-      const { articles } = await fetchArticles({ pageSize: 3 }); // Fetch only 3 latest articles
+      const { articles } = await fetchApprovedArticles({ pageSize: 3 }); // Fetch only 3 latest articles
       setArticles(articles || []);
       setLoading(false); // Hide loader (optional)
     };
