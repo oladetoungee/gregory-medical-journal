@@ -14,13 +14,22 @@ export async function middleware(request: NextRequest) {
     "/dashboard/analytics",
   ];
 
-  console.log("User Middleware", user);
-  console.log("Current Path", currentPath);
+  // Debugging logs
+  console.log("Middleware Triggered");
+  console.log("Current Path:", currentPath);
+  console.log("User Object:", user);
+  console.log("User OK Status:", user?.ok);
 
-  // Fixing the condition by closing the parenthesis
-  if (dashboardRoutes.includes(currentPath) && user.ok === false) {
-    return NextResponse.redirect(new URL("/", request.url));
+  // If the user is unauthenticated (user.ok === false), log the event and redirect
+  if (dashboardRoutes.includes(currentPath)) {
+    if (user?.ok === false) {
+      console.log("Redirecting to /signin as user is unauthenticated.");
+      return NextResponse.redirect(new URL("/signin", request.url));
+    } else {
+      console.log("User authenticated or has basic access. Proceeding to dashboard.");
+    }
   }
 
+  // Default action: proceed to the requested page
   return NextResponse.next();
 }
