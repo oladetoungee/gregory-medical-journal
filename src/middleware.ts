@@ -11,7 +11,13 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Fetch user details
+  // Avoid redirect loop for /signin path and allow public pages
+  if (currentPath === "/signin" || !currentPath.startsWith("/dashboard")) {
+    console.log("Public page accessed, no auth required.");
+    return NextResponse.next();
+  }
+
+  // Fetch user details for dashboard pages only
   let user;
   try {
     user = await getUserMeLoader();
@@ -21,13 +27,15 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/signin", request.url));
   }
 
-  // If user is not authenticated, redirect to signin
+  // Check if user is authenticated
   if (!user || user.ok === false) {
     console.log("User not authenticated. Redirecting to /signin...");
     return NextResponse.redirect(new URL("/signin", request.url));
   }
 
+  // User is authenticated and accessing a dashboard page
+  console.log("Authenticated user accessing dashboard:", currentPath);
 
-
+  // Default action
   return NextResponse.next();
 }
