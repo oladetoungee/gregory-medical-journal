@@ -20,18 +20,18 @@ export async function middleware(request: NextRequest) {
   console.log("Pathname:", currentPath);  // Just the path without query params
   console.log("User Object:", user);      // The user object from getUserMeLoader
   console.log("User OK Status:", user?.ok); // Check if the user is authenticated
-  
-  // Check if we're navigating to a dashboard page
+
+  // Handle all dashboard-related routes
   if (currentPath.startsWith("/dashboard")) {
-    console.log("Attempting to access dashboard page...");
-    
+    console.log("Attempting to access a dashboard page...");
+
     // If the user is not authenticated, redirect to the signin page
     if (user?.ok === false) {
       console.log("User is not authenticated. Redirecting to /signin...");
       return NextResponse.redirect(new URL("/signin", request.url));
     }
 
-    // If the user is authenticated, let them through
+    // If the user is authenticated, let them proceed
     console.log("User is authenticated. Proceeding to dashboard...");
   }
 
