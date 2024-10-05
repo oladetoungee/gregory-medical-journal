@@ -27,10 +27,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/signin", request.url));
   }
 
-  // If navigating to any /dashboard route, ensure user is authenticated
-  if (user) {
-    console.log("Authenticated user accessing:", currentPath);
-  }
+
 
   return NextResponse.next();
 }
