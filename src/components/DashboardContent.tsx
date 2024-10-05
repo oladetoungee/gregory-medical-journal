@@ -72,7 +72,7 @@ export default function DashboardContent({
   {/* Header */}
   <header className="flex items-center justify-between md:justify-end px-6 py-3 bg-primary h-[60px] w-full">
     <div className="flex items-center gap-2">
-      <BellIcon className="h-6 w-6 text-gray-400 hover:text-gray-50" />
+      {/* <BellIcon className="h-6 w-6 text-gray-400 hover:text-gray-50" /> */}
       {user.ok ? (
         <div className="flex gap-2 items-center">
           {user.data.image ? (
