@@ -22,7 +22,7 @@ const Search: React.FC<SearchProps> = ({ showAllPublicationsLink = true, onSearc
             <p className="mb-4 text-base sm:text-lg md:text-xl font-medium text-gray-700 text-center">
                 Explore the Latest Medical Research Articles on Gregory Journal
             </p>
-            <div className="relative w-full sm:w-[80%] md:w-[70%] lg:w-[60%] mb-4">
+            {/* <div className="relative w-full sm:w-[80%] md:w-[70%] lg:w-[60%] mb-4">
                 <input
                     type="text"
                     placeholder="Search by Keyword,, Title, Author, Journal, etc."
@@ -33,10 +33,10 @@ const Search: React.FC<SearchProps> = ({ showAllPublicationsLink = true, onSearc
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                     <MagnifyingGlassIcon className="w-6 h-6 text-primary" />
                 </div>
-            </div>
+            </div> */}
             {showAllPublicationsLink && (
                 <Link
-                    href="/all-publications"
+                    href="/journals/articles"
                     className="text-primary text-sm sm:text-xs hover:underline"
                 >
                     View All Publications

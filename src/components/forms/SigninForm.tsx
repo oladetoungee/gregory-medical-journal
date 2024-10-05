@@ -75,9 +75,9 @@ export default function SigninForm() {
                 className="absolute top-9 right-4 text-gray-500"
               >
                 {passwordVisible ? (
-                  <EyeOffIcon className="h-5 w-5" aria-hidden="true" />
-                ) : (
                   <EyeIcon className="h-5 w-5" aria-hidden="true" />
+                ) : (
+                  <EyeOffIcon className="h-5 w-5" aria-hidden="true" />
                 )}
               </button>
             </div>

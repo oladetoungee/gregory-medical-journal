@@ -6,22 +6,29 @@ import axios from 'axios';
 import { truncateExcerpt } from "@/constants/truncatedText";
 import Loader from "@/components/Loader";
 import Image from "next/image";
-import Link from "next/link";
 import { Button } from "@/components/";
+import { getImageUrl } from "@/utils/getImageUrl";
 
-interface Article {
+interface Author {
+  name: string;
+  affiliation: string;
+  email: string;
+}
+
+interface Articles {
   id: number;
   title: string;
-  author: string;
-  excerpt: any[];
-  image: string;
+  authors: Author[];
+  excerpt: any[]; // Rich text blocks
+  image?: { data?: { attributes?: { url?: string } } };
+  document?: { data?: { attributes?: { url?: string } } };
   link: string;
   editorPick: boolean;
-  publishedAt: string;
+  submissionDate: string;
 }
 
 const Page: React.FC = () => {
-  const [article, setArticle] = useState<Article>();
+  const [article, setArticle] = useState<Articles | null>(null);
   const [error, setError] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
@@ -29,22 +36,21 @@ const Page: React.FC = () => {
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_STRAPI_URL}/articles/${id}`);
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_STRAPI_URL}/articles/${id}?populate=*`);
         const articleData = res.data.data?.attributes;
-
         if (articleData) {
           setArticle({
             id: res.data.data.id,
             title: articleData.title,
-            author: articleData.author,
-            excerpt: articleData.excerpt,
-            image: articleData.image,
-            link: articleData.link,
+            authors: articleData.Authors || [], // Assuming 'authors' is an array
+            excerpt: articleData.excerpt, // Rich text blocks
+            image: articleData.image, // The image field with nested structure
+            document: articleData.document, // The document or link to download
+            link: articleData.link || "", // The document or link to download
             editorPick: articleData.editorPick,
-            publishedAt: articleData.publishedAt,
+            submissionDate: articleData.submissionDate,
           });
         }
-        console.log(articleData.image);
       } catch (error) {
         console.error("Error fetching article:", error);
         setError("Failed to fetch article data. Please try again later.");
@@ -68,13 +74,14 @@ const Page: React.FC = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow mt-4">
-      {article.image && (
+      {article.image?.data?.attributes?.url && (
         <div className="relative w-full h-48">
           <Image
-            src={article.image}
+            src={getImageUrl(article?.image?.data?.attributes)}
             alt={article.title}
             layout="fill"
             objectFit="cover"
+            unoptimized={true}
           />
         </div>
       )}
@@ -82,10 +89,13 @@ const Page: React.FC = () => {
         <h2 className="text-lg font-semibold text-gray-900 mb-2">
           {article.title}
         </h2>
-        <p className="text-sm text-gray-600 mb-4">
-          by {article.author} on{" "}
+        <p className="text-sm text-gray-600 mb-4 italic">
+          by {article.authors?.length > 0
+                ? article.authors.map(author => author.name).join(", ")
+                : "Unknown authors"} 
+          on{" "}
           <span className="text-sm text-gray-600">
-            {format(new Date(article.publishedAt), "MMMM d, yyyy, h:mm a")}
+            {format(new Date(article.submissionDate), "MMMM d, yyyy, h:mm a")}
           </span>
         </p>
         <div>
@@ -101,9 +111,15 @@ const Page: React.FC = () => {
           {"....."}
         </div>
 
-        <Link href={article.link} target="_blank">
-          <Button>Download full article</Button>
-        </Link>
+        {article.document?.data?.attributes?.url && (
+          <a 
+            href={getImageUrl(article.document?.data?.attributes)} 
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
+            <Button>View full article</Button>
+          </a>
+        )}
       </div>
     </div>
   );

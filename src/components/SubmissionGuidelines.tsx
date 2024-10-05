@@ -108,7 +108,7 @@ const SubmissionGuidelines = () => {
           <p className="text-xl font-medium text-primary mb-2">
           Ready to Submit Your Manuscript?
           </p>
-          <Link href="/submit-manuscript">
+          <Link href="/signup">
             <Button icon={<LightningBoltIcon />}>
                 Submit Your Paper
             </Button>

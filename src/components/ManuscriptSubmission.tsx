@@ -250,7 +250,7 @@ export default function ManuscriptSubmission(user: any) {
           If you need assistance with your manuscript, reach out to our editorial team for guidance.
         </p>
         <Button className="mt-4">
-          <Link href="/contact">Contact Editorial Team</Link>
+          <Link href="/dashboard/support">Contact Editorial Team</Link>
         </Button>
       </div>
     </div>
