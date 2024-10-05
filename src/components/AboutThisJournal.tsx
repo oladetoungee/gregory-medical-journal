@@ -42,6 +42,7 @@ interface Abouts {
 
 const AboutThisJournal = () => {
   const [abouts, setAbouts] = useState<Abouts[]>([]);
+  console.log(process.env, 'jhgfdfgh'); // Check if your environment variables are loaded
 
   useEffect(() => {
     const fetchAbouts = async () => {

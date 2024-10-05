@@ -22,11 +22,15 @@ export default function Payment({ userEmail, userName }: { userEmail: string; us
   const [paymentStatuses, setPaymentStatuses] = useState<Record<string, boolean>>({});
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
+  const [paystackPublicKey, setPaystackPublicKey] = useState<string>(''); // Local state for the public key
 
-  const paystackPublicKey = 'pk_test_6f46178eeba7cb1e186fadac089d6f7a6524bc37'; 
   const amount = 20000 * 100;
 
   useEffect(() => {
+    // Load the Paystack public key from environment variable inside useEffect
+    const paystackKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || '';
+    setPaystackPublicKey(paystackKey);
+
     const loadArticles = async () => {
       setLoading(true);
       try {
@@ -79,7 +83,6 @@ export default function Payment({ userEmail, userName }: { userEmail: string; us
       toast.error('Failed to update article status. Please try again.');
     }
   };
-  
 
   const handlePaymentFailure = (paperName: string) => {
     setPaymentStatuses(prev => ({ ...prev, [paperName]: false }));
@@ -102,66 +105,64 @@ export default function Payment({ userEmail, userName }: { userEmail: string; us
         <Typewriter text="Settle Pending Paper Payments with Ease" className="page-header text-2xl font-bold mb-6" />
       </div>
 
-    
-
       {loading ? (
         <p>Loading accepted papers...</p>
       ) : papers.length > 0 ? (
         <>
-      <div className="mb-6">
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Enter Email for Payment</label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={handleEmailChange}
-          placeholder="Enter your email"
-          className={`mt-1 block w-full px-3 py-2 border ${emailError ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-        />
-        {emailError && <p className="text-red-500 text-sm mt-2">{emailError}</p>}
-      </div>
-        <div className="space-y-6">
-          {papers.map((paper: Paper, index: number) => {
-            const isPaid = paymentStatuses[paper.title];
+          <div className="mb-6">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Enter Email for Payment</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={handleEmailChange}
+              placeholder="Enter your email"
+              className={`mt-1 block w-full px-3 py-2 border ${emailError ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+            />
+            {emailError && <p className="text-red-500 text-sm mt-2">{emailError}</p>}
+          </div>
+          <div className="space-y-6">
+            {papers.map((paper: Paper, index: number) => {
+              const isPaid = paymentStatuses[paper.title];
 
-            const componentProps = {
-              email,
-              amount,
-              metadata: {
-                custom_fields: [
-                  {
-                    display_name: "Paper Name",
-                    variable_name: "paper_name",
-                    value: paper.title,
-                  },
-                ],
-              },
-              publicKey: paystackPublicKey,
-              text: 'Make Payment',
-              onSuccess: () => handlePaymentSuccess(paper),
-              onClose: () => handlePaymentFailure(paper.title),
-            };
+              const componentProps = {
+                email,
+                amount,
+                metadata: {
+                  custom_fields: [
+                    {
+                      display_name: "Paper Name",
+                      variable_name: "paper_name",
+                      value: paper.title,
+                    },
+                  ],
+                },
+                publicKey: paystackPublicKey, // Now it will be loaded from useEffect
+                text: 'Make Payment',
+                onSuccess: () => handlePaymentSuccess(paper),
+                onClose: () => handlePaymentFailure(paper.title),
+              };
 
-            return (
-              <div key={index} className="p-6 bg-gray-50 rounded-lg shadow-lg">
-                <p className="mb-2">Paper: {paper.title}</p>
-                <p className="mb-2">Submission Date: {new Date(paper.submissionDate).toLocaleDateString()}</p>
-                <p className="mb-2">Payment Fee: NGN20,000</p>
-                <p className="mb-6 text-green-600 font-bold">Status: {paper.status}</p>
+              return (
+                <div key={index} className="p-6 bg-gray-50 rounded-lg shadow-lg">
+                  <p className="mb-2">Paper: {paper.title}</p>
+                  <p className="mb-2">Submission Date: {new Date(paper.submissionDate).toLocaleDateString()}</p>
+                  <p className="mb-2">Payment Fee: NGN20,000</p>
+                  <p className="mb-6 text-green-600 font-bold">Status: {paper.status}</p>
 
-                {isPaid ? (
-                  <p className="text-green-500 font-semibold">Payment Completed</p>
-                ) : (
-                  <PaystackButton 
-                    {...componentProps} 
-                    disabled={!email || !!emailError} 
-                    className={`py-2 px-4 text-white font-bold rounded ${(!email || !!emailError) ? 'bg-gray-400' : 'bg-primary hover:opacity-90'}`}
-                  />
-                )}
-              </div>
-            );
-          })}
-        </div>
+                  {isPaid ? (
+                    <p className="text-green-500 font-semibold">Payment Completed</p>
+                  ) : (
+                    <PaystackButton 
+                      {...componentProps} 
+                      disabled={!email || !!emailError || !paystackPublicKey} 
+                      className={`py-2 px-4 text-white font-bold rounded ${(!email || !!emailError || !paystackPublicKey) ? 'bg-gray-400' : 'bg-primary hover:opacity-90'}`}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </>
       ) : (
         <p className="text-gray-700 text-base text-center">
