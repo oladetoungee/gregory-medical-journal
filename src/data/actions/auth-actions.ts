@@ -11,9 +11,13 @@ import {
 const config = {
   maxAge: 60 * 60 * 24 * 7, // 1 week
   path: "/",
-  domain: process.env.HOST ?? "localhost",
+  domain:
+  process.env.NODE_ENV === "production"
+    ? "gregory-medical-journal.vercel.app"
+    : "localhost",
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
+
 };
 
 const schemaRegister = z.object({
