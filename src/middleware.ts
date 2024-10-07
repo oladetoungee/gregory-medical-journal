@@ -1,8 +1,17 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { getUserMeLoader } from "@/data/services/get-user-me-loader";
 
 export async function middleware(request: NextRequest) {
-  // No restrictions - Allow all routes to be accessed
-  console.log("Middleware running, no restrictions applied.");
+  const user = await getUserMeLoader();
+  const currentPath = request.nextUrl.pathname;
+
+  console.log("User Middleware", user);
+  console.log("Current Path", currentPath);
+
+  if (currentPath.startsWith("/dashboard") && user.ok === false) {
+    return NextResponse.redirect(new URL("/signin", request.url));
+  }
+
   return NextResponse.next();
 }
