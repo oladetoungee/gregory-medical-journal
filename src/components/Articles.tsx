@@ -24,8 +24,6 @@ const ArticlesPage: React.FC = () => {
     loadArticles();
   }, [currentPage]);
 
-  console.log(articles, 'articles');
-
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };

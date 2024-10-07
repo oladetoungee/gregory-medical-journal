@@ -50,7 +50,7 @@ const ArticlesList: React.FC<ArticlesListProps> = ({
     }
   };
 
-  console.log(articles, 'articles in article list');
+
 
   return (
     <div className="space-y-6">

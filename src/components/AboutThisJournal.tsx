@@ -42,7 +42,6 @@ interface Abouts {
 
 const AboutThisJournal = () => {
   const [abouts, setAbouts] = useState<Abouts[]>([]);
-  console.log(process.env, 'jhgfdfgh'); // Check if your environment variables are loaded
 
   useEffect(() => {
     const fetchAbouts = async () => {
@@ -50,7 +49,7 @@ const AboutThisJournal = () => {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_STRAPI_URL}/abouts`
         );
-        console.log("response:", response.data.data)
+
         const aboutUs = response.data.data.map((data: any) => ({
           id: data.id,
           title: data.attributes.title,
@@ -58,7 +57,7 @@ const AboutThisJournal = () => {
           image: data.attributes.image
         }));
         setAbouts(aboutUs);
-        console.log("about-us:", aboutUs);
+
       } catch (error) {
         console.log("Error fetching about:", error);
       }

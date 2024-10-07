@@ -37,7 +37,7 @@ const LatestArticles: React.FC = () => {
 
     loadArticles();
   }, []);
-  console.log(articles, 'articles');
+
 
 
   if (loading) {

@@ -104,7 +104,7 @@ export async function loginUserAction(prevState: any, formData: FormData) {
     });
   
     if (!validatedFields.success) {
-      console.log("Validation Errors:", validatedFields.error.flatten().fieldErrors);
+   
       return {
         ...prevState,
         zodErrors: validatedFields.error.flatten().fieldErrors,
@@ -115,7 +115,7 @@ export async function loginUserAction(prevState: any, formData: FormData) {
     const responseData = await loginUserService(validatedFields.data);
   
     if (!responseData) {
-      console.log("No response data from loginUserService");
+
       return {
         ...prevState,
         strapiErrors: responseData.error,
@@ -125,7 +125,7 @@ export async function loginUserAction(prevState: any, formData: FormData) {
     }
   
     if (responseData.error) {
-      console.log("Strapi Errors:", responseData.error);
+
       return {
         ...prevState,
         strapiErrors: responseData.error,

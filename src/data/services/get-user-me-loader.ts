@@ -12,10 +12,10 @@ export async function getUserMeLoader() {
   url.search = query;
 
   const authToken = await getAuthToken();
-  console.log("Auth Token:", authToken); // <-- Add this to check token status
+
 
   if (!authToken) {
-    console.log("No auth token found.");
+
     return { ok: false, data: null, error: null };
   }
 

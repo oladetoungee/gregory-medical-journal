@@ -32,7 +32,7 @@ export default function SignupForm() {
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
   };
-  console.log("SignupForm", formState);
+
 
   return (
     <div className="w-full max-w-md text-gray-400 bg-none">

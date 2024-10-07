@@ -49,7 +49,6 @@ export const fetchArticles = async ({
 
     const pagination = response.data.meta.pagination;
     const totalPages = Math.ceil(pagination.total / pageSize);
- console.log(articles, 'articles straight from the fetchArticles function');
     return { articles, totalPages, totalArticles: pagination.total };
   } catch (error) {
     console.error('Error fetching articles:', error);
