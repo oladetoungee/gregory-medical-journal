@@ -135,6 +135,7 @@ export default function DashboardOverview({ user }: { user: User }) {
       {/* Papers Table */}
       <div className="mt-12">
         <h2 className="text-xl font-semibold mb-4">Latest Papers</h2>
+        
 
         {loading ? (
           <div className="flex justify-center items-center h-32">

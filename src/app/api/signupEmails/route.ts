@@ -3,7 +3,16 @@ import { getUserSignupEmailTemplate, getAdminSignupEmailTemplate } from './email
 
 export async function POST(req: Request) {
   try {
-    const { name, email } = await req.json(); // Parse the request body
+    // Ensure the request body is not empty or improperly formatted
+    if (!req.body) {
+      throw new Error("Request body is empty");
+    }
+
+    const { name, email } = await req.json();
+
+    if (!name || !email) {
+      throw new Error("Name or email is missing in the request body");
+    }
 
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -18,7 +27,7 @@ export async function POST(req: Request) {
       from: process.env.EMAIL_USER,
       to: email,
       subject: 'Welcome to Gregory Medical Journal!',
-      html: getUserSignupEmailTemplate(name), // Using the email template
+      html: getUserSignupEmailTemplate(name),
     });
 
     // Send the email to the admin
@@ -26,14 +35,15 @@ export async function POST(req: Request) {
       from: process.env.EMAIL_USER,
       to: process.env.ADMIN_EMAIL,
       subject: 'New User Signup Notification',
-      html: getAdminSignupEmailTemplate(name, email), // Using the admin template
+      html: getAdminSignupEmailTemplate(name, email),
     });
 
-    // Corrected Response with JSON.stringify
     return new Response(JSON.stringify({ success: true }), { status: 200 });
   } catch (error) {
-    console.error('Error sending signup emails:', error);
-    // Corrected Response with JSON.stringify
-    return new Response(JSON.stringify({ success: false, error: error }), { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Error:', errorMessage);
+    return new Response(JSON.stringify({ success: false, error: errorMessage }), { status: 500 });
   }
 }
+
+
