@@ -71,7 +71,8 @@ export async function registerUserAction(prevState: any, formData: FormData) {
 
     // Send signup confirmation email to both user and admin
     try {
-      await axios.post('/api/signupEmails', {
+      await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/signupEmails`, {
+
         name: validatedFields.data.username,
         email: validatedFields.data.email,
       });
