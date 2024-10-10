@@ -106,6 +106,30 @@ export default function DashboardOverview({ user }: { user: User }) {
     loadArticles();
   }, [user?.data?.email]);
 
+  const sendTestEmail = async () => {
+    try {
+      const response = await fetch('/api/signupEmails', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: 'John Doe',
+          email: 'demilad1998@gmail.com',
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        console.log('Email sent successfully!');
+      } else {
+        console.error('Error sending email:', data.error);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+    }
+  };
+
   return (
     <div className="m-12">
       {/* Welcome Message */}
@@ -135,8 +159,8 @@ export default function DashboardOverview({ user }: { user: User }) {
       {/* Papers Table */}
       <div className="mt-12">
         <h2 className="text-xl font-semibold mb-4">Latest Papers</h2>
-        
 
+        <button onClick={sendTestEmail}>Send Test Email</button>
         {loading ? (
           <div className="flex justify-center items-center h-32">
             <Loader2 className="animate-spin text-gray-500 w-8 h-8" />
