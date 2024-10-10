@@ -164,9 +164,7 @@ export async function logoutAction() {
 import { sendResetPasswordEmailService, resetPasswordService } from "@/data/services/auth-service";
 
 const schemaResetRequest = z.object({
-  email: z.string().email({
-    message: "Please enter a valid email address",
-  }),
+  email: z.string().email({ message: "Please enter a valid email address" }),
 });
 
 export async function sendResetPasswordEmailAction(prevState: any, formData: FormData) {
@@ -183,9 +181,10 @@ export async function sendResetPasswordEmailAction(prevState: any, formData: For
     };
   }
 
+  // Call the service to send reset password email
   const responseData = await sendResetPasswordEmailService(validatedFields.data.email);
 
-  if (responseData.error) {
+  if (responseData?.error) {
     return {
       ...prevState,
       strapiErrors: responseData.error,
@@ -203,15 +202,9 @@ export async function sendResetPasswordEmailAction(prevState: any, formData: For
 }
 
 const schemaResetPassword = z.object({
-  password: z.string().min(6).max(100, {
-    message: "Password must be between 6 and 100 characters",
-  }),
-  confirmPassword: z.string().min(6).max(100, {
-    message: "Password must be between 6 and 100 characters",
-  }),
-  token: z.string().min(1, {
-    message: "Invalid token",
-  }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters long" }).max(100),
+  confirmPassword: z.string().min(6).max(100),
+  token: z.string().min(1, { message: "Invalid token" }),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
@@ -233,9 +226,14 @@ export async function resetPasswordAction(prevState: any, formData: FormData) {
     };
   }
 
-  const responseData = await resetPasswordService(validatedFields.data);
+  // Call the service to reset password
+  const responseData = await resetPasswordService({
+    password: validatedFields.data.password,
+    confirmPassword: validatedFields.data.confirmPassword,
+    token: validatedFields.data.token,
+  });
 
-  if (responseData.error) {
+  if (responseData?.error) {
     return {
       ...prevState,
       strapiErrors: responseData.error,

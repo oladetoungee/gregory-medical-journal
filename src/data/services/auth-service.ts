@@ -55,11 +55,46 @@ export async function loginUserService(userData: LoginUserProps) {
 ///Reset Password Logic
 
 export async function sendResetPasswordEmailService(email: string) {
-  // Logic to send reset password email
-  return { error: null }; // or return { error: "Error message" }
+  const url = new URL("/api/auth/forgot-password", baseUrl);
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+      cache: "no-cache",
+    });
+
+    return response.json();
+  } catch (error) {
+    console.error("Send Reset Password Email Service Error:", error);
+    throw error;
+  }
 }
 
-export async function resetPasswordService({ password, token }: { password: string; token: string }) {
-  // Logic to reset password using the token
-  return { error: null }; // or return { error: "Error message" }
+
+export async function resetPasswordService(data: { password: string; confirmPassword: string; token: string; }) {
+  const url = new URL("/api/auth/reset-password", baseUrl);
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        password: data.password,
+        passwordConfirmation: data.confirmPassword,
+        code: data.token,
+      }),
+      cache: "no-cache",
+    });
+
+    return response.json();
+  } catch (error) {
+    console.error("Reset Password Service Error:", error);
+    throw error;
+  }
 }

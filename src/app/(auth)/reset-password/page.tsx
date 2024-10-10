@@ -1,8 +1,7 @@
-'use client'
+'use client';
 
-import { ResetPasswordForm } from "@/components"
+import SendResetPasswordForm from '@/components/forms/SendResetPasswordForm';
 
-export default function SignInRoute() {
-    return <ResetPasswordForm />;
-
-  }
+export default function ResetPasswordPage() {
+  return <SendResetPasswordForm />;
+}
