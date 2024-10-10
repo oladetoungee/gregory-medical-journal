@@ -7,7 +7,6 @@ export async function mutateData(method: string, path: string, payload?: any) {
   const url = new URL(path, baseUrl);
 
   if (!authToken) throw new Error("No auth token found");
-
   try {
     const response = await fetch(url, {
       method: method,

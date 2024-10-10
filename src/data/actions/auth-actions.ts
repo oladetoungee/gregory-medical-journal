@@ -2,6 +2,7 @@
 import { z } from "zod";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import axios from 'axios';
 
 import {
   registerUserService,
@@ -67,6 +68,16 @@ export async function registerUserAction(prevState: any, formData: FormData) {
       message: "Failed to Register.",
     };
   }
+
+    // Send signup confirmation email to both user and admin
+    try {
+      await axios.post('/api/signupEmails', {
+        name: validatedFields.data.username,
+        email: validatedFields.data.email,
+      });
+    } catch (error) {
+      console.error('Error sending confirmation email:', error);
+    }
 
   cookies().set("jwt", responseData.jwt, config);
   redirect("/dashboard");
