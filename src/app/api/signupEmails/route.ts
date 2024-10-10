@@ -15,7 +15,7 @@ export async function POST(req: Request) {
 
     // Send the email to the user
     await transporter.sendMail({
-      from: '"Gregory Medical Journal" <noreply@gregoryjournal.com>',
+      from: process.env.EMAIL_USER,
       to: email,
       subject: 'Welcome to Gregory Medical Journal!',
       html: getUserSignupEmailTemplate(name), // Using the email template
@@ -23,8 +23,8 @@ export async function POST(req: Request) {
 
     // Send the email to the admin
     await transporter.sendMail({
-      from: '"Gregory Medical Journal" <noreply@gregoryjournal.com>',
-      to: process.env.EMAIL_USER,
+      from: process.env.EMAIL_USER,
+      to: process.env.ADMIN_EMAIL,
       subject: 'New User Signup Notification',
       html: getAdminSignupEmailTemplate(name, email), // Using the admin template
     });
