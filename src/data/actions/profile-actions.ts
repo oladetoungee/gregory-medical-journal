@@ -3,6 +3,7 @@ import qs from "qs";
 import { mutateData } from "@/data/services/mutate-data";
 import { flattenAttributes } from "@/lib/utils";
 
+
 export async function updateProfileAction(
   userId: string,
   prevState: any,
@@ -18,7 +19,9 @@ export async function updateProfileAction(
     firstName: rawFormData.firstName,
     lastName: rawFormData.lastName,
     bio: rawFormData.bio,
+    affiliation: rawFormData.affiliation,
   };
+
 
   const responseData = await mutateData(
     "PUT",

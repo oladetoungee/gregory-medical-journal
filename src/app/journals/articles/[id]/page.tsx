@@ -90,14 +90,16 @@ const Page: React.FC = () => {
           {article.title}
         </h2>
         <p className="text-sm text-gray-600 mb-4 italic">
-          by {article.authors?.length > 0
-                ? article.authors.map(author => author.name).join(", ")
-                : "Unknown authors"} 
-          on{" "}
-          <span className="text-sm text-gray-600">
-            {format(new Date(article.submissionDate), "MMMM d, yyyy, h:mm a")}
-          </span>
-        </p>
+  by {article.authors?.length > 0
+        ? article.authors.map(author => author.name).join(", ") + " "
+        : "Unknown authors"} 
+  on{" "}
+  <span className="text-sm text-gray-600">
+    {format(new Date(article.submissionDate), "MMMM d, yyyy, h:mm a")}
+  </span>
+</p>
+
+
         <div>
           {truncatedExcerpt.map(
             (paragraph: { children: any[] }, index: React.Key) => (

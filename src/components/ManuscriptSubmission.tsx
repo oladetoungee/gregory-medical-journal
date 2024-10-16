@@ -64,17 +64,29 @@ export default function ManuscriptSubmission(user: any) {
         children: [{ type: 'text', text: para }],
       }));
 
-      const formattedAuthors = authors.map((author) => ({
-        name: author.name,
-        affiliation: author.affiliation,
-        email: author.email,
-      }));
+   // Automatically add the user as an author if they have both firstName and affiliation
+const userAuthor = user.user.firstName && user.user.affiliation 
+? {
+    name: `${user.user.firstName} ${user.user.lastName || ''}`, // Add lastName if available
+    affiliation: user.user.affiliation,
+    email: user.user.email,
+  }
+: null;
 
-      if (formattedAuthors.length === 0) {
-        toast.error("Please add at least one author.");
-        setIsSubmitting(false); // Hide loader
-        return;
-      }
+const formattedAuthors = [
+...(userAuthor ? [userAuthor] : []), // Only add the user if userAuthor is not null
+...authors.map((author) => ({
+  name: author.name,
+  affiliation: author.affiliation,
+  email: author.email,
+})),
+];
+
+    if (formattedAuthors.length === 0) {
+      toast.error("Please add at least one author.");
+      setIsSubmitting(false); // Hide loader
+      return;
+    }
 
       const articleData = {
         data: {
@@ -185,7 +197,7 @@ export default function ManuscriptSubmission(user: any) {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Authors</label>
+                <label className="text-sm font-medium">Authors (users with updated bios are automatically added)</label>
                 <div className="flex flex-wrap gap-2 mt-2">
                   <Input
                     type="text"

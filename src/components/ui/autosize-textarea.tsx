@@ -63,6 +63,7 @@ export const AutosizeTextarea = React.forwardRef<
       className,
       onChange,
       value,
+      placeholder,
       ...props
     }: AutosizeTextAreaProps,
     ref
@@ -99,7 +100,7 @@ export const AutosizeTextarea = React.forwardRef<
           "flex w-full placeholder:italic placeholder:text-xs placeholder:text-gray-300 text-primary rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
-        placeholder="Type your message here..."
+        placeholder={placeholder}
         onChange={(e) => {
           setTriggerAutoSize(e.target.value);
           onChange?.(e);

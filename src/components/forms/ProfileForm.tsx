@@ -1,12 +1,13 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useFormState } from "react-dom";
 import { updateProfileAction } from "@/data/actions/profile-actions";
-import { SubmitButton } from "@/components"
+import { SubmitButton } from "@/components";
 import { Input } from "@/components/ui/input";
 import { AutosizeTextarea } from "@/components/ui";
 import { StrapiErrors } from "./StrapiErrors";
+
 
 interface ProfileFormProps {
   id: string;
@@ -15,10 +16,8 @@ interface ProfileFormProps {
   firstName: string;
   lastName: string;
   bio: string;
-  submittedArticles: number;
+  affiliation: string;
 }
-
-
 
 export function ProfileForm({
   data,
@@ -28,15 +27,14 @@ export function ProfileForm({
   readonly className?: string;
 }) {
   const updateUserWithId = updateProfileAction.bind(null, data.id);
-
   const [formState, formAction] = useFormState(updateUserWithId, data);
 
+
+
   return (
-    <form action={formAction}
-      className={cn("space-y-4", className)}>
+    <form action={formAction} className={cn("space-y-4", className)}>
       <div className="space-y-8 grid ">
         <div className="grid grid-cols-3 gap-2 ">
-  
           <Input
             id="username"
             name="username"
@@ -51,9 +49,8 @@ export function ProfileForm({
             defaultValue={data.email || ""}
             disabled
           />
-       
         </div>
-        <hr  />
+        <hr />
 
         <div className="grid grid-cols-2 gap-4 ">
           <Input
@@ -69,6 +66,14 @@ export function ProfileForm({
             defaultValue={data.lastName || ""}
           />
         </div>
+        <AutosizeTextarea
+          id="affiliation"
+          name="affiliation"
+          placeholder="What institution are you affiliated with?"
+          className="resize-none border rounded-md w-full h-[224px] p-2"
+          defaultValue={data.affiliation || ""}
+          required
+        />
         <AutosizeTextarea
           id="bio"
           name="bio"

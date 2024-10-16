@@ -17,6 +17,7 @@ export async function POST(req: Request) {
   const mailOptions = {
     from: email,
     to: process.env.EMAIL_USER,
+    cc: process.env.ADMIN_EMAIL,
     subject: `Support Request from ${name} on the Gregory Journal Website`,
     html: getEmailTemplate(name, message),
     replyTo: email,
