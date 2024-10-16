@@ -18,7 +18,7 @@ interface Article {
   id: number;
   title: string;
   authors: Author[];
-  excerpt: any[]; // Rich text blocks
+  excerpt: any[]; 
   image?: { data?: { attributes?: { url?: string } } }; // Image object with the nested structure
   link: string;
   isEditorPick: boolean;
