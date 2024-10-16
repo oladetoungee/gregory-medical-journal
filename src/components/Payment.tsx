@@ -67,7 +67,12 @@ export default function Payment({ userEmail, userName }: { userEmail: string; us
         data: {
           status: 'approved',
         },
+      }, {
+        headers: {
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_TOKEN}`,
+        },
       });
+      
   
       // Send email confirmation to both user and admin
       await axios.post('/api/paymentEmail', {
@@ -137,7 +142,7 @@ export default function Payment({ userEmail, userName }: { userEmail: string; us
                     },
                   ],
                 },
-                publicKey: paystackPublicKey, // Now it will be loaded from useEffect
+                publicKey: paystackPublicKey, 
                 text: 'Make Payment',
                 onSuccess: () => handlePaymentSuccess(paper),
                 onClose: () => handlePaymentFailure(paper.title),
