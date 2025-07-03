@@ -87,7 +87,6 @@ export default function DashboardOverview() {
         setPapers(userArticles.slice(0, 5)); // Show only latest 5 papers
       } catch (error) {
         console.error('Error fetching user papers:', error);
-        toast.error('Failed to load your papers');
         setPapers([]);
       } finally {
         setLoading(false);
