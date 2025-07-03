@@ -76,6 +76,30 @@ export function ProfileForm({
         affiliation: profile.affiliation,
       });
 
+      // Send account update notification email
+      try {
+        const response = await fetch('/api/accountUpdateEmail', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: displayName || user.displayName || user.email,
+            email: user.email,
+            updateType: 'Profile Information',
+            details: `Updated: First Name, Last Name, Bio, and Affiliation`
+          }),
+        });
+
+        if (!response.ok) {
+          console.error('Failed to send account update email');
+        } else {
+          console.log('Account update email sent successfully');
+        }
+      } catch (emailError) {
+        console.error('Error sending account update email:', emailError);
+      }
+
       toast.success("Profile updated successfully!");
     } catch (error: any) {
       console.error("Error updating profile:", error);

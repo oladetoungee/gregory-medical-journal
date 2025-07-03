@@ -79,6 +79,31 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
       }
 
       await confirmPasswordReset(auth, oobCode, password);
+      
+      // Send account update notification email
+      try {
+        const response = await fetch('/api/accountUpdateEmail', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: 'User',
+            email: auth.currentUser?.email || 'user@example.com',
+            updateType: 'Password Reset',
+            details: 'Your password has been successfully reset. If you did not make this change, please contact us immediately.'
+          }),
+        });
+
+        if (!response.ok) {
+          console.error('Failed to send password reset notification email');
+        } else {
+          console.log('Password reset notification email sent successfully');
+        }
+      } catch (emailError) {
+        console.error('Error sending password reset notification email:', emailError);
+      }
+      
       toast.success("Password reset successfully! You can now sign in with your new password.");
       router.push("/signin");
     } catch (error: any) {
