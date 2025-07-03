@@ -1,21 +1,32 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { ArticlesList, Typewriter } from '@/components';
-import { fetchApprovedArticles } from '@/constants/fetchApprovedArticles';
+import React, { useState, useEffect } from 'react';
+import { Typewriter } from '@/components';
+import { articleService } from '@/lib/firebase/article-service';
+import { Article } from '@/lib/firebase/types';
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/";
+import { Loader2 } from 'lucide-react';
 
 const TopArticles: React.FC = () => {
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true); // Optional, if you want to show a loader
+  const [topArticles, setTopArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true);
 
+  // Fetch top 3 articles from Firebase
   useEffect(() => {
-    const loadArticles = async () => {
-      setLoading(true); // Show loader (optional)
-      const { articles } = await fetchApprovedArticles({ pageSize: 3 }); // Fetch only 3 latest articles
-      setArticles(articles || []);
-      setLoading(false); // Hide loader (optional)
+    const fetchTopArticles = async () => {
+      try {
+        setLoading(true);
+        const result = await articleService.getApprovedArticles(3);
+        setTopArticles(result.articles);
+      } catch (error) {
+        console.error('Error fetching top articles:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    loadArticles();
+    fetchTopArticles();
   }, []);
 
   return (
@@ -24,9 +35,38 @@ const TopArticles: React.FC = () => {
         <div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <Typewriter className="page-header" text="Latest Articles" />
           {loading ? (
-            <p>Loading...</p> // Optional loading state
+            <div className="flex justify-center items-center h-64">
+              <Loader2 className="animate-spin text-gray-500 w-8 h-8" />
+            </div>
           ) : (
-            <ArticlesList showPagination={false} articles={articles} /> // Pass fetched articles to ArticlesList
+            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 my-8">
+              {topArticles.map((article: Article) => (
+              <div key={article.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                <div className="relative w-full h-48">
+                  <Image
+                    src={article.image}
+                    alt={article.title}
+                    layout="fill"
+                    objectFit="cover"
+                  />
+                </div>
+                <div className="p-6">
+                  <h2 className="text-lg font-semibold text-gray-900 mb-2">
+                    {article.title}
+                  </h2>
+                  <p className="text-sm text-gray-600 mb-4 italic">
+                    by {article.authors?.[0]?.name || 'Unknown Author'}
+                  </p>
+                  <p className="text-sm text-gray-700 mb-4">
+                    {article.excerpt}
+                  </p>
+                  <Link href={article.link}>
+                    <Button>Read more</Button>
+                  </Link>
+                </div>
+              </div>
+            ))}
+            </section>
           )}
         </div>
       </main>
