@@ -1,15 +1,25 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getUserMeLoader } from "@/data/services/get-user-me-loader";
 
 export async function middleware(request: NextRequest) {
-  const user = await getUserMeLoader();
   const currentPath = request.nextUrl.pathname;
 
-
-  if (currentPath.startsWith("/dashboard") && user.ok === false) {
-    return NextResponse.redirect(new URL("/signin", request.url));
-  }
+  // For now, we'll handle authentication client-side
+  // Firebase authentication is handled in the components
+  // This middleware can be enhanced later with Firebase Admin SDK if needed
 
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  ],
+};
