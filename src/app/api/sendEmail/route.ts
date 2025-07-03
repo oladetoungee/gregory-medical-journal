@@ -13,7 +13,6 @@ export async function POST(req: Request) {
     },
   });
 
-
   const mailOptions = {
     from: email,
     to: process.env.EMAIL_USER,
