@@ -96,6 +96,33 @@ export default function ManuscriptSubmission() {
       // Submit article to Firebase
       await articleService.addArticle(articleData, user.uid);
 
+      // Send confirmation emails
+      try {
+        const emailData = {
+          name: user.displayName || user.email || 'Anonymous',
+          email: user.email || '',
+          articleTitle: data.title,
+          message: data.abstract
+        };
+
+        const emailResponse = await fetch('/api/paperEmails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(emailData),
+        });
+
+        if (emailResponse.ok) {
+          console.log('Confirmation emails sent successfully');
+        } else {
+          console.error('Failed to send confirmation emails');
+        }
+      } catch (emailError) {
+        console.error('Error sending confirmation emails:', emailError);
+        // Don't fail the submission if email fails
+      }
+
       toast.success('Manuscript submitted successfully! You will receive a confirmation email shortly.');
       reset();
       setAuthors([]);

@@ -41,7 +41,6 @@ export default function Payment() {
         setPapers(acceptedPapers);
       } catch (error) {
         console.error('Error fetching papers:', error);
-        toast.error('Failed to load your papers');
         setPapers([]);
       } finally {
         setLoading(false);
