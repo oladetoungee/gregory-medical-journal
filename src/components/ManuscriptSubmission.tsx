@@ -8,7 +8,9 @@ import { motion } from "framer-motion";
 import { UploadIcon, FileIcon, InfoIcon, X, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { toast } from 'react-toastify';
-import axios from 'axios';
+import { useAuth } from '@/contexts/AuthContext';
+import { articleService } from '@/lib/firebase/article-service';
+import { fileService } from '@/lib/firebase/file-service';
 
 interface Author {
   name: string;
@@ -23,7 +25,8 @@ interface FormData extends FieldValues {
   manuscriptFile: FileList;
 }
 
-export default function ManuscriptSubmission(user: any) {
+export default function ManuscriptSubmission() {
+  const { user } = useAuth();
   const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>();
   const [open, setOpen] = useState(false);
   const [authors, setAuthors] = useState<Author[]>([]);
@@ -31,6 +34,11 @@ export default function ManuscriptSubmission(user: any) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit: SubmitHandler<FormData> = async (data: any) => {
+    if (!user) {
+      toast.error("Please sign in to submit a manuscript.");
+      return;
+    }
+
     // Validate if media files are provided
     if (!data.coverImage || !data.coverImage[0]) {
       toast.error("Please upload a cover image.");
@@ -41,84 +49,54 @@ export default function ManuscriptSubmission(user: any) {
       return;
     }
 
-    setIsSubmitting(true); // Show loader
+    setIsSubmitting(true);
     try {
-      const formData = new FormData();
-      formData.append("files", data.coverImage[0]);
-      formData.append("files", data.manuscriptFile[0]);
+      // Create a unique article ID for file organization
+      const articleId = `article_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-      // Upload files to Strapi
-      const fileUploadResponse = await axios.post(`${process.env.NEXT_PUBLIC_STRAPI_URL}/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_TOKEN}`,
-        },
-      });
+      // Upload files to Firebase Storage
+      const { coverImageURL, manuscriptURL } = await fileService.uploadArticleFiles(
+        data.coverImage[0],
+        data.manuscriptFile[0],
+        user.uid,
+        articleId
+      );
 
-      const uploadedFiles = fileUploadResponse.data;
-      const coverImageId = uploadedFiles.find((file: any) => file.name === data.coverImage[0].name)?.id;
-      const manuscriptFileId = uploadedFiles.find((file: any) => file.name === data.manuscriptFile[0].name)?.id;
+      // Format authors
+      const formattedAuthors = [
+        ...authors.map((author) => ({
+          name: author.name,
+          affiliation: author.affiliation,
+          email: author.email,
+        })),
+      ];
 
-      const excerpt = data.abstract.split('\n').map((para: string) => ({
-        type: 'paragraph',
-        children: [{ type: 'text', text: para }],
-      }));
+      if (formattedAuthors.length === 0) {
+        toast.error("Please add at least one author.");
+        setIsSubmitting(false);
+        return;
+      }
 
-   // Automatically add the user as an author if they have both firstName and affiliation
-const userAuthor = user.user.firstName && user.user.affiliation 
-? {
-    name: `${user.user.firstName} ${user.user.lastName || ''}`, // Add lastName if available
-    affiliation: user.user.affiliation,
-    email: user.user.email,
-  }
-: null;
-
-const formattedAuthors = [
-...(userAuthor ? [userAuthor] : []), // Only add the user if userAuthor is not null
-...authors.map((author) => ({
-  name: author.name,
-  affiliation: author.affiliation,
-  email: author.email,
-})),
-];
-
-    if (formattedAuthors.length === 0) {
-      toast.error("Please add at least one author.");
-      setIsSubmitting(false); // Hide loader
-      return;
-    }
-
+      // Create article data for Firebase
       const articleData = {
-        data: {
-          title: data.title,
-          excerpt: excerpt,
-          editorPick: false,
-          submissionDate: new Date().toISOString(),
-          Authors: formattedAuthors,
-          image: coverImageId,
-          document: manuscriptFileId,
-          submittedByName: user.user.username,
-          submittedByEmail: user.user.email,
-          status: 'under review',
-        },
+        title: data.title,
+        excerpt: data.abstract,
+        image: coverImageURL,
+        document: manuscriptURL,
+        link: `/journals/articles/${articleId}`,
+        isEditorPick: false,
+        status: 'under-review' as const,
+        submissionDate: new Date().toISOString(),
+        submittedBy: user.uid,
+        submittedByName: user.displayName || user.email || 'Anonymous',
+        submittedByEmail: user.email || '',
+        authors: formattedAuthors,
       };
 
-      // Submit article to Strapi
-      await axios.post(`${process.env.NEXT_PUBLIC_STRAPI_URL}/articles`, articleData, {
-        headers: {
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_TOKEN}`,
-        },
-      });
+      // Submit article to Firebase
+      await articleService.addArticle(articleData, user.uid);
 
-      // Send confirmation emails to both user and admin
-      await axios.post('/api/paperEmails', {
-        name: user.user.username,
-        email: user.user.email,
-        articleTitle: data.title,
-        message: "Your manuscript has been successfully submitted and is under review.",
-      });
-
-      toast.success('Manuscript submitted successfully! Confirmation email sent.');
+      toast.success('Manuscript submitted successfully! You will receive a confirmation email shortly.');
       reset();
       setAuthors([]);
       setOpen(false);
@@ -126,10 +104,9 @@ const formattedAuthors = [
       console.error('Error submitting manuscript:', error);
       toast.error('There was an error submitting your manuscript. Please try again.');
     } finally {
-      setIsSubmitting(false); // Hide loader
+      setIsSubmitting(false);
     }
   };
-
 
   const addAuthor = () => {
     if (authorInput.name && authorInput.affiliation && authorInput.email) {
@@ -143,6 +120,16 @@ const formattedAuthors = [
   const handleRemoveAuthor = (index: number) => {
     setAuthors((prev) => prev.filter((_, i) => i !== index));
   };
+
+  if (!user) {
+    return (
+      <div className="m-12">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold mb-4">Please sign in to submit manuscripts</h2>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="m-12">
@@ -197,74 +184,86 @@ const formattedAuthors = [
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Authors (users with updated bios are automatically added)</label>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  <Input
-                    type="text"
-                    placeholder="Author's Name"
-                    value={authorInput.name}
-                    onChange={(e) => setAuthorInput({ ...authorInput, name: e.target.value })}
-                  />
-                  <Input
-                    type="text"
-                    placeholder="Affiliation"
-                    value={authorInput.affiliation}
-                    onChange={(e) => setAuthorInput({ ...authorInput, affiliation: e.target.value })}
-                  />
-                  <Input
-                    type="email"
-                    placeholder="Email"
-                    value={authorInput.email}
-                    onChange={(e) => setAuthorInput({ ...authorInput, email: e.target.value })}
-                  />
-                  <Button onClick={addAuthor}>Add Author</Button>
-                </div>
-
-                <div className="flex flex-wrap gap-2 mt-2">
+                <label className="text-sm font-medium">Authors</label>
+                <div className="space-y-2">
                   {authors.map((author, index) => (
-                    <div key={index} className="flex items-center bg-white p-2 rounded-md shadow-md">
-                      <span className="text-sm mr-2">{author.name} - {author.affiliation} ({author.email})</span>
-                      <X className="w-4 h-4 text-red-500" onClick={() => handleRemoveAuthor(index)} />
+                    <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded">
+                      <span className="text-sm">{author.name} - {author.affiliation}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveAuthor(index)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
                     </div>
                   ))}
                 </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium mb-4">Cover Image</label>
-                <div className="flex items-center gap-4 mt-1">
-                  <UploadIcon className="w-6 h-6" />
-                  <Input id="coverImage" type="file" accept="image/*" {...register("coverImage")} />
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                  <Input
+                    placeholder="Author name"
+                    value={authorInput.name}
+                    onChange={(e) => setAuthorInput(prev => ({ ...prev, name: e.target.value }))}
+                  />
+                  <Input
+                    placeholder="Affiliation"
+                    value={authorInput.affiliation}
+                    onChange={(e) => setAuthorInput(prev => ({ ...prev, affiliation: e.target.value }))}
+                  />
+                  <Input
+                    placeholder="Email"
+                    type="email"
+                    value={authorInput.email}
+                    onChange={(e) => setAuthorInput(prev => ({ ...prev, email: e.target.value }))}
+                  />
                 </div>
+                <Button type="button" onClick={addAuthor} className="w-full">
+                  Add Author
+                </Button>
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Manuscript (PDF)</label>
-                <Input id="manuscriptFile" type="file" accept=".pdf" {...register("manuscriptFile")} />
+                <label htmlFor="coverImage" className="text-sm font-medium">Cover Image</label>
+                <Input
+                  id="coverImage"
+                  type="file"
+                  accept="image/*"
+                  {...register("coverImage", { required: "Cover image is required" })}
+                />
+                {errors.coverImage && <p className="text-red-500">{errors.coverImage.message}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="manuscriptFile" className="text-sm font-medium">Manuscript File (PDF)</label>
+                <Input
+                  id="manuscriptFile"
+                  type="file"
+                  accept=".pdf"
+                  {...register("manuscriptFile", { required: "Manuscript file is required" })}
+                />
+                {errors.manuscriptFile && <p className="text-red-500">{errors.manuscriptFile.message}</p>}
               </div>
             </div>
 
-            <DialogFooter className="mt-4">
-              <Button onClick={() => setOpen(false)}>Cancel</Button>
+            <DialogFooter className="mt-6">
+              <Button type="button" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? <Loader2 className="animate-spin w-4 h-4 mr-2" /> : null}
-                {isSubmitting ? 'Submitting...' : 'Submit'}
+                {isSubmitting ? (
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Submitting...
+                  </div>
+                ) : (
+                  'Submit Manuscript'
+                )}
               </Button>
             </DialogFooter>
           </motion.form>
         </DialogContent>
       </Dialog>
-
-      <div className="mt-10">
-        <hr className="border-t border-gray-300 my-8" />
-        <h2 className="text-2xl font-semibold mb-4">Need Help?</h2>
-        <p className="text-primary text-sm">
-          If you need assistance with your manuscript, reach out to our editorial team for guidance.
-        </p>
-        <Button className="mt-4">
-          <Link href="/dashboard/support">Contact Editorial Team</Link>
-        </Button>
-      </div>
     </div>
   );
 }

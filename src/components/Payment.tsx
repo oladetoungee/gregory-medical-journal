@@ -4,85 +4,71 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Typewriter, Button } from "@/components";
 import { PaystackButton } from 'react-paystack';
-import { fetchArticles } from "@/constants/fetchArticles";
+import { useAuth } from '@/contexts/AuthContext';
+import { articleService } from '@/lib/firebase/article-service';
+import { Article } from '@/lib/firebase/types';
 import Link from 'next/link';
-import axios from 'axios';
 
-type Paper = {
-  id: string;
-  submissionDate: string;
-  title: string;
-  status: string;
-  submittedByEmail: string;
-};
-
-export default function Payment({ userEmail, userName }: { userEmail: string; userName: string }) {
-  const [papers, setPapers] = useState<Paper[]>([]);
+export default function Payment() {
+  const { user } = useAuth();
+  const [papers, setPapers] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [paymentStatuses, setPaymentStatuses] = useState<Record<string, boolean>>({});
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
-  const [paystackPublicKey, setPaystackPublicKey] = useState<string>(''); // Local state for the public key
+  const [paystackPublicKey, setPaystackPublicKey] = useState<string>('');
 
-  const amount = 20000 * 100;
+  const amount = 20000 * 100; // NGN 20,000 in kobo
 
   useEffect(() => {
-    // Load the Paystack public key from environment variable inside useEffect
+    // Load the Paystack public key from environment variable
     const paystackKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || '';
     setPaystackPublicKey(paystackKey);
 
-    const loadArticles = async () => {
-      setLoading(true);
+    const fetchAcceptedPapers = async () => {
+      if (!user?.email) {
+        setLoading(false);
+        return;
+      }
+
       try {
-        const { articles } = await fetchArticles({ pageSize: 1000 });
-
-        const userAcceptedArticles = articles.filter(
-          (article: Paper) => article.status === 'accepted' && article.submittedByEmail === userEmail
+        setLoading(true);
+        const userArticles = await articleService.getArticlesByUser(user.email);
+        // Filter for papers that need payment (under review or approved but not published)
+        const acceptedPapers = userArticles.filter(article => 
+          article.status === 'under-review' || article.status === 'accepted'
         );
-
-        setPapers(userAcceptedArticles);
+        setPapers(acceptedPapers);
       } catch (error) {
-        console.error('Error fetching accepted papers:', error);
-        toast.error('Failed to load articles. Please try again.');
+        console.error('Error fetching papers:', error);
+        toast.error('Failed to load your papers');
+        setPapers([]);
       } finally {
         setLoading(false);
       }
     };
-    
-    loadArticles();
-  }, [userEmail]);
+
+    fetchAcceptedPapers();
+  }, [user?.email]);
 
   const validateEmail = (email: string) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
   };
 
-  const handlePaymentSuccess = async (paper: Paper) => {
+  const handlePaymentSuccess = async (paper: Article) => {
     setPaymentStatuses(prev => ({ ...prev, [paper.title]: true }));
     toast.success(`${paper.title} payment successful!`);
   
     try {
-      // Update the article status to 'approved'
-      await axios.put(`${process.env.NEXT_PUBLIC_STRAPI_URL}/articles/${paper.id}`, {
-        data: {
-          status: 'approved',
-        },
-      }, {
-        headers: {
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_TOKEN}`,
-        },
-      });
+      // Update the article status to 'published' in Firebase
+      if (paper.id) {
+        await articleService.updateArticle(paper.id, {
+          status: 'published' as const,
+        });
+      }
       
-  
-      // Send email confirmation to both user and admin
-      await axios.post('/api/paymentEmail', {
-        name: userName,
-        email: email,
-        articleTitle: paper.title,
-        message: `Your paper "${paper.title}" has been successfully paid for and is now published on the Gregory Medical Journal website.`,
-      });
-  
-      toast.success(`${paper.title} has been approved and an email confirmation has been sent!`);
+      toast.success(`${paper.title} has been approved and published!`);
     } catch (error) {
       console.error('Error updating article status:', error);
       toast.error('Failed to update article status. Please try again.');
@@ -104,6 +90,16 @@ export default function Payment({ userEmail, userName }: { userEmail: string; us
     }
   };
 
+  if (!user) {
+    return (
+      <div className="m-12">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold mb-4">Please sign in to view payment options</h2>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="m-12">
       <div className="mb-8">
@@ -111,7 +107,10 @@ export default function Payment({ userEmail, userName }: { userEmail: string; us
       </div>
 
       {loading ? (
-        <p>Loading accepted papers...</p>
+        <div className="flex justify-center items-center h-32">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <span className="ml-2">Loading accepted papers...</span>
+        </div>
       ) : papers.length > 0 ? (
         <>
           <div className="mb-6">
@@ -127,7 +126,7 @@ export default function Payment({ userEmail, userName }: { userEmail: string; us
             {emailError && <p className="text-red-500 text-sm mt-2">{emailError}</p>}
           </div>
           <div className="space-y-6">
-            {papers.map((paper: Paper, index: number) => {
+            {papers.map((paper: Article, index: number) => {
               const isPaid = paymentStatuses[paper.title];
 
               const componentProps = {
@@ -149,7 +148,7 @@ export default function Payment({ userEmail, userName }: { userEmail: string; us
               };
 
               return (
-                <div key={index} className="p-6 bg-gray-50 rounded-lg shadow-lg">
+                <div key={paper.id || index} className="p-6 bg-gray-50 rounded-lg shadow-lg">
                   <p className="mb-2">Paper: {paper.title}</p>
                   <p className="mb-2">Submission Date: {new Date(paper.submissionDate).toLocaleDateString()}</p>
                   <p className="mb-2">Payment Fee: NGN20,000</p>

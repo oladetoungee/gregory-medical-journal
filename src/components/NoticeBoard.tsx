@@ -1,39 +1,9 @@
 'use client'
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Speech } from 'lucide-react';
+import notices from '@/constants/notices';
 
 const NoticeBoard: React.FC = () => {
-  const [notices, setNotices] = useState<{ id: number; text: string; link: string }[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchNotices = async () => {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/notices`);
-        const data = await response.json();
-        console.log(data);
-        
-        // Assuming the data comes in a structured way with `data` field from Strapi
-        const formattedNotices = data.data.map((notice: any) => ({
-          id: notice.id,
-          text: notice.attributes.Title,
-          link: notice.attributes.Link,
-        }));
-
-        setNotices(formattedNotices);
-      } catch (err) {
-        setError('Failed to fetch notices');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchNotices();
-  }, []);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
 
   return (
     <div className="border-1 px-4 pt-4 rounded shadow-sm bg-gray-50">
