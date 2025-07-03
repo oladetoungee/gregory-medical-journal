@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Input, AutosizeTextarea } from "@/components/ui";
 import { toast } from 'react-toastify';
 import { Typewriter, SubmitButton } from "@/components";
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Support() {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -13,6 +15,17 @@ export default function Support() {
   });
 
   const [loading, setLoading] = useState(false);
+
+  // Pre-fill form with user data if available
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        name: user.displayName || user.email || '',
+        email: user.email || '',
+      }));
+    }
+  }, [user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -73,6 +86,11 @@ export default function Support() {
           loading={loading}  
         />
       </form>
+       {/* Add tutorial link here */}
+       <p className="my-4 text-xs text-primary">
+        For a step-by-step guide on how to use the Gregory Medical Journal website and dashboard, click 
+        <a href="https://www.example.com/tutorial" className="text-blue-500 underline" target="_blank" rel="noopener noreferrer"> here</a>.
+      </p>
     </div>
   );
 }
