@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useFormState } from "react-dom";
-import { loginUserAction } from "@/data/actions/auth-actions";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   CardTitle,
   CardDescription,
@@ -15,35 +17,91 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import TermsAndPolicy from "./TermsAndPolicy";
-import { StrapiErrors } from "@/components/forms/StrapiErrors";
 import { SubmitButton } from "@/components/";
-import { ZodErrors } from "./ZodErrors";
-import { useState } from "react";
-import {EyeIcon, EyeOffIcon} from "lucide-react";
-
-const INITIAL_STATE = {
-  zodErrors: null,
-  strapiErrors: null,
-  data: null,
-  message: null,
-};
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 export default function SigninForm() {
-  const [formState, formAction] = useFormState(loginUserAction, INITIAL_STATE);
-  const [passwordVisible, setPasswordVisible] = useState(false); // Toggle for password visibility
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { signIn, user, loading: authLoading } = useAuth();
+  const router = useRouter();
+
+  // Redirect to dashboard if user is already signed in
+  useEffect(() => {
+    if (user && !authLoading) {
+      router.push("/dashboard");
+    }
+  }, [user, authLoading, router]);
 
   const togglePasswordVisibility = () => {
-    setPasswordVisible((prev) => !prev); // Toggle function
+    setPasswordVisible((prev) => !prev);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      await signIn(email, password);
+      toast.success("Successfully signed in!");
+      // The useEffect will handle the redirect when user state updates
+    } catch (error: any) {
+      console.error("Sign in error:", error);
+      
+      // Handle specific Firebase auth errors
+      if (error.code === 'auth/user-not-found') {
+        toast.error("No account found with this email address. Please sign up first.");
+      } else if (error.code === 'auth/wrong-password') {
+        toast.error("Incorrect password. Please try again.");
+      } else if (error.code === 'auth/user-disabled') {
+        toast.error("This account has been disabled. Please contact support.");
+      } else if (error.code === 'auth/too-many-requests') {
+        toast.error("Too many failed attempts. Please try again later.");
+      } else if (error.code === 'auth/invalid-email') {
+        toast.error("Please enter a valid email address.");
+      } else {
+        toast.error(error.message || "Failed to sign in. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
 
+  // Show loading while checking authentication
+  if (authLoading) {
+    return (
+      <div className="w-full max-w-md text-gray-400">
+        <div className="flex justify-center items-center h-32">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't show form if user is already signed in
+  if (user) {
+    return (
+      <div className="w-full max-w-md text-gray-400">
+        <div className="flex justify-center items-center h-32">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p>Redirecting to dashboard...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full max-w-md text-gray-400 ">
-   <form action={formAction}>
+    <div className="w-full max-w-md text-gray-400">
+      <form onSubmit={handleSubmit}>
         <Card>
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl text-white mb-2">Welcome Back!</CardTitle>
-            <CardDescription className="text-sm ">
+            <CardDescription className="text-sm">
               Enter your details to sign in to your Gregory Journal account
             </CardDescription>
           </CardHeader>
@@ -51,23 +109,26 @@ export default function SigninForm() {
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
-                id="identifier"
-                name="identifier"
-                type="text"
-                placeholder="username or email"
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
-              <ZodErrors error={formState?.zodErrors?.identifier} />
             </div>
             <div className="space-y-2 relative">
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 name="password"
-                type={passwordVisible ? "text" : "password"} // Toggles between text and password
-                placeholder="password"
+                type={passwordVisible ? "text" : "password"}
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
-              <ZodErrors error={formState.zodErrors?.password} />
-
               {/* Eye icon to toggle password visibility */}
               <button
                 type="button"
@@ -83,14 +144,15 @@ export default function SigninForm() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col items-center">
-          <SubmitButton className="w-full flex justify-center items-center text-primary hover:bg-primary" 
+            <SubmitButton 
+              className="w-full flex justify-center items-center text-primary hover:bg-primary" 
               text="Sign In"
-              loadingText=""
+              loadingText="Signing in..."
+              loading={loading}
             />
-            <StrapiErrors error={formState?.strapiErrors} />
             <Link className="underline text-xs" href="reset-password">
-           Forgot Password?
-          </Link>
+              Forgot Password?
+            </Link>
           </CardFooter>
         </Card>
         <div className="mt-4 text-center text-sm">
@@ -100,7 +162,7 @@ export default function SigninForm() {
           </Link>
         </div>
         <div>
-            <TermsAndPolicy />
+          <TermsAndPolicy />
         </div>
       </form>
     </div>

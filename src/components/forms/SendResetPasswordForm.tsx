@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useFormState } from "react-dom";
-import { sendResetPasswordEmailAction } from "@/data/actions/auth-actions";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import { authService } from "@/lib/firebase/auth-service";
 import {
   CardTitle,
   CardDescription,
@@ -14,22 +15,37 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { SubmitButton } from "@/components";
-import { ZodErrors } from "./ZodErrors";
-import { StrapiErrors } from "@/components/forms/StrapiErrors";
 import TermsAndPolicy from "./TermsAndPolicy";
 
-const INITIAL_STATE = {
-  data: null,
-  zodErrors: null,
-  message: null,
-};
-
 export default function SendResetPasswordForm() {
-  const [formState, formAction] = useFormState(sendResetPasswordEmailAction, INITIAL_STATE);
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email) {
+      toast.error("Please enter your email address");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await authService.resetPassword(email);
+      toast.success("Password reset email sent! Please check your inbox.");
+      setEmail("");
+    } catch (error: any) {
+      console.error("Reset password error:", error);
+      toast.error(error.message || "Failed to send reset email. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="w-full max-w-md text-gray-400">
-      <form action={formAction}>
+      <form onSubmit={handleSubmit}>
         <Card>
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl text-white mb-2">Reset Password</CardTitle>
@@ -45,17 +61,19 @@ export default function SendResetPasswordForm() {
                 name="email"
                 type="email"
                 placeholder="name@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
-              <ZodErrors error={formState.zodErrors?.email} />
             </div>
           </CardContent>
           <CardFooter className="flex flex-col items-center">
             <SubmitButton
               className="w-full flex justify-center items-center text-white"
               text="Send Reset Link"
-              loadingText="Sending"
+              loadingText="Sending..."
+              loading={loading}
             />
-            <StrapiErrors error={formState?.strapiErrors} />
           </CardFooter>
         </Card>
         <div className="mt-4 text-center text-sm">
