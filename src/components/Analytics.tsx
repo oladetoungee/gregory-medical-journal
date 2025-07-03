@@ -3,19 +3,13 @@
 import { useState, useEffect } from 'react';
 import { Pie, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement } from 'chart.js';
-import { fetchArticles } from '@/constants/fetchArticles';
+import { useAuth } from '@/contexts/AuthContext';
+import { analyticsService } from '@/lib/firebase/analytics-service';
 import { Typewriter } from "@/components";
 import { Loader2 } from 'lucide-react';
 
 // Register chart elements for react-chartjs-2
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement);
-
-interface Paper {
-  id: string;
-  submissionDate: string;
-  status: string;
-  title: string;
-}
 
 // Status colors as background
 const statusColors: { [key: string]: string } = {
@@ -23,31 +17,37 @@ const statusColors: { [key: string]: string } = {
   'rejected': '#FECACA', // Red faded
   'accepted': '#D1FAE5', // Green faded
   'approved': '#DBEAFE', // Blue faded
+  'draft': '#E5E7EB', // Gray faded
 };
 
 export default function Analytics() {
+  const { user } = useAuth();
   const [statusData, setStatusData] = useState<any>(null);
   const [submissionTrends, setSubmissionTrends] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
+    const fetchAnalytics = async () => {
+      if (!user?.email) {
+        setLoading(false);
+        return;
+      }
+
       try {
-        // Fetch articles with correct typing
-        const { articles }: { articles: Paper[] } = await fetchArticles({ pageSize: 1000 });
+        setLoading(true);
+        
+        // Get article statistics
+        const stats = await analyticsService.getArticleStats();
+        const trends = await analyticsService.getSubmissionTrends();
 
         // Prepare data for review status distribution pie chart
-        const statusCount = articles.reduce(
-          (acc: { [key: string]: number }, paper: Paper) => {
-            acc[paper.status] = (acc[paper.status] || 0) + 1;
-            return acc;
-          },
-          {}
-        );
-
-        const statusLabels = Object.keys(statusCount);
-        const statusValues = Object.values(statusCount);
+        const statusLabels = ['under-review', 'accepted', 'rejected', 'published'];
+        const statusValues = [
+          stats.underReview,
+          stats.accepted,
+          stats.rejected,
+          stats.published
+        ];
 
         setStatusData({
           labels: statusLabels,
@@ -63,25 +63,68 @@ export default function Analytics() {
         });
 
         // Prepare data for submission trends line chart
-        const sortedData = articles.sort(
-          (a: Paper, b: Paper) => new Date(a.submissionDate).getTime() - new Date(b.submissionDate).getTime()
-        );
+        if (trends.length > 0) {
+          const submissionDates = trends.map(item => item.date);
+          const cumulativeSubmissions = trends.map((_, idx) => idx + 1);
 
-        const submissionDates = sortedData.map((paper: Paper) =>
-          new Date(paper.submissionDate).toLocaleDateString('en-GB', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric',
-          })
-        );
-        const cumulativeSubmissions = sortedData.map((_, idx: number) => idx + 1);
-
+          setSubmissionTrends({
+            labels: submissionDates,
+            datasets: [
+              {
+                label: 'Cumulative Submissions Over Time',
+                data: cumulativeSubmissions,
+                fill: false,
+                backgroundColor: '#373A7A',
+                borderColor: '#373A7A',
+                borderWidth: 2,
+                pointBackgroundColor: '#fff',
+                pointBorderColor: '#373A7A',
+                pointHoverBackgroundColor: '#373A7A',
+                pointHoverBorderColor: '#fff',
+              },
+            ],
+          });
+        } else {
+          // Fallback data if no trends available
+          setSubmissionTrends({
+            labels: ['No data available'],
+            datasets: [
+              {
+                label: 'Cumulative Submissions Over Time',
+                data: [0],
+                fill: false,
+                backgroundColor: '#373A7A',
+                borderColor: '#373A7A',
+                borderWidth: 2,
+                pointBackgroundColor: '#fff',
+                pointBorderColor: '#373A7A',
+                pointHoverBackgroundColor: '#373A7A',
+                pointHoverBorderColor: '#fff',
+              },
+            ],
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching analytics:', error);
+        // Fallback to demo data if Firebase fails
+        setStatusData({
+          labels: ['No data'],
+          datasets: [
+            {
+              label: 'Review Status Distribution',
+              data: [1],
+              backgroundColor: ['#E5E7EB'],
+              borderColor: ['#E5E7EB'],
+              borderWidth: 1,
+            },
+          ],
+        });
         setSubmissionTrends({
-          labels: submissionDates,
+          labels: ['No data available'],
           datasets: [
             {
               label: 'Cumulative Submissions Over Time',
-              data: cumulativeSubmissions,
+              data: [0],
               fill: false,
               backgroundColor: '#373A7A',
               borderColor: '#373A7A',
@@ -93,15 +136,23 @@ export default function Analytics() {
             },
           ],
         });
-      } catch (error) {
-        console.error('Error fetching data:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
-  }, []);
+    fetchAnalytics();
+  }, [user?.email]);
+
+  if (!user) {
+    return (
+      <div className="m-12">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold mb-4">Please sign in to view analytics</h2>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="m-12">
@@ -119,15 +170,15 @@ export default function Analytics() {
         ) : (
           statusData && (
             <div className='md:w-[50%] mx-auto sm:w-full'>
-            <Pie data={statusData} />
-   </div>
+              <Pie data={statusData} />
+            </div>
           )
         )}
       </div>
 
       {/* Line Chart for Paper Submission Trends */}
       <div className="mb-12">
-      <h2 className="text-base text-center  font-semibold mb-4">Submission Trends Over Time</h2>
+        <h2 className="text-base text-center font-semibold mb-4">Submission Trends Over Time</h2>
         {loading ? (
           <div className="flex justify-center items-center h-32">
             <Loader2 className="animate-spin text-gray-500 w-8 h-8" />
@@ -135,7 +186,7 @@ export default function Analytics() {
         ) : (
           submissionTrends && (
             <div className='md:w-[60%] mx-auto sm:w-full'>
-            <Line data={submissionTrends} />
+              <Line data={submissionTrends} />
             </div>
           )
         )}

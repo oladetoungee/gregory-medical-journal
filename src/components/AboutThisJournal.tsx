@@ -3,8 +3,8 @@ import Image from "next/image";
 import { EnvelopeClosedIcon } from "@radix-ui/react-icons";
 import { MapIcon } from "lucide-react";
 import { Typewriter } from "@/components";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { aboutThisJournal } from "@/constants";
+import images from "@/constants/images";
 
 const styles = {
   heading: "text-xl sm:text-2xl font-bold text-primary mb-4",
@@ -15,88 +15,7 @@ const styles = {
   gridContainer: "grid lg:grid-cols-2 gap-8 items-center",
 };
 
-type GrandChildren = {
-  text: string;
-  bold?: boolean;
-};
-
-type Children = {
-  type: string;
-  text?: string;
-  bold?: boolean;
-  children?: GrandChildren[];
-};
-
-type Description = {
-  type: string;
-  format?: string;
-  children: Children[];
-};
-
-interface Abouts {
-  id: number;
-  title: string;
-  description: Description[];
-  image: string;
-}
-
 const AboutThisJournal = () => {
-  const [abouts, setAbouts] = useState<Abouts[]>([]);
-
-  useEffect(() => {
-    const fetchAbouts = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_STRAPI_URL}/abouts`
-        );
-
-        const aboutUs = response.data.data.map((data: any) => ({
-          id: data.id,
-          title: data.attributes.title,
-          description: data.attributes.description,
-          image: data.attributes.image
-        }));
-        setAbouts(aboutUs);
-
-      } catch (error) {
-        console.log("Error fetching about:", error);
-      }
-    };
-    fetchAbouts();
-  }, []);
-
-  const renderContent = (description: Description[]) => {
-    return description.map((desc, index) => {
-      switch (desc.type) {
-        case "paragraph":
-          return (
-            <span key={index} className={styles.paragraph}>
-              {desc.children.map((child, i) => (
-                <span key={i} className={child.bold ? "font-bold" : ""}>
-                  {child.text}
-                </span>
-              ))}
-            </span>
-          );
-        case "list":
-          return (
-            <ul key={index} className={`list-disc pl-5 ${styles.paragraph}`}>
-              {desc.children.map((child, i) => (
-                <li key={i} className="mt-1">
-                  {child.children?.map((grandChild, j) => (
-                    <span key={j} className={grandChild.bold ? "font-bold" : ""}>
-                      {grandChild.text}
-                    </span>
-                  ))}
-                </li>
-              ))}
-            </ul>
-          );
-        default:
-          return null;
-      }
-    });
-  };
 
   return (
     <div className="py-12 px-6 sm:px-12 lg:px-12 bg-white">
@@ -121,28 +40,80 @@ const AboutThisJournal = () => {
         <hr className={styles.hr} />
 
         <div className="container mx-auto space-y-8">
-          {abouts.map((about) => (
-            <>
-              <div key={about.id} className={styles.gridContainer}>
-                <Image
-                  src={about.image}
-                  alt={about.title}
-                  className={`${styles.image} order-2 lg:order-1`}
-                  width={300}
-                  height={200}
-                />
+          {/* Mission Section */}
+          <div className={styles.gridContainer}>
+            <Image
+              src={images.mission}
+              alt="Our Mission"
+              className={`${styles.image} order-2 lg:order-1`}
+              width={300}
+              height={200}
+            />
+            <div className="order-1 lg:order-2">
+              <h2 className={styles.heading}>Our Mission</h2>
+              <p className={styles.paragraph}>{aboutThisJournal.mission}</p>
+            </div>
+          </div>
+          <hr className={styles.hr} />
 
-                <div className={about.id === 2 || about.id === 4 ? "" : "order-1 lg:order-2"}>
-                  <h2 className={styles.heading}>{about.title}</h2>
+          {/* Vision Section */}
+          <div className={styles.gridContainer}>
+            <div className="order-1 lg:order-2">
+              <Image
+                src={images.vision}
+                alt="Our Vision"
+                className={`${styles.image} order-2 lg:order-1`}
+                width={300}
+                height={200}
+              />
+            </div>
+            <div className="order-1 lg:order-2">
+              <h2 className={styles.heading}>Our Vision</h2>
+              <p className={styles.paragraph}>{aboutThisJournal.vision}</p>
+            </div>
+          </div>
+          <hr className={styles.hr} />
 
-                  {renderContent(about.description)}
+          {/* Scope Section */}
+          <div className={styles.gridContainer}>
+            <Image
+              src={images.scope}
+              alt="Our Scope"
+              className={`${styles.image} order-2 lg:order-1`}
+              width={300}
+              height={200}
+            />
+            <div className="order-1 lg:order-2">
+              <h2 className={styles.heading}>Our Scope</h2>
+              <ul className={`list-disc pl-5 ${styles.paragraph}`}>
+                {aboutThisJournal.scopeList.map((item, index) => (
+                  <li key={index} className="mt-1">{item}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <hr className={styles.hr} />
+
+          {/* Contact Information */}
+          <div className="bg-gray-50 p-6 rounded-lg">
+            <h2 className={styles.heading}>Contact Information</h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="flex items-start">
+                <EnvelopeClosedIcon className={styles.icon} />
+                <div>
+                  <p className="font-semibold">Email</p>
+                  <p className={styles.paragraph}>{aboutThisJournal.contact.email}</p>
                 </div>
               </div>
-              <hr className={styles.hr} />
-            </>
-          ))}
-
-   
+              <div className="flex items-start">
+                <MapIcon className={styles.icon} />
+                <div>
+                  <p className="font-semibold">Address</p>
+                  <p className={styles.paragraph}>{aboutThisJournal.contact.address}</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
