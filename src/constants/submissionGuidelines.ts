@@ -53,7 +53,7 @@ const submissionGuidelines = {
     cta: {
         text: "Ready to Submit Your Manuscript?",
         buttonLabel: "Submit Your Paper",
-        link: "/submit-manuscript",
+        link: "/signin",
     },
 };
 
