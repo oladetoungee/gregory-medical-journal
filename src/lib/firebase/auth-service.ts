@@ -53,7 +53,14 @@ export const authService = {
 
   // Reset password
   async resetPassword(email: string) {
-    await sendPasswordResetEmail(auth, email);
+    const actionCodeSettings = {
+      url: typeof window !== 'undefined' 
+        ? `${window.location.origin}/reset-password/confirm`
+        : 'http://localhost:3000/reset-password/confirm',
+      handleCodeInApp: true,
+    };
+    
+    await sendPasswordResetEmail(auth, email, actionCodeSettings);
   },
 
   // Send email verification

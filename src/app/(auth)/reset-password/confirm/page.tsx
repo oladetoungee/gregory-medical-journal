@@ -4,12 +4,12 @@ import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ResetPasswordForm from '@/components/forms/ResetPasswordForm';
 
-function ResetPasswordTokenContent() {
+function ResetPasswordConfirmContent() {
   const searchParams = useSearchParams();
   const oobCode = searchParams.get('oobCode');
 
   // Firebase sends reset links with oobCode parameter
-  // The URL format is: /reset-password/[token]?oobCode=xxx
+  // The URL format is: /reset-password/confirm?oobCode=xxx
   if (!oobCode) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-900">
@@ -32,14 +32,14 @@ function ResetPasswordTokenContent() {
   return <ResetPasswordForm />;
 }
 
-export default function ResetPasswordTokenPage() {
+export default function ResetPasswordConfirmPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-gray-900">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
       </div>
     }>
-      <ResetPasswordTokenContent />
+      <ResetPasswordConfirmContent />
     </Suspense>
   );
-}
+} 
