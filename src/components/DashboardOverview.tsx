@@ -6,6 +6,9 @@ import { toast } from 'react-toastify';
 import { Typewriter } from "@/components";
 import { LibraryIcon, ChartBarIcon, UserIcon, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext';
+import { articleService } from '@/lib/firebase/article-service';
+import { Article } from '@/lib/firebase/types';
 import {
   Table,
   TableBody,
@@ -15,24 +18,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { fetchArticles } from "@/constants/fetchArticles";
-
-// Define the expected shape of the user prop
-interface User {
-  ok: boolean;
-  data: {
-    username: string;
-    email: string;
-  } | null; // Allow data to be null
-}
-
-type Paper = {
-  id: string;
-  submissionDate: string;
-  title: string;
-  status: string;
-  submittedByEmail: string;
-};
 
 // Define CTA box configuration
 const ctaItems = [
@@ -77,43 +62,62 @@ const getStatusStyles = (status: string) => {
       return 'bg-green-100 text-green-700';
     case 'approved':
       return 'bg-blue-100 text-blue-700';
+    case 'draft':
+      return 'bg-gray-100 text-gray-700';
     default:
       return 'bg-gray-100 text-gray-700';
   }
 };
 
-export default function DashboardOverview({ user }: { user: User }) {
-  const [papers, setPapers] = useState<Paper[]>([]);
+export default function DashboardOverview() {
+  const { user } = useAuth();
+  const [papers, setPapers] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetching user papers on component load
   useEffect(() => {
-    const loadArticles = async () => {
-      setLoading(true);
+    const fetchUserPapers = async () => {
+      if (!user?.uid) {
+        setLoading(false);
+        return;
+      }
+
       try {
-        const { articles } = await fetchArticles({ pageSize: 1000 });
-        const userArticles = articles.filter(
-          (article: Paper) => article.submittedByEmail === user?.data?.email
-        );
-        setPapers(userArticles);
+        setLoading(true);
+        const userArticles = await articleService.getArticlesByUser(user.uid);
+        setPapers(userArticles.slice(0, 5)); // Show only latest 5 papers
       } catch (error) {
         console.error('Error fetching user papers:', error);
-        toast.error('Failed to load articles. Please try again.');
+        toast.error('Failed to load your papers');
+        setPapers([]);
       } finally {
         setLoading(false);
       }
     };
-    loadArticles();
-  }, [user?.data?.email]);
 
+    fetchUserPapers();
+  }, [user?.uid]);
 
+  if (!user) {
+    return (
+      <div className="m-12">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold mb-4">Please sign in to view your dashboard</h2>
+          <Link href="/signin">
+            <button className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90">
+              Sign In
+            </button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="m-12">
       {/* Welcome Message */}
       <div className="mb-8">
         <Typewriter
-          text={`👋 Welcome to Gregory Medical Journal, ${user.data?.username || 'Guest'}!`}
+          text={`👋 Welcome to Gregory Medical Journal, ${user.displayName || user.email || 'Guest'}!`}
           className="page-header text-2xl font-bold"
         />
       </div>
@@ -136,18 +140,24 @@ export default function DashboardOverview({ user }: { user: User }) {
 
       {/* Papers Table */}
       <div className="mt-12">
-        <h2 className="text-xl font-semibold mb-4">Latest Papers</h2>
+        <h2 className="text-xl font-semibold mb-4">Your Latest Papers</h2>
 
-       
         {loading ? (
           <div className="flex justify-center items-center h-32">
             <Loader2 className="animate-spin text-gray-500 w-8 h-8" />
           </div>
         ) : papers.length === 0 ? (
-          <p className="text-gray-500">No papers available.</p>
+          <div className="text-center py-8">
+            <p className="text-gray-500 mb-4">No papers submitted yet.</p>
+            <Link href="/dashboard/papers">
+              <button className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90">
+                Submit Your First Paper
+              </button>
+            </Link>
+          </div>
         ) : (
           <Table>
-            <TableCaption className='text-xs'>A list of recent papers submitted for review.</TableCaption>
+            <TableCaption className='text-xs'>A list of your recent papers submitted for review.</TableCaption>
             <TableHeader>
               <TableRow className="font-bold">
                 <TableHead>Date Submitted</TableHead>
@@ -156,10 +166,14 @@ export default function DashboardOverview({ user }: { user: User }) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {papers.map((paper, index) => (
-                <TableRow key={index}>
+              {papers.map((paper) => (
+                <TableRow key={paper.id}>
                   <TableCell>{formatDate(paper.submissionDate)}</TableCell>
-                  <TableCell>{paper.title}</TableCell>
+                  <TableCell>
+                    <Link href={`/journals/articles/${paper.id}`} className="text-primary hover:underline">
+                      {paper.title}
+                    </Link>
+                  </TableCell>
                   <TableCell>
                     <span className={`inline-block px-3 py-1 rounded-full text-[8px] ${getStatusStyles(paper.status)}`}>
                       {paper.status}

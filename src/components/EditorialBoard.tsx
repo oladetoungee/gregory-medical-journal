@@ -1,98 +1,120 @@
 "use client";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button, Typewriter } from "@/components/";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
-import axios from "axios";
+import { editorialBoard } from "@/constants";
+import { motion } from "framer-motion";
+import { memberService } from "@/lib/firebase/member-service";
+import { Member } from "@/lib/firebase/types";
 
 interface EditorialBoardProps {
-  showMembers: boolean;
+  showMembers?: boolean;
 }
 
-interface ImageData {
-  data: {
-    id: number;
-    attributes: {
-      name: string;
-      alternativeText: string;
-      width: number;
-      height: number;
-      url: string;
-    };
-  };
-}
-
-interface Member {
-  id: number;
-  name: string;
-  bio: string;
-  role: string;
-  image: ImageData | null;
-}
-
-type MemberImageProps = {
-  name: string;
-  imageSrc: string | null;
-};
-
-const MemberImage = ({ name, imageSrc }: MemberImageProps) => {
-  const [imageError, setImageError] = useState(false);
-
-  const getInitials = (name: string) => {
-    const nameParts = name.split(" ");
-    const initials = nameParts.map((part) => part.charAt(0)).join("");
-    return initials;
-  };
-
-  return imageError ? (
-    <div className="w-full h-48 flex items-center justify-center bg-gray-200 text-primary rounded-t-lg">
-      <span className="text-2xl font-bold">{getInitials(name)}</span>
-    </div>
-  ) : (
-    <Image
-      src={`${process.env.NEXT_PUBLIC_STRAPI_URL}${imageSrc}`}
-      alt={name}
-      layout="fill"
-      objectFit="cover"
-      className="w-full h-48 rounded-t-lg"
-      onError={() => setImageError(true)}
-    />
-  );
-};
-
-const EditorialBoard = ({ showMembers }: EditorialBoardProps) => {
+const EditorialBoard: React.FC<EditorialBoardProps> = ({ showMembers = true }) => {
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_STRAPI_URL}/members?populate=*`);
-        
-        const member = response.data.data.map((data: any) => ({
-          id: data.id,
-          name: data.attributes.name,
-          bio: data.attributes.bio,
-          role: data.attributes.role,
-          image: data.attributes.image?.data?.attributes?.url || null,
-        }))
-
-      setMembers(member);
-      setLoading(false);
-      console.log("member:", member)
+        console.log("Fetching members...");
+        const fetchedMembers = await memberService.getMembers();
+        console.log("Fetched members:", fetchedMembers);
+        setMembers(fetchedMembers);
       } catch (error) {
-        console.log('Error fetching members:', error);
-        setLoading(false); 
+        console.error("Error fetching members:", error);
+        setMembers([]);
+      } finally {
+        setLoading(false);
       }
-    }
-      fetchMembers();
+    };
+
+    fetchMembers();
   }, []);
-  
+
   if (loading) {
-    return <div className="mt-10">Loading...</div>;
+    return (
+      <div>
+        <h2 className="text-xl font-bold mb-4 underline text-primary text-center">
+          Editorial Board
+        </h2>
+        <div className="space-y-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="border-b pb-4 animate-pulse">
+              <div className="flex items-center space-x-3">
+                <div className="bg-gray-200 w-12 h-12 rounded-full"></div>
+                <div className="flex-1">
+                  <div className="bg-gray-200 h-3 w-3/4 rounded mb-1"></div>
+                  <div className="bg-gray-200 h-2 w-1/2 rounded"></div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
+  if (members.length === 0) {
+    return (
+      <div>
+        <h2 className="text-xl font-bold mb-4 underline text-primary text-center">
+          Editorial Board
+        </h2>
+        <p className="text-center text-gray-500 text-sm">No editorial board members available.</p>
+      </div>
+    );
+  }
+
+  // If showMembers is false, show a compact version
+  if (!showMembers) {
+    return (
+      <div>
+        <h2 className="text-xl font-bold mb-4 underline text-primary text-center">
+          Editorial Board
+        </h2>
+        <div className="space-y-4">
+          {members.slice(0, 4).map((member) => (
+            <div key={member.id} className="border-b pb-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
+                  {member.image ? (
+                    <Image
+                      src={member.image}
+                      alt={member.name}
+                      width={48}
+                      height={48}
+                      className="rounded-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-gray-500 text-sm font-semibold">
+                      {member.name.split(' ').map((n: string) => n[0]).join('')}
+                    </span>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-sm">{member.name}</h3>
+                  <p className="text-xs text-gray-600">{member.title}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 text-center">
+          <Link href="/about/editorial-board">
+            <Button icon={<ArrowRightIcon />} className="text-sm">
+              View All Members
+            </Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // If showMembers is true, show the full page layout
   return (
     <div className="py-12 px-4 sm:px-6 lg:px-8 bg-gray-100">
       <div className="container mx-auto">
@@ -101,48 +123,49 @@ const EditorialBoard = ({ showMembers }: EditorialBoardProps) => {
           text="Editorial Board"
         ></Typewriter>
 
-        <p className="text-xs sm:text-sm lg:text-base text-gray-700 leading-5 mb-6">
-          Our editorial board comprises esteemed professionals and academics with extensive expertise 
-          in their respective fields. They play a crucial role in ensuring the quality and integrity of 
-          the articles published in Gregory Medical Journal.
+        <p className="text-xs sm:text-sm lg:text-base text-gray-700 leading-5 my-6">
+          {editorialBoard.description}
         </p>
-        {showMembers && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {members.map((member) => (
-              <div
-                key={member.id}
-                className="bg-white shadow-lg rounded-lg overflow-hidden"
-              >
-                <div className="relative">
-                  <MemberImage
-                    name={member.name}
-                    imageSrc={
-                      member.image
-                        ? `${process.env.NEXT_PUBLIC_STRAPI_URL}${member.image}`
-                        : null
-                    }
-                  />
-                </div>
-                <div className="p-4 text-center">
-                  <h3 className="text-sm sm:text-base lg:text-lg font-bold text-primary mb-1">
-                    {member.name}
-                  </h3>
-                  <p className="text-xs sm:text-sm lg:text-base text-gray-500 mb-2">
-                    {member.role}
-                  </p>
-                  <p className="text-xs sm:text-sm lg:text-base text-gray-700 leading-6">
-                    {member.bio}
-                  </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {members.map((member) => (
+            <motion.div
+              key={member.id}
+              className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+              whileHover={{ y: -5 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="p-6">
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center mb-4 overflow-hidden">
+                    {member.image ? (
+                      <Image
+                        src={member.image}
+                        alt={member.name}
+                        width={96}
+                        height={96}
+                        className="rounded-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-gray-500 text-2xl font-semibold">
+                        {member.name.split(' ').map((n: string) => n[0]).join('')}
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">{member.name}</h3>
+                  <p className="text-sm text-blue-600 font-medium mb-2">{member.title}</p>
+                  {member.bio && (
+                    <p className="text-xs text-gray-500 leading-relaxed line-clamp-3">
+                      {member.bio}
+                    </p>
+                  )}
                 </div>
               </div>
-            ))}
-          </div>
-        )}
-        {!showMembers && (
-          <Link href="/about/editorial-board">
-            <Button icon={<ArrowRightIcon />}>Board Members</Button>
-          </Link>
-        )}
+            </motion.div>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -3,90 +3,103 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { PersonIcon, ArrowRightIcon, StarIcon } from "@radix-ui/react-icons";
-import { Button, NoEditorArticle } from "@/components";
-import { fetchArticles } from "@/constants/fetchArticles";
-import { getImageUrl } from "@/utils/getImageUrl";
-
-interface Author {
-  name: string;
-  affiliation: string;
-  email: string;
-}
-
-interface Article {
-  id: number;
-  title: string;
-  authors: Author[];
-  excerpt: any[]; 
-  image?: { data?: { attributes?: { url?: string } } }; // Image object with the nested structure
-  link: string;
-  isEditorPick: boolean;
-  publishedAt: string;
-}
+import { motion } from "framer-motion";
+import { PersonIcon, ArrowRightIcon } from "@radix-ui/react-icons";
+import { Button } from "@/components/";
+import { articleService } from "@/lib/firebase/article-service";
+import { Article } from "@/lib/firebase/types";
 
 const EditorPick: React.FC = () => {
-  const [editorPickArticle, setEditorPickArticle] = useState<Article | null>(null);
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadEditorPickArticle = async () => {
-      const { articles } = await fetchArticles({
-        editorPick: true,
-        pageSize: 1,
-      });
-      setEditorPickArticle(articles[0] || null);
+    const fetchEditorPicks = async () => {
+      try {
+        const editorPicks = await articleService.getEditorPicks();
+        setArticles(editorPicks.slice(0, 3)); // Show only 3 editor picks
+      } catch (error) {
+        console.error("Error fetching editor picks:", error);
+        setArticles([]);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    loadEditorPickArticle();
+    fetchEditorPicks();
   }, []);
 
-  if (!editorPickArticle) {
-    return <NoEditorArticle />;
+  if (loading) {
+    return (
+      <div>
+        <h2 className="text-xl font-bold mb-4 underline text-primary text-center">
+          Editor's Pick
+        </h2>
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="border-b pb-4 animate-pulse">
+              <div className="bg-gray-200 h-20 w-full rounded mb-2"></div>
+              <div className="bg-gray-200 h-3 w-3/4 rounded mb-1"></div>
+              <div className="bg-gray-200 h-2 w-1/2 rounded"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (articles.length === 0) {
+    return (
+      <div>
+        <h2 className="text-xl font-bold mb-4 underline text-primary text-center">
+          Editor's Pick
+        </h2>
+        <p className="text-center text-gray-500 text-sm">No editor picks available.</p>
+      </div>
+    );
   }
 
   return (
-    <div className="border-1 rounded shadow-sm bg-gray-50">
-      <h2 className="text-xl font-bold py-4 text-center flex bg-white items-center justify-center">
-        <StarIcon className="mr-4 text-primary" />
+    <div>
+      <h2 className="text-xl font-bold mb-4 underline text-primary text-center">
         Editor's Pick
       </h2>
-      <div className="flex flex-col">
-        <Image
-          src={getImageUrl(editorPickArticle.image?.data?.attributes)}
-          alt={editorPickArticle?.title}
-          width={200}
-          height={150}
-          className="w-full object-cover"
-          unoptimized={true} 
-        />
-        <div className="mt-4 px-2">
-          <h3 className="text-lg font-semibold text-center">
-      
-              {editorPickArticle?.title}
-            
-          </h3>
-          <p className="text-sm text-gray-500 mb-2 flex justify-center items-center">
-            <PersonIcon className="mr-2" />
-            {editorPickArticle.authors
-              .map((author) => author.name)
-              .join(", ")}
-          </p>
-          <p className="text-sm text-gray-700 mb-2">
-                {editorPickArticle.excerpt.length > 0 &&
-                  editorPickArticle.excerpt[0].children
-                    .map((child: any) => child.text)
-                    .join(" ")}
-                     
-              </p>
-          <div className="flex justify-center">
-            {/* <Link href={editorPickArticle?.link} passHref>
-              <Button icon={<ArrowRightIcon />}>View Full Article</Button>
-            </Link> */}
-        
-              <Button icon={<ArrowRightIcon />}>Read More</Button>
-         
-          </div>
-        </div>
+      <div className="space-y-4">
+        {articles.map((article) => (
+          <motion.div
+            key={article.id}
+            className="border-b pb-4 hover:bg-gray-50 rounded-md cursor-pointer"
+            whileHover={{
+              scale: 1.02,
+              transition: { duration: 0.3 },
+            }}
+          >
+            <Image
+              src={article.image}
+              alt={article.title}
+              width={200}
+              height={120}
+              className="w-full h-20 object-cover rounded mb-2"
+            />
+            <Link href={`/journals/articles/${article.id}`} passHref>
+              <h3 className="text-sm font-semibold text-primary hover:underline cursor-pointer mb-1">
+                {article.title}
+              </h3>
+            </Link>
+            <p className="text-xs font-bold flex items-center text-gray-600">
+              <PersonIcon className="mr-1" />
+                              {article.authors?.[0]?.name || 'Unknown Author'}
+            </p>
+            <Link href={`/journals/articles/${article.id}`} passHref>
+              <Button 
+                icon={<ArrowRightIcon />} 
+                className="text-xs mt-2"
+              >
+                Read More
+              </Button>
+            </Link>
+          </motion.div>
+        ))}
       </div>
     </div>
   );

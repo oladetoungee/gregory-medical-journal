@@ -23,6 +23,7 @@ const Header: React.FC = () => {
               width={40} 
               height={40}
             />
+            
             <div className="flex space-x-2">
               {text.map((el, i) => (
                 <motion.h1 

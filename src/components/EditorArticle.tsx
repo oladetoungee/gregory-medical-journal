@@ -6,37 +6,44 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { editor } from "@/constants/";
 import { ArticlesList, NoEditorArticle, Typewriter, Button } from "@/components";
-import { fetchArticles } from "@/constants/fetchArticles";
-import { truncateExcerpt } from "@/constants/truncatedText";
-import { getImageUrl } from "@/utils/getImageUrl";
-
-interface Article {
-  id: number;
-  title: string;
-  authors: { name: string }[];
-  excerpt: any[];
-  image?: { data?: { attributes?: { url?: string } } };
-  link: string;
-}
+import { articleService } from "@/lib/firebase/article-service";
+import { Article } from "@/lib/firebase/types";
+import { Loader2 } from 'lucide-react';
 
 const EditorArticle: React.FC = () => {
   const [editorPickArticle, setEditorPickArticle] = useState<Article | null>(null);
+  const [loading, setLoading] = useState(true);
 
+  // Fetch editor's pick article from Firebase
   useEffect(() => {
-    const loadEditorPickArticle = async () => {
-      const { articles } = await fetchArticles({
-        editorPick: true,
-        pageSize: 1,
-      });
-      setEditorPickArticle(articles[0] || null);
+    const fetchEditorPick = async () => {
+      try {
+        setLoading(true);
+        const editorPicks = await articleService.getEditorPicks();
+        if (editorPicks.length > 0) {
+          setEditorPickArticle(editorPicks[0]); // Get the first editor's pick
+        }
+      } catch (error) {
+        console.error('Error fetching editor pick:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    loadEditorPickArticle();
+    fetchEditorPick();
   }, []);
 
   const truncatedExcerpt = editorPickArticle
-    ? truncateExcerpt(editorPickArticle.excerpt, 500)
-    : [];
+    ? editorPickArticle.excerpt.substring(0, 500) + "..."
+    : "";
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="animate-spin text-gray-500 w-8 h-8" />
+      </div>
+    );
+  }
 
   if (!editorPickArticle) {
     return <NoEditorArticle />;
@@ -55,12 +62,11 @@ const EditorArticle: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-center justify-between mb-6">
             <div className="sm:w-1/3 mb-4 sm:mb-0">
               <Image
-                src={getImageUrl(editorPickArticle.image?.data?.attributes)}
+                src={editorPickArticle.image}
                 alt={editorPickArticle.title}
                 width={400}
                 height={300}
                 className="object-cover rounded-lg shadow-md"
-                unoptimized={true} 
               />
             </div>
             <div className="sm:w-2/3 sm:pl-6">
@@ -73,30 +79,20 @@ const EditorArticle: React.FC = () => {
                 {editorPickArticle.title}
               </motion.h2>
               <p className="text-sm font-light mb-4 italic">
-                by {editorPickArticle.authors.map((author) => author.name).join(", ")}
+                by {editorPickArticle.authors?.[0]?.name || 'Unknown Author'}
               </p>
-              {truncatedExcerpt.map(
-                (
-                  paragraph: { children: any[] },
-                  index: React.Key | null | undefined
-                ) => (
-                  <p key={index} className="text-sm mb-4">
-                    {paragraph.children.map(
-                      (child: any, childIndex: number) => child.text
-                    )}
-                    {"..."}
-                  </p>
-                )
-              )}
+              <p className="text-sm mb-4">
+                {truncatedExcerpt}
+              </p>
               {/* <Link
                 href={editorPickArticle.link}
                 className="inline-block bg-secondary text-white px-6 py-2 rounded-md hover:bg-secondary-dark transition-colors"
               >
                 Read Full Article
               </Link> */}
-                <Link href={`/journals/articles/article?id=${editorPickArticle.id}`}>
-          <Button className="text-white border-white">Read more</Button>
-        </Link>
+                <Link href={editorPickArticle.link}>
+                  <Button className="text-white border-white">Read more</Button>
+                </Link>
 
             </div>
           </div>
