@@ -26,17 +26,17 @@ export default function Payment() {
     setPaystackPublicKey(paystackKey);
 
     const fetchAcceptedPapers = async () => {
-      if (!user?.email) {
+      if (!user?.uid) {
         setLoading(false);
         return;
       }
 
       try {
         setLoading(true);
-        const userArticles = await articleService.getArticlesByUser(user.email);
-        // Filter for papers that need payment (under review or approved but not published)
+        const userArticles = await articleService.getArticlesByUser(user.uid);
+        // Filter for papers that need payment (accepted but not published)
         const acceptedPapers = userArticles.filter(article => 
-          article.status === 'under-review' || article.status === 'accepted'
+          article.status === 'accepted'
         );
         setPapers(acceptedPapers);
       } catch (error) {
@@ -48,7 +48,7 @@ export default function Payment() {
     };
 
     fetchAcceptedPapers();
-  }, [user?.email]);
+  }, [user?.uid]);
 
   const validateEmail = (email: string) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -112,7 +112,7 @@ export default function Payment() {
         </div>
       ) : papers.length > 0 ? (
         <>
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">Enter Email for Payment</label>
             <input
               type="email"
@@ -123,7 +123,18 @@ export default function Payment() {
               className={`mt-1 block w-full px-3 py-2 border ${emailError ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
             />
             {emailError && <p className="text-red-500 text-sm mt-2">{emailError}</p>}
+          </div> */}
+          
+          <div className="bg-white p-6 rounded-lg border mb-6">
+            <h4 className="font-semibold mb-3">Bank Transfer Details:</h4>
+            <ul className="space-y-2">
+              <li><strong>Account Name:</strong> Gregory Medical Journal</li>
+              <li><strong>Account Number:</strong> 0123456789</li>
+              <li><strong>Bank:</strong> Access Bank</li>
+            </ul> 
+            <p className="mt-4">Once payment is confirmed, kindly send the proof of payment to the following email: <a href="mailto:gregorymedicaljournal@gmail.com" className="text-primary hover:underline">gregorymedicaljournal@gmail.com</a></p>
           </div>
+
           <div className="space-y-6">
             {papers.map((paper: Article, index: number) => {
               const isPaid = paymentStatuses[paper.title];
@@ -156,11 +167,7 @@ export default function Payment() {
                   {isPaid ? (
                     <p className="text-green-500 font-semibold">Payment Completed</p>
                   ) : (
-                    <PaystackButton 
-                      {...componentProps} 
-                      disabled={!email || !!emailError || !paystackPublicKey} 
-                      className={`py-2 px-4 text-white font-bold rounded ${(!email || !!emailError || !paystackPublicKey) ? 'bg-gray-400' : 'bg-primary hover:opacity-90'}`}
-                    />
+                    <p className="text-gray-600">Please use the bank transfer details above to complete your payment.</p>
                   )}
                 </div>
               );
