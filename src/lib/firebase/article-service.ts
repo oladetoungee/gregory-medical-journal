@@ -121,25 +121,52 @@ export const articleService = {
 
   // Get single article
   async getArticle(id: string) {
+    console.log('getArticle called with ID:', id);
     const articlesRef = dbRef(realtimeDb, 'papers');
     const snapshot = await get(articlesRef);
     
     if (!snapshot.exists()) {
+      console.log('No papers collection exists in database');
       return null;
     }
 
     const articlesData = snapshot.val();
+    console.log('All papers data:', articlesData);
     
     // Search through all users and their papers
     for (const [userUid, userPapers] of Object.entries(articlesData)) {
+      console.log('Checking user:', userUid);
       for (const [paperId, paperData] of Object.entries(userPapers as any)) {
+        console.log('Checking paper ID:', paperId, 'against search ID:', id);
         if (paperId === id) {
+          console.log('Found matching article!');
           return { id, ...(paperData as any) } as Article;
         }
       }
     }
     
+    console.log('No article found with ID:', id);
     return null;
+  },
+
+  // Add new article with pre-generated ID
+  async addArticleWithId(article: Omit<Article, 'id'>, userUid: string, paperId: string) {
+    // Add to user's papers collection: papers/{userUid}/{paperId}
+    await set(dbRef(realtimeDb, `papers/${userUid}/${paperId}`), {
+      ...article,
+      id: paperId,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
+
+    // Add paper ID to user's papers array
+    const userRef = dbRef(realtimeDb, `users/${userUid}/papers`);
+    const userSnapshot = await get(userRef);
+    const existingPapers = userSnapshot.exists() ? userSnapshot.val() : [];
+    existingPapers.push(paperId);
+    await set(userRef, existingPapers);
+
+    return paperId;
   },
 
   // Add new article
