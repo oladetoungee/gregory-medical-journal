@@ -83,7 +83,7 @@ const LatestArticles: React.FC = () => {
               alt={article.title}
               width={150}
               height={100}
-              className="sm:w-[100%] md:w-[40%] lg:w-[30%] object-cover rounded w-full sm:w-auto"
+              className="w-full sm:w-auto md:w-[40%] lg:w-[30%] object-cover rounded"
             />
             <div className="flex flex-col justify-between px-2">
               <Link href={`/journals/articles/${article.id}`} passHref>
