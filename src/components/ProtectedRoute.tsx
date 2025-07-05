@@ -25,7 +25,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
       <div className="flex justify-center items-center h-screen">
         <div className="text-center">
           <Loader2 className="animate-spin h-8 w-8 mx-auto mb-4" />
-          <p>Loading...</p>
+          {/* <p>Loading...</p> */}
         </div>
       </div>
     );
@@ -37,7 +37,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
       <div className="flex justify-center items-center h-screen">
         <div className="text-center">
           <Loader2 className="animate-spin h-8 w-8 mx-auto mb-4" />
-          <p>Redirecting to sign in...</p>
+          {/* <p>Redirecting to sign in...</p> */}
         </div>
       </div>
     );

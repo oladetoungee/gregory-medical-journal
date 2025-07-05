@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
-import { Typewriter } from "@/components";
+import { Typewriter, Pagination } from "@/components";
 import { LibraryIcon, ChartBarIcon, UserIcon, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
@@ -73,6 +73,8 @@ export default function DashboardOverview() {
   const { user } = useAuth();
   const [papers, setPapers] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const papersPerPage = 7;
 
   useEffect(() => {
     const fetchUserPapers = async () => {
@@ -84,7 +86,7 @@ export default function DashboardOverview() {
       try {
         setLoading(true);
         const userArticles = await articleService.getArticlesByUser(user.uid);
-        setPapers(userArticles.slice(0, 5)); // Show only latest 5 papers
+        setPapers(userArticles); // Show all papers instead of limiting to 5
       } catch (error) {
         console.error('Error fetching user papers:', error);
         setPapers([]);
@@ -95,6 +97,16 @@ export default function DashboardOverview() {
 
     fetchUserPapers();
   }, [user?.uid]);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(papers.length / papersPerPage);
+  const startIndex = (currentPage - 1) * papersPerPage;
+  const endIndex = startIndex + papersPerPage;
+  const currentPapers = papers.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   if (!user) {
     return (
@@ -139,7 +151,7 @@ export default function DashboardOverview() {
 
       {/* Papers Table */}
       <div className="mt-12">
-        <h2 className="text-xl font-semibold mb-4">Your Latest Papers</h2>
+        <h2 className="text-xl font-semibold mb-4">Your Papers</h2>
 
         {loading ? (
           <div className="flex justify-center items-center h-32">
@@ -155,33 +167,43 @@ export default function DashboardOverview() {
             </Link>
           </div>
         ) : (
-          <Table>
-            <TableCaption className='text-xs'>A list of your recent papers submitted for review.</TableCaption>
-            <TableHeader>
-              <TableRow className="font-bold">
-                <TableHead>Date Submitted</TableHead>
-                <TableHead>Name of Paper</TableHead>
-                <TableHead>Review Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {papers.map((paper) => (
-                <TableRow key={paper.id}>
-                  <TableCell>{formatDate(paper.submissionDate)}</TableCell>
-                  <TableCell>
-                    <Link href={`/journals/articles/${paper.id}`} className="text-primary hover:underline">
-                      {paper.title}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <span className={`inline-block px-3 py-1 rounded-full text-[8px] ${getStatusStyles(paper.status)}`}>
-                      {paper.status}
-                    </span>
-                  </TableCell>
+          <>
+            <Table>
+              <TableCaption className='text-xs'>A list of your papers submitted for review.</TableCaption>
+              <TableHeader>
+                <TableRow className="font-bold">
+                  <TableHead>Date Submitted</TableHead>
+                  <TableHead>Name of Paper</TableHead>
+                  <TableHead>Review Status</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {currentPapers.map((paper) => (
+                  <TableRow key={paper.id}>
+                    <TableCell>{formatDate(paper.submissionDate)}</TableCell>
+                    <TableCell>
+                      <Link href={`/journals/articles/${paper.id}`} className="text-primary hover:underline">
+                        {paper.title}
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <span className={`inline-block px-3 py-1 rounded-full text-[8px] ${getStatusStyles(paper.status)}`}>
+                        {paper.status}
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            
+            {totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            )}
+          </>
         )}
       </div>
     </div>
