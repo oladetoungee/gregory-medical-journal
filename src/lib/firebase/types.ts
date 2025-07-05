@@ -8,11 +8,9 @@ export interface Article {
   document?: string;
   link: string;
   isEditorPick: boolean;
-  status: 'under-review' | 'accepted' | 'rejected' | 'published';
+  status: 'pending' | 'under-review' | 'accepted' | 'rejected' | 'revision-requested' | 'published'; 
   submissionDate: string;
   submittedBy: string; // User UID
-  submittedByName: string;
-  submittedByEmail: string;
   authors: Array<{
     name: string;
     affiliation: string;
