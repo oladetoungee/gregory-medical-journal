@@ -13,11 +13,11 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointE
 
 // Status colors as background
 const statusColors: { [key: string]: string } = {
-  'under review': '#FEF3C7', // Yellow faded
+  'under-review': '#FEF3C7', // Yellow faded
   'rejected': '#FECACA', // Red faded
   'accepted': '#D1FAE5', // Green faded
-  'approved': '#DBEAFE', // Blue faded
-  'draft': '#E5E7EB', // Gray faded
+  'approved': '#a88932', // Blue faded
+  'published': '#a88932', // Green faded
 };
 
 export default function Analytics() {
@@ -55,7 +55,7 @@ export default function Analytics() {
             {
               label: 'Review Status Distribution',
               data: statusValues,
-              backgroundColor: statusLabels.map(label => statusColors[label] || '#E5E7EB'),
+              backgroundColor: statusLabels.map(label => statusColors[label] || '#a88932'),
               borderColor: statusLabels.map(label => statusColors[label] || '#E5E7EB'),
               borderWidth: 1,
             },

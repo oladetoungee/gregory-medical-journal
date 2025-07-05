@@ -5,8 +5,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription, D
 import { Input, AutosizeTextarea } from "@/components/ui";
 import { Button, Typewriter } from "@/components";
 import { motion } from "framer-motion";
-import { UploadIcon, FileIcon, InfoIcon, X, Loader2 } from "lucide-react";
-import Link from "next/link";
+import { FileIcon, InfoIcon, X, Loader2 } from "lucide-react";
 import { toast } from 'react-toastify';
 import { useAuth } from '@/contexts/AuthContext';
 import { articleService } from '@/lib/firebase/article-service';
@@ -51,15 +50,15 @@ export default function ManuscriptSubmission() {
 
     setIsSubmitting(true);
     try {
-      // Create a unique article ID for file organization
-      const articleId = `article_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      // Generate the paper ID first
+      const paperId = `paper_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-      // Upload files to Firebase Storage
+      // Upload files to Firebase Storage using the actual paper ID
       const { coverImageURL, manuscriptURL } = await fileService.uploadArticleFiles(
         data.coverImage[0],
         data.manuscriptFile[0],
         user.uid,
-        articleId
+        paperId
       );
 
       // Format authors
@@ -77,24 +76,22 @@ export default function ManuscriptSubmission() {
         return;
       }
 
-      // Create article data for Firebase
+      // Create article data for Firebase with the correct paper ID
       const articleData = {
         title: data.title,
         excerpt: data.abstract,
         image: coverImageURL,
         document: manuscriptURL,
-        link: `/journals/articles/${articleId}`,
+        link: `/journals/articles/${paperId}`,
         isEditorPick: false,
         status: 'under-review' as const,
         submissionDate: new Date().toISOString(),
         submittedBy: user.uid,
-        submittedByName: user.displayName || user.email || 'Anonymous',
-        submittedByEmail: user.email || '',
         authors: formattedAuthors,
       };
 
-      // Submit article to Firebase
-      await articleService.addArticle(articleData, user.uid);
+      // Submit article to Firebase with the pre-generated paper ID
+      await articleService.addArticleWithId(articleData, user.uid, paperId);
 
       // Send confirmation emails
       try {

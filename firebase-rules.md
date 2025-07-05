@@ -106,7 +106,7 @@ Example user profile structure:
   email: "user@example.com",
   username: "username",
   role: "user", // "user", "editor", "admin"
-  createdAt: "2024-01-01T00:00:00Z",
+  createdAt: "2025-01-01T00:00:00Z",
   affiliation: "University Name"
 }
 ``` 
