@@ -97,7 +97,7 @@ const LatestArticles: React.FC = () => {
               </p>
 
               <p className="text-sm text-gray-700 mb-2">
-                {article.excerpt}
+                {article.excerpt.length > 100 ? `${article.excerpt.substring(0, 100)}...` : article.excerpt}
               </p>
               {"....."}
             

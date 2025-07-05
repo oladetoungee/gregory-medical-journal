@@ -72,7 +72,7 @@ const ArticlesPage: React.FC = () => {
                         by {article.authors?.[0]?.name || 'Unknown Author'}
                       </p>
                       <p className="text-sm text-gray-700 mb-4">
-                        {article.excerpt}
+                        {article.excerpt.length > 100 ? `${article.excerpt.substring(0, 100)}...` : article.excerpt}
                       </p>
                       <Link href={article.link}>
                         <Button>Read more</Button>

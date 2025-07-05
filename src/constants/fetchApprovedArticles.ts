@@ -31,7 +31,7 @@ export const fetchApprovedArticles = async ({
           'filters[editorPick][$eq]': true,
         }),
         // Filter articles with status 'approved'
-        'filters[status][$eq]': 'approved',
+        'filters[status][$eq]': 'published',
       },
     });
 

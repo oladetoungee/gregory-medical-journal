@@ -4,7 +4,7 @@ const aboutThisJournal = {
       Gregory Medical Journal is a peer-reviewed journal dedicated to publishing high-quality research
       across various fields of medicine. Our aim is to advance medical knowledge and practice by 
       disseminating significant scientific findings and promoting discussion on innovative approaches.
-      Established in 2024, our journal is committed to maintaining the highest standards of scientific integrity 
+      Established in 2025, our journal is committed to maintaining the highest standards of scientific integrity 
       and scholarly excellence.
     `,
     mission: `
