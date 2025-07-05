@@ -25,7 +25,7 @@ export function getUserSignupEmailTemplate(name: string) {
         <a href="https://gregory-medical-journal.vercel.app/" class="button">Visit Our Website</a>
       </div>
       <div class="footer">
-        <p>© 2024 Gregory Medical Journal. All rights reserved.</p>
+        <p>© 2025 Gregory Medical Journal. All rights reserved.</p>
         <p>Contact us at <a href="mailto:gregorymedicaljournal@gmail.com">gregorymedicaljournal@gmail.com</a></p>
       </div>
     </div>
@@ -63,7 +63,7 @@ export function getAdminSignupEmailTemplate(name: string, email: string) {
         <a href="https://gregory-medical-journal-backend-production.up.railway.app/admin" class="button">Visit Admin Panel</a>
       </div>
       <div class="footer">
-        <p>© 2024 Gregory Medical Journal. All rights reserved.</p>
+        <p>© 2025 Gregory Medical Journal. All rights reserved.</p>
         <p>Contact us at <a href="mailto:gregorymedicaljournal@gmail.com">gregorymedicaljournal@gmail.com</a></p>
       </div>
     </div>

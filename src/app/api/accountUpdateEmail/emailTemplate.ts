@@ -35,7 +35,7 @@ export function getAccountUpdateEmailTemplate(name: string, updateType: string, 
           <a href="https://gregory-medical-journal.vercel.app/dashboard" class="button">Visit Your Dashboard</a>
         </div>
         <div class="footer">
-          <p>© 2024 Gregory Medical Journal. All rights reserved.</p>
+          <p>© 2025 Gregory Medical Journal. All rights reserved.</p>
           <p>Contact us at <a href="mailto:gregorymedicaljournal@gmail.com">gregorymedicaljournal@gmail.com</a></p>
         </div>
       </div>
