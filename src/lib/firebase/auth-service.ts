@@ -3,7 +3,6 @@ import {
   signInWithEmailAndPassword,
   signOut,
   sendPasswordResetEmail,
-  sendEmailVerification,
   updateProfile,
   User,
 } from 'firebase/auth';
@@ -16,9 +15,6 @@ export const authService = {
   async register(email: string, password: string, username: string) {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(userCredential.user, { displayName: username });
-    
-    // Send email verification
-    await sendEmailVerification(userCredential.user);
     
     // Create user record in Realtime Database
     const userData = {
@@ -36,6 +32,31 @@ export const authService = {
     };
     
     await set(dbRef(realtimeDb, `users/${userCredential.user.uid}`), userData);
+    
+    // Send welcome email from Gregory Medical Journal
+    try {
+      const emailData = {
+        name: username,
+        email: email
+      };
+
+      const emailResponse = await fetch('/api/signupEmails', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(emailData),
+      });
+
+      if (emailResponse.ok) {
+        console.log('Welcome email sent successfully');
+      } else {
+        console.error('Failed to send welcome email');
+      }
+    } catch (emailError) {
+      console.error('Error sending welcome email:', emailError);
+      // Don't fail the registration if email fails
+    }
     
     return userCredential.user;
   },
@@ -61,13 +82,6 @@ export const authService = {
     };
     
     await sendPasswordResetEmail(auth, email, actionCodeSettings);
-  },
-
-  // Send email verification
-  async sendEmailVerification() {
-    if (auth.currentUser) {
-      await sendEmailVerification(auth.currentUser);
-    }
   },
 
   // Get current user
